@@ -2,267 +2,183 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Sistem Terpadu SMPN 1 Cibingbin</title>
+    <title>Sistem Dashboard Perpustakaan - SMPN 1 Cibingbin</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
-        :root {
-            --primary-blue: #0d47a1;
-            --success: #2e7d32;
-            --warning: #f57c00;
-            --danger: #d32f2f;
-        }
-
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f0f2f5; margin: 0; padding: 0; }
+        :root { --primary: #0d47a1; --success: #2e7d32; --danger: #d32f2f; }
+        body { font-family: sans-serif; background: #f4f7f6; margin: 0; padding: 0; }
         
-        /* --- STYLING LOGIN --- */
-        #loginOverlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--primary-blue); display: flex; align-items: center;
-            justify-content: center; z-index: 9999;
-        }
-        .login-box {
-            background: white; padding: 30px; border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; width: 300px;
-        }
-        .login-box img { width: 80px; margin-bottom: 15px; }
-        .login-box input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-
-        /* --- UI DASHBOARD --- */
-        .navbar { background: var(--primary-blue); padding: 10px; display: flex; gap: 10px; position: sticky; top: 0; z-index: 1000; }
-        .nav-btn { padding: 10px 20px; border: none; background: rgba(255,255,255,0.1); color: white; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .nav-btn.active { background: white; color: var(--primary-blue); }
-
-        .container { padding: 20px; max-width: 1200px; margin: auto; display: none; } /* Tersembunyi sebelum login */
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-
-        .card-ui { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        /* Login */
+        #loginPage { position: fixed; inset: 0; background: var(--primary); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+        .login-card { background: white; padding: 2rem; border-radius: 12px; width: 300px; text-align: center; }
+        
+        /* Layout */
+        .navbar { background: var(--primary); padding: 1rem; color: white; display: flex; justify-content: space-between; align-items: center; }
+        .container { padding: 20px; max-width: 1200px; margin: auto; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        #reader { width: 100%; border-radius: 12px; overflow: hidden; background: #000; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+        .card-ui { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        
+        #reader { width: 100%; border-radius: 10px; overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; background: white; }
         th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-        th { background: var(--primary-blue); color: white; }
-        .btn { padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; color: white; }
-
-        /* --- STYLING KARTU PRESISI --- */
-        #cardContainer { display: grid; grid-template-columns: repeat(2, 85.6mm); gap: 5mm; justify-content: center; padding: 10mm; }
-        .id-card-base { 
-            width: 85.6mm !important; height: 53.98mm !important; 
-            background: #fff; border: 0.2mm solid #000; border-radius: 3mm; 
-            position: relative; overflow: hidden; box-sizing: border-box; 
-            display: flex; flex-direction: column; margin-bottom: 5mm;
-        }
-        .blue-top-line { height: 1.5mm; background: var(--primary-blue); width: 100%; }
-        .card-header { height: 14mm; display: flex; align-items: center; justify-content: space-between; padding: 0 3mm; }
-        .logo-side { height: 9mm; width: auto; }
-        .logo-center-img { height: 12mm; width: auto; max-width: 60%; object-fit: contain; }
-        .separator-line { height: 0.4mm; background: var(--primary-blue); width: 92%; margin: 0 auto; }
-        .card-title h1 { text-align: center; margin: 1mm 0; font-size: 8pt; color: var(--primary-blue); font-weight: 800; }
-        .card-body { padding: 1mm 4mm; display: flex; justify-content: space-between; align-items: center; flex-grow: 1; }
-        .info-table { font-size: 7pt; width: 75%; border: none; border-collapse: collapse; }
-        .info-table td { border: none !important; padding: 1px 0; }
-        .qr-wrapper { width: 16mm; height: 16mm; border: 0.1mm solid #eee; padding: 1mm; }
-        .back-content { padding: 0 4mm 3mm 4mm; display: flex; flex-direction: column; height: 100%; box-sizing: border-box; }
-        .back-header { text-align: center; font-weight: 800; color: var(--primary-blue); font-size: 8.5pt; border-bottom: 0.5mm solid var(--primary-blue); margin: 2mm 0; }
-        .rules-list { font-size: 6.5pt; line-height: 1.2; padding-left: 4mm; }
-        .staff-section { text-align: center; font-size: 7pt; margin-top: auto; padding-bottom: 2mm; }
-        .quote-box { background: var(--primary-blue); color: white; text-align: center; font-size: 7pt; padding: 1.5mm; border-radius: 1mm; font-weight: bold; }
-
+        th { background: var(--primary); color: white; }
+        
+        input, button { padding: 10px; margin: 5px 0; border-radius: 5px; border: 1px solid #ccc; }
+        .btn-blue { background: var(--primary); color: white; border: none; cursor: pointer; font-weight: bold; }
+        
+        /* Print Layout Presisi */
+        #printArea { display: none; grid-template-columns: repeat(2, 85.6mm); gap: 5mm; padding: 10mm; justify-content: center; }
+        .id-card-base { width: 85.6mm; height: 53.98mm; border: 0.2mm solid #000; border-radius: 3mm; position: relative; overflow: hidden; display: flex; flex-direction: column; background: white; box-sizing: border-box; }
+        
         @media print {
-            @page { size: A4; margin: 0; }
-            .navbar, .no-print, #dashboard, #loginOverlay { display: none !important; }
-            #cardContainer { display: grid !important; grid-template-columns: repeat(2, 85.6mm) !important; gap: 5mm !important; }
-            .id-card-base { -webkit-print-color-adjust: exact; page-break-inside: avoid; border: 0.2mm solid #000 !important; }
+            #mainApp, #loginPage { display: none !important; }
+            #printArea { display: grid !important; }
+            .id-card-base { -webkit-print-color-adjust: exact; page-break-inside: avoid; }
         }
     </style>
 </head>
 <body>
 
-<div id="loginOverlay">
-    <div class="login-box">
-        <img src="https://cdn-icons-png.flaticon.com/512/3389/3389081.png" alt="Logo">
-        <h3>Login Petugas</h3>
-        <input type="password" id="passInput" placeholder="Masukkan Password">
-        <button class="btn" style="background:var(--primary-blue); width:100%" onclick="checkLogin()">MASUK</button>
-        <p id="loginError" style="color:red; font-size:12px; display:none; margin-top:10px;">Password Salah!</p>
+<div id="loginPage">
+    <div class="login-card">
+        <h3>Dashboard Perpus</h3>
+        <input type="password" id="pass" placeholder="Password (admin123)" style="width:100%">
+        <button onclick="doLogin()" class="btn-blue" style="width:100%; margin-top:10px;">MASUK</button>
     </div>
 </div>
 
-<div id="mainApp" style="display:none;">
-    <div class="navbar no-print">
-        <button class="nav-btn active" onclick="openTab('dashboard')">🏠 Dashboard</button>
-        <button class="nav-btn" onclick="openTab('cetak')">🖨️ Cetak Kartu</button>
-        <button class="nav-btn" style="margin-left:auto; background:var(--danger)" onclick="logout()">Logout</button>
+<div id="mainApp" style="display:none">
+    <div class="navbar">
+        <b>SMPN 1 CIBINGBIN - SISTEM TERPADU</b>
+        <button onclick="location.reload()" style="background:red; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Keluar</button>
     </div>
 
-    <div class="container" style="display:block;">
-        <div id="dashboard" class="tab-content active">
-            <div class="grid">
-                <div class="card-ui">
-                    <h3>➕ Tambah Siswa</h3>
-                    <input type="text" id="inNama" placeholder="Nama Lengkap">
-                    <input type="text" id="inNIS" placeholder="NIS/NISN">
-                    <input type="text" id="inKelas" placeholder="Kelas">
-                    <button class="btn" style="background:var(--primary-blue); width:100%" onclick="tambahSiswaManual()">Simpan</button>
-                    <hr>
-                    <input type="file" id="uploadDb" accept=".xlsx, .xls">
-                </div>
-                <div class="card-ui">
-                    <h3>📷 Scanner</h3>
-                    <div id="reader"></div>
-                    <button class="btn" style="background:var(--primary-blue); width:100%; margin-top:10px;" onclick="startScanner()">Aktifkan Kamera</button>
-                </div>
-            </div>
-
+    <div class="container">
+        <div class="grid">
             <div class="card-ui">
-                <div style="display: flex; justify-content: space-between;">
-                    <h3>📊 Laporan Kunjungan</h3>
-                    <button class="btn" style="background:var(--success)" onclick="exportLaporan()">Download Excel</button>
-                </div>
-                <table id="tableKunjungan">
-                    <thead><tr><th>Waktu</th><th>Nama</th><th>Kelas</th></tr></thead>
-                    <tbody></tbody>
-                </table>
+                <h3>📷 Scanner Kunjungan</h3>
+                <div id="reader"></div>
+                <div id="scanMsg" style="margin-top:10px; padding:10px; border-radius:5px; display:none; font-weight:bold;"></div>
+            </div>
+            
+            <div class="card-ui">
+                <h3>➕ Input Siswa Baru</h3>
+                <input type="text" id="inNama" placeholder="Nama Lengkap" style="width:90%">
+                <input type="text" id="inNIS" placeholder="NIS/NISN" style="width:90%">
+                <input type="text" id="inKelas" placeholder="Kelas" style="width:90%">
+                <button onclick="saveSiswa()" class="btn-blue" style="width:95%">Simpan & Update Daftar Cetak</button>
+                <hr>
+                <small>Atau Upload Excel:</small><br>
+                <input type="file" id="upEx" accept=".xlsx, .xls">
             </div>
         </div>
 
-        <div id="cetak" class="tab-content">
-            <div class="card-ui no-print" style="text-align:center;">
-                <button class="btn" style="background:var(--warning); color:black;" onclick="window.print()">PRINT KARTU (A4)</button>
+        <div class="card-ui">
+            <div style="display:flex; justify-content:space-between; align-items:center">
+                <h3>📊 Laporan Hari Ini</h3>
+                <button onclick="downloadExcel()" style="background:var(--success); color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer;">Download Excel</button>
             </div>
-            <div id="cardContainer"></div>
+            <table id="logTable">
+                <thead><tr><th>Waktu</th><th>Nama</th><th>Kelas</th><th>Metode</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div class="card-ui" style="text-align:center">
+            <h3>🖨️ Cetak Kartu Baru</h3>
+            <p>Jika ada siswa baru, cetak di sini. Ukuran sudah sama dengan kartu lama (KTP).</p>
+            <button onclick="window.print()" class="btn-blue" style="background:orange; color:black">PRINT SEMUA KARTU (A4)</button>
         </div>
     </div>
 </div>
+
+<div id="printArea"></div>
 
 <script>
-// --- CONFIGURASI ---
-const MASTER_PASS = "admin123"; // GANTI PASSWORD DI SINI
-const logoHeader = "sekolah.jpg"; 
-const logoKiri = "https://i.postimg.cc/zvwCjX6D/Desain-tanpa-judul.png"; 
-const logoKanan = "https://cdn-icons-png.flaticon.com/512/3389/3389081.png";
+let db = JSON.parse(localStorage.getItem('db_perpus')) || [];
+let logs = [];
 
-let dbSiswa = JSON.parse(localStorage.getItem('db_perpus')) || [];
-let dataKunjungan = JSON.parse(localStorage.getItem('riwayat_kunjungan')) || [];
-
-function checkLogin() {
-    const input = document.getElementById('passInput').value;
-    if(input === MASTER_PASS) {
-        document.getElementById('loginOverlay').style.display = 'none';
-        document.getElementById('mainApp').style.display = 'block';
-        initApp();
-    } else {
-        document.getElementById('loginError').style.display = 'block';
-    }
+function doLogin() {
+    if(document.getElementById('pass').value === 'admin123') {
+        document.getElementById('loginPage').style.display='none';
+        document.getElementById('mainApp').style.display='block';
+        startScanner();
+        renderCetak();
+    } else { alert("Password Salah!"); }
 }
-
-function logout() { location.reload(); }
-
-function openTab(id) {
-    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    event.currentTarget.classList.add('active');
-}
-
-function tambahSiswaManual() {
-    const nama = document.getElementById('inNama').value;
-    const nis = document.getElementById('inNIS').value;
-    const kelas = document.getElementById('inKelas').value;
-    if(!nama || !nis) return alert("Lengkapi data!");
-    dbSiswa.push({ Nama: nama, NIS: nis, Kelas: kelas });
-    localStorage.setItem('db_perpus', JSON.stringify(dbSiswa));
-    alert("Tersimpan!");
-    initApp();
-}
-
-document.getElementById('uploadDb').addEventListener('change', function(e) {
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-        const data = new Uint8Array(ev.target.result);
-        const wb = XLSX.read(data, {type: 'array'});
-        dbSiswa = [...dbSiswa, ...XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]])];
-        localStorage.setItem('db_perpus', JSON.stringify(dbSiswa));
-        initApp();
-    };
-    reader.readAsArrayBuffer(e.target.files[0]);
-});
 
 function startScanner() {
     const html5QrCode = new Html5Qrcode("reader");
     html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (text) => {
-        const s = dbSiswa.find(x => String(x.NIS || x.NISN).trim() === String(text).trim());
-        if(s) {
-            const waktu = new Date().toLocaleString();
-            dataKunjungan.unshift({ Waktu: waktu, Nama: s.Nama, Kelas: s.Kelas });
-            localStorage.setItem('riwayat_kunjungan', JSON.stringify(dataKunjungan));
-            renderTables();
-            new Audio('https://www.soundjay.com/buttons/beep-07a.mp3').play();
-        }
+        handleScan(text);
     });
 }
 
-function renderTables() {
-    document.querySelector("#tableKunjungan tbody").innerHTML = dataKunjungan.map(k => `
-        <tr><td>${k.Waktu}</td><td>${k.Nama}</td><td>${k.Kelas}</td></tr>
-    `).join('');
+function handleScan(text) {
+    let nisScan = "";
+    
+    // LOGIKA PENDETEKSI KARTU LAMA (Jika ada teks 'NIS:')
+    if(text.includes("NIS:")) {
+        nisScan = text.split("NIS:")[1].split("|")[0].trim();
+    } else {
+        nisScan = text.trim();
+    }
+
+    const siswa = db.find(s => String(s.NIS || s.NISN || s.nis).trim() === nisScan);
+    const msg = document.getElementById('scanMsg');
+    msg.style.display = "block";
+
+    if(siswa) {
+        msg.style.background = "#e8f5e9"; msg.style.color = "green";
+        msg.innerText = "✅ BERHASIL: " + (siswa.Nama || siswa.NAMA);
+        logs.unshift({ Waktu: new Date().toLocaleTimeString(), Nama: (siswa.Nama || siswa.NAMA), Kelas: (siswa.Kelas || siswa.KELAS), Metode: "Scan Kartu" });
+        updateLogTable();
+        new Audio('https://www.soundjay.com/buttons/beep-07a.mp3').play();
+    } else {
+        msg.style.background = "#ffebee"; msg.style.color = "red";
+        msg.innerText = "❌ NIS TIDAK ADA DI DATA: " + nisScan;
+    }
 }
 
-function exportLaporan() {
-    const ws = XLSX.utils.json_to_sheet(dataKunjungan);
+function saveSiswa() {
+    const n = document.getElementById('inNama').value;
+    const ni = document.getElementById('inNIS').value;
+    const k = document.getElementById('inKelas').value;
+    if(!n || !ni) return alert("Isi Nama & NIS");
+    db.push({ Nama: n, NIS: ni, Kelas: k });
+    localStorage.setItem('db_perpus', JSON.stringify(db));
+    alert("Tersimpan!");
+    renderCetak();
+}
+
+function updateLogTable() {
+    document.querySelector("#logTable tbody").innerHTML = logs.map(l => `<tr><td>${l.Waktu}</td><td>${l.Nama}</td><td>${l.Kelas}</td><td>${l.Metode}</td></tr>`).join('');
+}
+
+function downloadExcel() {
+    const ws = XLSX.utils.json_to_sheet(logs);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Laporan");
-    XLSX.writeFile(wb, "Laporan_Kunjungan.xlsx");
+    XLSX.utils.book_append_sheet(wb, ws, "Kunjungan");
+    XLSX.writeFile(wb, "Laporan_Perpus.xlsx");
 }
 
-function initApp() {
-    generateCards();
-    renderTables();
-}
-
-function generateCards() {
-    const container = document.getElementById('cardContainer');
-    container.innerHTML = "";
-    dbSiswa.forEach(row => {
-        const nis = row.NIS || row.NISN || "000";
-        const qr = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${nis}`;
-        container.innerHTML += `
-            <div class="id-card-base">
-                <div class="blue-top-line"></div>
-                <div class="card-header">
-                    <img src="${logoKiri}" class="logo-side">
-                    <img src="${logoHeader}" class="logo-center-img">
-                    <img src="${logoKanan}" class="logo-side">
-                </div>
-                <div class="separator-line"></div>
-                <div class="card-title"><h1>KARTU ANGGOTA PERPUSTAKAAN</h1></div>
-                <div class="card-body">
-                    <table class="info-table">
-                        <tr><td width="50">Nama</td><td>: <b>${row.Nama || row.NAMA}</b></td></tr>
-                        <tr><td>NIS</td><td>: <b>${nis}</b></td></tr>
-                        <tr><td>Kelas</td><td>: <b>${row.Kelas || row.KELAS}</b></td></tr>
-                    </table>
-                    <div class="qr-wrapper"><img src="${qr}" style="width:100%"></div>
+function renderCetak() {
+    const area = document.getElementById('printArea');
+    area.innerHTML = "";
+    db.forEach(s => {
+        const qr = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${s.NIS || s.NISN}`;
+        area.innerHTML += `
+            <div class="id-card-base" style="padding:10px; font-size:8pt">
+                <center><b>KARTU PERPUSTAKAAN</b></center><hr>
+                Nama: ${s.Nama || s.NAMA}<br>NIS: ${s.NIS || s.NISN}<br>Kelas: ${s.Kelas || s.KELAS}
+                <div style="position:absolute; bottom:10px; right:10px; width:15mm; height:15mm;">
+                    <img src="${qr}" style="width:100%">
                 </div>
             </div>
-            <div class="id-card-base">
-                <div class="blue-top-line"></div>
-                <div class="back-content">
-                    <div class="back-header">TATA TERTIB PERPUSTAKAAN</div>
-                    <ul class="rules-list">
-                        <li>Kartu wajib dibawa setiap kunjungan.</li>
-                        <li>Peminjaman maksimal 2 buku / 1 minggu.</li>
-                        <li>Dilarang merusak atau mencoret buku.</li>
-                        <li>Keterlambatan dikenakan denda.</li>
-                        <li>Menjaga ketenangan di perpustakaan.</li>
-                    </ul>
-                    <div class="staff-section">
-                        <b>Petugas Perpustakaan</b><br><br>
-                        ( ........................................ )
-                    </div>
-                    <div class="quote-box">"MEMBACA ADALAH JENDELA DUNIA"</div>
-                </div>
+            <div class="id-card-base" style="padding:10px; font-size:7pt">
+                <center><b>TATA TERTIB</b></center>
+                <ul><li>Bawa kartu saat berkunjung</li><li>Jaga ketenangan</li></ul>
             </div>`;
     });
 }
