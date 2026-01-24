@@ -7,95 +7,45 @@
     <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
         :root { --primary: #2c3e50; --success: #27ae60; --warning: #f1c40f; --danger: #e74c3c; --blue: #3498db; }
-        
         body, html { height: 100%; margin: 0; font-family: 'Segoe UI', sans-serif; }
 
-        /* Background Besar Foto Perpustakaan */
+        /* Background Login Mewah */
         #login-container { 
             background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
-                        url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
-            background-size: cover;
-            background-position: center;
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
+                        url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1350&q=80');
+            background-size: cover; background-position: center;
+            display: flex; justify-content: center; align-items: center; height: 100vh; 
         }
 
         #login-box { 
-            padding: 40px; 
-            background: rgba(255, 255, 255, 0.95); /* Putih transparan */
-            border-radius: 25px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3); 
-            width: 85%; 
-            max-width: 350px; 
-            text-align: center;
-            backdrop-filter: blur(5px); /* Efek kaca */
+            padding: 40px; background: rgba(255, 255, 255, 0.95); 
+            border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); 
+            width: 85%; max-width: 320px; text-align: center; backdrop-filter: blur(5px);
         }
 
-        /* Logo Perpus */
-        .logo-perpus {
-            width: 80px;
-            margin-bottom: 10px;
-        }
+        .logo-perpus { width: 70px; margin-bottom: 10px; }
 
-        input[type="password"] {
-            padding: 15px; 
-            width: 100%; 
-            border: 2px solid #ddd; 
-            border-radius: 12px; 
-            box-sizing: border-box;
-            font-size: 16px;
-            text-align: center;
-            transition: 0.3s;
-        }
-
-        input[type="password"]:focus {
-            border-color: var(--blue);
-            outline: none;
-        }
-
-        .btn-login {
-            background: var(--primary); 
-            margin-top: 20px; 
-            width: 100%; 
-            padding: 15px; 
-            color: white; 
-            border: none; 
-            border-radius: 12px; 
-            font-weight: bold; 
-            font-size: 1rem;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .btn-login:hover { background: #1a252f; transform: translateY(-2px); }
-
-        /* Layout Utama Setelah Login */
+        /* Navigasi + Tombol Logout */
         .nav-menu { display: none; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
-        .nav-container { display: flex; max-width: 600px; margin: 0 auto; }
-        .nav-item { flex: 1; padding: 15px; text-align: center; font-weight: bold; color: #7f8c8d; cursor: pointer; border-bottom: 4px solid transparent; }
-        .nav-active { border-bottom: 4px solid var(--blue); color: var(--blue); }
+        .nav-container { display: flex; max-width: 800px; margin: 0 auto; align-items: center; }
+        .nav-item { flex: 1; padding: 15px; text-align: center; font-weight: bold; color: #7f8c8d; cursor: pointer; border-bottom: 4px solid transparent; font-size: 0.9rem; }
+        .nav-active { border-bottom: 4px solid var(--blue); color: var(--blue); background: #f9f9f9; }
+        .btn-logout { padding: 10px 15px; background: var(--danger); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-right: 10px; font-size: 0.8rem; }
 
         .page { display: none; padding: 15px; max-width: 800px; margin: 0 auto; }
         .header-title { background: var(--primary); color: white; padding: 20px; border-radius: 15px; margin-bottom: 20px; }
         
         #reader { width: 100%; border: 4px solid var(--primary); border-radius: 15px; overflow: hidden; background: white; }
-        #reader button { background: #0056b3 !important; color: white !important; font-weight: bold !important; padding: 12px 20px !important; border-radius: 8px !important; border: none !important; font-size: 16px !important; margin: 10px 0; }
+        #reader button { background: #0056b3 !important; color: white !important; font-weight: bold !important; padding: 10px 20px !important; border-radius: 8px !important; border: none !important; margin: 10px 0; cursor: pointer;}
 
         .btn-group { margin: 15px 0; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
         .mode-btn { padding: 18px 5px; font-size: 0.75rem; cursor: pointer; border: none; border-radius: 10px; color: white; font-weight: bold; opacity: 0.4; }
-        .active-mode { opacity: 1 !important; border: 2px solid #000; }
+        .active-mode { opacity: 1 !important; border: 2px solid #000; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
         
-        .kunjung { background-color: var(--success); }
-        .pinjam { background-color: var(--warning); color: black; }
-        .kembali { background-color: var(--danger); }
-
         #status-bar { margin: 15px 0; padding: 20px; border-radius: 12px; font-weight: bold; background: #fff; border: 2px solid #ddd; }
-        
         .table-container { background: white; border-radius: 15px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
+        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; font-size: 0.85rem; }
         
         .download-btn { background: var(--primary); color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-weight: bold; margin-bottom: 20px; cursor: pointer; }
 
@@ -103,7 +53,6 @@
             .nav-menu, .header-title, .download-btn, #reader, .btn-group, #status-bar, #login-container { display: none !important; }
             .page { display: block !important; }
             #page-scan { display: none !important; }
-            .table-container { box-shadow: none; border: none; }
             body { background: white; }
         }
     </style>
@@ -112,12 +61,11 @@
 
     <div id="login-container">
         <div id="login-box">
-            <img src="https://cdn-icons-png.flaticon.com/512/2232/2232688.png" class="logo-perpus" alt="Logo">
+            <img src="https://cdn-icons-png.flaticon.com/512/2232/2232688.png" class="logo-perpus">
             <h2 style="color: var(--primary); margin: 0;">E-PERPUS</h2>
             <p style="color: #666; margin-bottom: 25px; font-size: 14px;">SMPN 1 CIBINGBIN</p>
-            
-            <input type="password" id="passInput" placeholder="Masukkan PIN Keamanan">
-            <button class="btn-login" onclick="checkLogin()">MASUK SISTEM</button>
+            <input type="password" id="passInput" style="padding:15px; width:100%; border:2px solid #ddd; border-radius:12px; box-sizing: border-box; text-align:center;" placeholder="PIN Keamanan">
+            <button style="background: var(--primary); margin-top: 20px; width: 100%; padding: 15px; color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer;" onclick="checkLogin()">MASUK SISTEM</button>
         </div>
     </div>
 
@@ -125,6 +73,7 @@
         <div class="nav-container">
             <div id="nav-scan" class="nav-item nav-active" onclick="switchPage('scan')">SCAN QR</div>
             <div id="nav-data" class="nav-item" onclick="switchPage('data')">DASHBOARD</div>
+            <button class="btn-logout" onclick="logout()">LOGOUT</button>
         </div>
     </div>
 
@@ -132,9 +81,9 @@
         <div class="header-title" style="text-align:center;"><h2>MENU SCANNER</h2></div>
         <div id="reader"></div>
         <div class="btn-group">
-            <button class="mode-btn kunjung" onclick="setMode('Kunjungan', this)">KUNJUNGAN</button>
-            <button class="mode-btn pinjam" onclick="setMode('Pinjam', this)">PINJAM</button>
-            <button class="mode-btn kembali" onclick="setMode('dikembalikan', this)">KEMBALI</button>
+            <button class="mode-btn" style="background:var(--success)" onclick="setMode('Kunjungan', this)">KUNJUNGAN</button>
+            <button class="mode-btn" style="background:var(--warning); color:black;" onclick="setMode('Pinjam', this)">PINJAM</button>
+            <button class="mode-btn" style="background:var(--danger)" onclick="setMode('dikembalikan', this)">KEMBALI</button>
         </div>
         <div id="status-bar">⚠️ PILIH MODE DAHULU</div>
     </div>
@@ -144,9 +93,7 @@
         <button class="download-btn" onclick="window.print()">📥 CETAK LAPORAN (PDF)</button>
         <div class="table-container">
             <table>
-                <thead>
-                    <tr><th>JAM</th><th>NAMA SISWA</th><th>STATUS</th></tr>
-                </thead>
+                <thead><tr><th>JAM</th><th>NAMA SISWA</th><th>STATUS</th></tr></thead>
                 <tbody id="tableBody"></tbody>
             </table>
         </div>
@@ -156,16 +103,22 @@
         const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbwygpq5H26qWHJFx74nHrrZVulQINLfO2HMmoDSq0tZdSL_cwZO71NXPz1yt7wI5KNWbA/exec";
         let currentMode = "";
         let isProcessing = false;
+        let refreshInterval;
 
         function checkLogin() {
             if (document.getElementById('passInput').value === "1234") { 
                 document.getElementById('login-container').style.display = "none";
                 document.getElementById('main-nav').style.display = "block";
                 switchPage('scan');
-                initScanner(); 
-                loadData();
-                setInterval(loadData, 6000); 
+                initScanner(); loadData();
+                refreshInterval = setInterval(loadData, 6000); 
             } else { alert("PIN Salah!"); }
+        }
+
+        function logout() {
+            if(confirm("Apakah Anda ingin keluar dari sistem?")) {
+                location.reload(); // Cara termudah untuk logout dan reset semua state
+            }
         }
 
         function switchPage(pageName) {
@@ -206,9 +159,8 @@
             fetch(URL_SCRIPT + "?action=read").then(res => res.json()).then(data => {
                 let rows = "";
                 data.forEach(item => { 
-                    let sClass = (item.status === 'Kunjungan') ? 'row-kunjung' : (item.status === 'Pinjam' ? 'row-pinjam' : 'row-kembali');
                     let jam = new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'});
-                    rows += `<tr class="${sClass}"><td>${jam}</td><td>${item.nama}</td><td>${item.status}</td></tr>`; 
+                    rows += `<tr><td>${jam}</td><td>${item.nama}</td><td>${item.status}</td></tr>`; 
                 });
                 document.getElementById('tableBody').innerHTML = rows;
             });
