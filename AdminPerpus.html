@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Sistem Terpadu SMPN 1 Cibingbin</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <style>
+        :root { --primary: #0d47a1; --success: #2e7d32; --warning: #f57c00; --danger: #d32f2f; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; padding: 20px; }
+        .container { max-width: 1100px; margin: auto; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        #reader { width: 100%; border-radius: 12px; overflow: hidden; background: #000; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background: var(--primary); color: white; }
+        .status-box { padding: 15px; border-radius: 8px; margin-top: 10px; display: none; }
+        .btn { padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; color: white; }
+        .bg-primary { background: var(--primary); }
+        .bg-success { background: var(--success); }
+        @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 style="text-align:center; color:var(--primary);">SISTEM KUNJUNGAN & PERPUS SMPN 1 CIBINGBIN</h2>
+
+    <div class="card">
+        <h4>1. Setup Database Siswa</h4>
+        <input type="file" id="uploadDb" accept=".xlsx, .xls">
+        <p id="dbStatus" style="color:red">Upload Excel untuk mengaktifkan scanner.</p>
+    </div>
+
+    <div class="grid">
+        <div>
+            <div class="card">
+                <h4>2. Area Scan Kartu</h4>
+                <div id="reader"></div>
+                <button class="btn bg-primary" style="width:100%; margin-top:10px;" onclick="manualStart()">Nyalakan Kamera</button>
+                
+                <div id="statusResult" class="status-box">
+                    <h3 id="resNama" style="margin:0"></h3>
+                    <p id="resKelas" style="margin:5px 0"></p>
+                    <hr>
+                    <p id="resStatus" style="font-weight:bold"></p>
+                    <div id="actionPinjam" style="display:none">
+                        <input type="text" id="judulBuku" placeholder="Judul Buku..." style="padding:8px; width:60px; flex-grow:1">
+                        <button class="btn bg-success" onclick="prosesPinjam()">Pinjam Buku</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="card">
+                <h4>3. Kunjungan Hari Ini</h4>
+                <table id="tableKunjungan">
+                    <thead>
+                        <tr><th>Waktu</th><th>Nama</th><th>Kelas</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h4>4. Data Peminjaman Aktif & Denda</h4>
+        <table id="tablePinjam">
+            <thead>
+                <tr><th>Nama</th><th>Buku</th><th>Status</th><th>Aksi</th></tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+let dbSiswa = JSON.parse(localStorage.getItem('db_perpus')) || [];
+let dataPinjam = JSON.parse(localStorage.getItem('data_pinjam')) || [];
+let dataKunjungan = [];
+let scanner = null;
+let currentSiswa = null;
+
+if(dbSiswa.length > 0) init();
+
+document.getElementById('uploadDb').addEventListener('change', function(e) {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        const data = new Uint8Array(event.target.result);
+        const workbook = XLSX.read(data, {type: 'array'});
+        dbSiswa = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+        localStorage.setItem('db_perpus', JSON.stringify(dbSiswa));
+        init();
+        alert("Database Berhasil Dimuat!");
+    };
+    reader.readAsArrayBuffer(e.target.files[0]);
+});
+
+function init() {
+    document.getElementById('dbStatus').innerText = "✅ Database Aktif: " + dbSiswa.length + " Siswa";
+    document.getElementById('dbStatus').style.color = "green";
+    renderTables();
+}
+
+function manualStart() {
+    if(!scanner) {
+        scanner = new Html5Qrcode("reader");
+        scanner.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (text) => {
+            handleScan(text);
+        }).catch(err => alert("Kamera Gagal: Gunakan HTTPS atau Firefox"));
+    }
+}
+
+function handleScan(nis) {
+    const siswa = dbSiswa.find(s => String(s.NIS || s.NISN) === String(nis));
+    if(!siswa) return;
+
+    currentSiswa = siswa;
+    const nama = siswa.Nama || siswa.NAMA;
+    const kelas = siswa.Kelas || siswa.KELAS;
+
+    // 1. Catat Kunjungan (Hanya jika belum ada di list kunjungan sesi ini)
+    const waktu = new Date().toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
+    dataKunjungan.unshift({ waktu, nama, kelas });
+    renderTables();
+
+    // 2. Cek Status Pinjaman
+    const pinjamanSiswa = dataPinjam.find(p => String(p.nis) === String(nis));
+    const resBox = document.getElementById('statusResult');
+    resBox.style.display = "block";
+    document.getElementById('resNama').innerText = nama;
+    document.getElementById('resKelas').innerText = "Kelas: " + kelas;
+
+    if(pinjamanSiswa) {
+        resBox.style.background = "#fff3e0"; // Oranye
+        document.getElementById('resStatus').innerHTML = "⚠️ SEDANG PINJAM: <br>" + pinjamanSiswa.buku;
+        document.getElementById('resStatus').style.color = "var(--warning)";
+        document.getElementById('actionPinjam').style.display = "none";
+    } else {
+        resBox.style.background = "#e8f5e9"; // Hijau
+        document.getElementById('resStatus').innerText = "✅ BELUM PERNAH PINJAM / BERSIH";
+        document.getElementById('resStatus').style.color = "var(--success)";
+        document.getElementById('actionPinjam').style.display = "flex";
+    }
+    new Audio('https://www.soundjay.com/buttons/beep-07a.mp3').play();
+}
+
+function prosesPinjam() {
+    const buku = document.getElementById('judulBuku').value;
+    if(!buku) return alert("Isi judul buku!");
+    
+    dataPinjam.push({
+        id: Date.now(),
+        nis: currentSiswa.NIS || currentSiswa.NISN,
+        nama: currentSiswa.Nama || currentSiswa.NAMA,
+        buku: buku,
+        tgl: new Date().toISOString()
+    });
+    
+    localStorage.setItem('data_pinjam', JSON.stringify(dataPinjam));
+    document.getElementById('judulBuku').value = "";
+    document.getElementById('statusResult').style.display = "none";
+    renderTables();
+}
+
+function renderTables() {
+    // Render Kunjungan
+    const kBody = document.querySelector("#tableKunjungan tbody");
+    kBody.innerHTML = dataKunjungan.map(k => `<tr><td>${k.waktu}</td><td>${k.nama}</td><td>${k.kelas}</td></tr>`).join('');
+
+    // Render Pinjam
+    const pBody = document.querySelector("#tablePinjam tbody");
+    pBody.innerHTML = dataPinjam.map(p => `
+        <tr>
+            <td>${p.nama}</td>
+            <td>${p.buku}</td>
+            <td><span style="color:red">Aktif</span></td>
+            <td><button onclick="kembali(${p.id})">Kembalikan</button></td>
+        </tr>
+    `).join('');
+}
+
+function kembali(id) {
+    if(confirm("Buku sudah dikembalikan?")) {
+        dataPinjam = dataPinjam.filter(p => p.id !== id);
+        localStorage.setItem('data_pinjam', JSON.stringify(dataPinjam));
+        renderTables();
+    }
+}
+</script>
+</body>
+</html>
