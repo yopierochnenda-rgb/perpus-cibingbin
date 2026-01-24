@@ -13,7 +13,7 @@
         .btn-group { margin: 20px 0; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
         button { padding: 12px 15px; font-size: 14px; cursor: pointer; border: none; border-radius: 8px; color: white; font-weight: bold; transition: 0.3s; }
         .btn-login { background-color: #2c3e50; width: 100%; margin-top: 15px; }
-        .pinjam { background-color: #3498db; }
+        .pinjam { background-color: #f1c40f; color: black; }
         .kembali { background-color: #e74c3c; }
         .kunjung { background-color: #27ae60; }
         #status { margin: 15px; padding: 12px; border-radius: 8px; font-weight: bold; background: #ecf0f1; border: 1px solid #bdc3c7; }
@@ -27,32 +27,25 @@
 <body>
 
     <div id="login-box">
-        <h1 style="color: #2c3e50; margin-bottom: 5px;">E-PERPUS</h1>
-        <p style="color: #7f8c8d;">Login Khusus Petugas</p>
-        <input type="password" id="passInput" placeholder="Masukkan Password">
+        <h1 style="color: #2c3e50;">E-PERPUS</h1>
+        <p>Login Petugas</p>
+        <input type="password" id="passInput" placeholder="Password: 1234">
         <button class="btn-login" onclick="checkLogin()">MASUK</button>
     </div>
 
     <div id="scanner-ui">
         <h2 style="color: #2c3e50;">SCANNER E-PERPUS</h2>
         <div id="reader"></div>
-
         <div class="btn-group">
             <button class="pinjam" onclick="setMode('Pinjam')">PINJAM</button>
-            <button class="kembali" onclick="setMode('Kembali')">KEMBALI</button>
+            <button class="kembali" onclick="setMode('dikembalikan')">KEMBALI</button>
             <button class="kunjung" onclick="setMode('Kunjungan')">KUNJUNGAN</button>
         </div>
-
         <div id="status">Pilih mode (Pinjam/Kembali/Kunjungan)</div>
-
         <div style="overflow-x:auto;">
             <table>
                 <thead>
-                    <tr>
-                        <th>Nama</th>
-                        <th>NIS</th>
-                        <th>Status</th>
-                    </tr>
+                    <tr><th>Nama</th><th>NIS</th><th>Status</th></tr>
                 </thead>
                 <tbody id="tableBody"></tbody>
             </table>
@@ -60,43 +53,27 @@
     </div>
 
     <script>
-        // URL SCRIPT ANDA
-        const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbzRS51AaCtyefrqMle1c7EOeXbGA0xXYlVevsagjhbpzAA4aukC6XAj709yf5jY2io8/exec";
-        
+        const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbwygpq5H26qWHJFx74nHrrZVulQINLfO2HMmoDSq0tZdSL_cwZO71NXPz1yt7wI5KNWbA/exec";
         let currentMode = "";
         let isProcessing = false;
 
         function checkLogin() {
-            const pass = document.getElementById('passInput').value;
-            if (pass === "1234") { 
+            if (document.getElementById('passInput').value === "1234") { 
                 document.getElementById('login-box').style.display = "none";
                 document.getElementById('scanner-ui').style.display = "block";
-                initScanner();
-                loadData();
-            } else {
-                alert("Password Salah!");
-            }
+                initScanner(); loadData();
+            } else { alert("Salah!"); }
         }
 
         function setMode(mode) {
             currentMode = mode;
-            const statusDiv = document.getElementById('status');
-            statusDiv.innerHTML = "Mode: <span style='color:#2980b9'>" + mode + "</span>. Siap Scan.";
-            statusDiv.classList.remove("success");
+            document.getElementById('status').innerHTML = "Mode: " + mode;
         }
 
         function onScanSuccess(decodedText) {
-            if (!currentMode) {
-                alert("Pilih mode dulu!");
-                return;
-            }
-            if (isProcessing) return; 
-
+            if (!currentMode || isProcessing) return;
             isProcessing = true;
-            const statusDiv = document.getElementById('status');
-            statusDiv.innerHTML = "⏳ Memproses NIS: " + decodedText + "...";
-
-            // Bunyi Beep
+            document.getElementById('status').innerHTML = "⏳ Memproses...";
             new Audio('https://www.soundjay.com/button/beep-07.wav').play();
 
             fetch(URL_SCRIPT, {
@@ -105,19 +82,11 @@
             })
             .then(res => res.json())
             .then(data => {
-                statusDiv.innerHTML = "✅ Berhasil: " + data.nama;
-                statusDiv.classList.add("success");
-                loadData(); 
-            })
-            .catch(err => {
-                statusDiv.innerHTML = "❌ Gagal. Pastikan Apps Script sudah New Version.";
+                document.getElementById('status').innerHTML = "✅ Berhasil: " + data.nama;
+                loadData();
             })
             .finally(() => {
-                // DELAY 3 DETIK AGAR TIDAK DOUBLE SCAN
-                setTimeout(() => {
-                    isProcessing = false;
-                    statusDiv.innerHTML = "Mode: " + currentMode + ". Siap scan lagi.";
-                }, 3000);
+                setTimeout(() => { isProcessing = false; document.getElementById('status').innerHTML = "Siap scan lagi."; }, 3000);
             });
         }
 
@@ -131,10 +100,8 @@
             .then(res => res.json())
             .then(data => {
                 let rows = "";
-                data.forEach(item => {
-                    rows += `<tr><td>${item.nama}</td><td>${item.nis}</td><td>${item.status}</td></tr>`;
-                });
-                document.getElementById('tableBody').innerHTML = rows || "<tr><td colspan='3' style='text-align:center'>Tidak ada data hari ini</td></tr>";
+                data.forEach(item => { rows += `<tr><td>${item.nama}</td><td>${item.nis}</td><td>${item.status}</td></tr>`; });
+                document.getElementById('tableBody').innerHTML = rows;
             });
         }
     </script>
