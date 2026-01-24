@@ -11,147 +11,153 @@
             --success: #2e7d32;
             --warning: #f57c00;
             --danger: #d32f2f;
-            --dot-color: rgba(13, 71, 161, 0.05);
         }
 
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f0f2f5; margin: 0; padding: 0; }
+        
+        /* --- STYLING LOGIN --- */
+        #loginOverlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--primary-blue); display: flex; align-items: center;
+            justify-content: center; z-index: 9999;
+        }
+        .login-box {
+            background: white; padding: 30px; border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; width: 300px;
+        }
+        .login-box img { width: 80px; margin-bottom: 15px; }
+        .login-box input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+
+        /* --- UI DASHBOARD --- */
         .navbar { background: var(--primary-blue); padding: 10px; display: flex; gap: 10px; position: sticky; top: 0; z-index: 1000; }
         .nav-btn { padding: 10px 20px; border: none; background: rgba(255,255,255,0.1); color: white; border-radius: 6px; cursor: pointer; font-weight: bold; }
         .nav-btn.active { background: white; color: var(--primary-blue); }
 
-        .container { padding: 20px; max-width: 1200px; margin: auto; }
+        .container { padding: 20px; max-width: 1200px; margin: auto; display: none; } /* Tersembunyi sebelum login */
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
         .card-ui { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        
         #reader { width: 100%; border-radius: 12px; overflow: hidden; background: #000; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
         th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
         th { background: var(--primary-blue); color: white; }
-        
-        .status-box { padding: 15px; border-radius: 8px; margin-top: 10px; display: none; border-left: 5px solid; }
-        .btn { padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; color: white; transition: 0.3s; margin: 2px; }
-        .btn:hover { opacity: 0.8; }
-        
-        input, select { padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px; }
+        .btn { padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; color: white; }
 
-        /* KARTU */
-        #cardContainer { display: grid; grid-template-columns: repeat(2, 85.6mm); gap: 10mm; justify-content: center; padding: 10mm; }
-        .id-card { width: 85.6mm; height: 53.98mm; background: #fff; border-radius: 3mm; border: 0.2mm solid #000; position: relative; overflow: hidden; box-sizing: border-box; display: flex; flex-direction: column; }
+        /* --- STYLING KARTU PRESISI --- */
+        #cardContainer { display: grid; grid-template-columns: repeat(2, 85.6mm); gap: 5mm; justify-content: center; padding: 10mm; }
+        .id-card-base { 
+            width: 85.6mm !important; height: 53.98mm !important; 
+            background: #fff; border: 0.2mm solid #000; border-radius: 3mm; 
+            position: relative; overflow: hidden; box-sizing: border-box; 
+            display: flex; flex-direction: column; margin-bottom: 5mm;
+        }
         .blue-top-line { height: 1.5mm; background: var(--primary-blue); width: 100%; }
-        .card-header { height: 14mm; display: flex; align-items: center; justify-content: space-between; padding: 0 3mm; background: white; }
+        .card-header { height: 14mm; display: flex; align-items: center; justify-content: space-between; padding: 0 3mm; }
         .logo-side { height: 9mm; width: auto; }
         .logo-center-img { height: 12mm; width: auto; max-width: 60%; object-fit: contain; }
-        .separator-line { height: 0.5mm; background: var(--primary-blue); width: 92%; margin: 0 auto; }
-        .card-title h1 { text-align: center; margin: 1mm 0; font-size: 8.5pt; color: var(--primary-blue); font-weight: 800; text-transform: uppercase; }
+        .separator-line { height: 0.4mm; background: var(--primary-blue); width: 92%; margin: 0 auto; }
+        .card-title h1 { text-align: center; margin: 1mm 0; font-size: 8pt; color: var(--primary-blue); font-weight: 800; }
         .card-body { padding: 1mm 4mm; display: flex; justify-content: space-between; align-items: center; flex-grow: 1; }
-        .info-table { font-size: 7pt; width: 75%; border: none; }
-        .info-table td { border: none; padding: 2px; }
-        .qr-wrapper { width: 16mm; height: 16mm; border: 0.1mm solid #eee; }
-        .qr-code-img { width: 100%; height: 100%; }
+        .info-table { font-size: 7pt; width: 75%; border: none; border-collapse: collapse; }
+        .info-table td { border: none !important; padding: 1px 0; }
+        .qr-wrapper { width: 16mm; height: 16mm; border: 0.1mm solid #eee; padding: 1mm; }
+        .back-content { padding: 0 4mm 3mm 4mm; display: flex; flex-direction: column; height: 100%; box-sizing: border-box; }
+        .back-header { text-align: center; font-weight: 800; color: var(--primary-blue); font-size: 8.5pt; border-bottom: 0.5mm solid var(--primary-blue); margin: 2mm 0; }
+        .rules-list { font-size: 6.5pt; line-height: 1.2; padding-left: 4mm; }
+        .staff-section { text-align: center; font-size: 7pt; margin-top: auto; padding-bottom: 2mm; }
+        .quote-box { background: var(--primary-blue); color: white; text-align: center; font-size: 7pt; padding: 1.5mm; border-radius: 1mm; font-weight: bold; }
 
         @media print {
             @page { size: A4; margin: 0; }
-            .navbar, .no-print, #dashboard { display: none !important; }
-            #cardContainer { display: grid !important; grid-template-columns: repeat(2, 85.6mm); gap: 5mm; padding: 10mm; }
-            .id-card { -webkit-print-color-adjust: exact; page-break-inside: avoid; }
+            .navbar, .no-print, #dashboard, #loginOverlay { display: none !important; }
+            #cardContainer { display: grid !important; grid-template-columns: repeat(2, 85.6mm) !important; gap: 5mm !important; }
+            .id-card-base { -webkit-print-color-adjust: exact; page-break-inside: avoid; border: 0.2mm solid #000 !important; }
         }
     </style>
 </head>
 <body>
 
-<div class="navbar no-print">
-    <button class="nav-btn active" onclick="openTab('dashboard')">🏠 Dashboard</button>
-    <button class="nav-btn" onclick="openTab('cetak')">🖨️ Cetak Kartu</button>
+<div id="loginOverlay">
+    <div class="login-box">
+        <img src="https://cdn-icons-png.flaticon.com/512/3389/3389081.png" alt="Logo">
+        <h3>Login Petugas</h3>
+        <input type="password" id="passInput" placeholder="Masukkan Password">
+        <button class="btn" style="background:var(--primary-blue); width:100%" onclick="checkLogin()">MASUK</button>
+        <p id="loginError" style="color:red; font-size:12px; display:none; margin-top:10px;">Password Salah!</p>
+    </div>
 </div>
 
-<div class="container">
-    <div id="dashboard" class="tab-content active">
-        
-        <div class="grid">
-            <div>
+<div id="mainApp" style="display:none;">
+    <div class="navbar no-print">
+        <button class="nav-btn active" onclick="openTab('dashboard')">🏠 Dashboard</button>
+        <button class="nav-btn" onclick="openTab('cetak')">🖨️ Cetak Kartu</button>
+        <button class="nav-btn" style="margin-left:auto; background:var(--danger)" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="container" style="display:block;">
+        <div id="dashboard" class="tab-content active">
+            <div class="grid">
                 <div class="card-ui">
-                    <h3>➕ Tambah Siswa Baru</h3>
-                    <div style="display: flex; flex-direction: column;">
-                        <input type="text" id="inNama" placeholder="Nama Lengkap">
-                        <input type="text" id="inNIS" placeholder="NIS/NISN">
-                        <input type="text" id="inKelas" placeholder="Kelas (Contoh: 7A)">
-                        <select id="inJK">
-                            <option value="L">Laki-laki</option>
-                            <option value="P">Perempuan</option>
-                        </select>
-                        <button class="btn" style="background:var(--primary-blue)" onclick="tambahSiswaManual()">Simpan Data</button>
-                    </div>
-                </div>
-                
-                <div class="card-ui">
-                    <h3>📥 Import Database (Excel)</h3>
+                    <h3>➕ Tambah Siswa</h3>
+                    <input type="text" id="inNama" placeholder="Nama Lengkap">
+                    <input type="text" id="inNIS" placeholder="NIS/NISN">
+                    <input type="text" id="inKelas" placeholder="Kelas">
+                    <button class="btn" style="background:var(--primary-blue); width:100%" onclick="tambahSiswaManual()">Simpan</button>
+                    <hr>
                     <input type="file" id="uploadDb" accept=".xlsx, .xls">
-                    <p id="dbStatus" style="font-size:12px; color:gray;">Gunakan Excel jika data siswa banyak.</p>
+                </div>
+                <div class="card-ui">
+                    <h3>📷 Scanner</h3>
+                    <div id="reader"></div>
+                    <button class="btn" style="background:var(--primary-blue); width:100%; margin-top:10px;" onclick="startScanner()">Aktifkan Kamera</button>
                 </div>
             </div>
 
             <div class="card-ui">
-                <h3>📷 Scanner Kunjungan</h3>
-                <div id="reader"></div>
-                <button class="btn" style="background:var(--primary-blue); width:100%; margin-top:10px;" onclick="startScanner()">Nyalakan Scanner</button>
-                <div id="statusResult" class="status-box">
-                    <h3 id="resNama" style="margin:0"></h3>
-                    <p id="resKelas" style="margin:5px 0"></p>
-                    <hr>
-                    <p id="resStatus" style="font-weight:bold"></p>
-                    <div id="actionPinjam" style="display:none; gap:10px; margin-top:10px;">
-                        <input type="text" id="judulBuku" placeholder="Judul Buku..." style="flex-grow:1; margin-bottom:0">
-                        <button class="btn" style="background:var(--success)" onclick="simpanPinjam()">Pinjam</button>
-                    </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <h3>📊 Laporan Kunjungan</h3>
+                    <button class="btn" style="background:var(--success)" onclick="exportLaporan()">Download Excel</button>
                 </div>
+                <table id="tableKunjungan">
+                    <thead><tr><th>Waktu</th><th>Nama</th><th>Kelas</th></tr></thead>
+                    <tbody></tbody>
+                </table>
             </div>
         </div>
 
-        <div class="card-ui">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h3>📊 Laporan Kunjungan Hari Ini</h3>
-                <div>
-                    <button class="btn" style="background:var(--success)" onclick="exportLaporan()">📥 Download Excel</button>
-                    <button class="btn" style="background:var(--danger)" onclick="resetKunjungan()">🗑️ Hapus Semua Riwayat</button>
-                </div>
+        <div id="cetak" class="tab-content">
+            <div class="card-ui no-print" style="text-align:center;">
+                <button class="btn" style="background:var(--warning); color:black;" onclick="window.print()">PRINT KARTU (A4)</button>
             </div>
-            <table id="tableKunjungan">
-                <thead>
-                    <tr>
-                        <th>Waktu</th>
-                        <th>Nama Siswa</th>
-                        <th>Kelas</th>
-                        <th>Status Saat Datang</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div id="cardContainer"></div>
         </div>
-    </div>
-
-    <div id="cetak" class="tab-content">
-        <div class="card-ui no-print" style="text-align:center;">
-            <button class="btn" style="background:var(--warning); color:black;" onclick="window.print()">PROSES CETAK SEMUA KARTU</button>
-            <p style="font-size:12px;">*Pastikan Background Graphics dicentang di setelan print browser.</p>
-        </div>
-        <div id="cardContainer"></div>
     </div>
 </div>
 
 <script>
-// Data Management
-let dbSiswa = JSON.parse(localStorage.getItem('db_perpus')) || [];
-let dataPinjam = JSON.parse(localStorage.getItem('data_pinjam')) || [];
-let dataKunjungan = JSON.parse(localStorage.getItem('riwayat_kunjungan')) || [];
-let html5QrCode = null;
-let currentSiswa = null;
-
+// --- CONFIGURASI ---
+const MASTER_PASS = "admin123"; // GANTI PASSWORD DI SINI
 const logoHeader = "sekolah.jpg"; 
 const logoKiri = "https://i.postimg.cc/zvwCjX6D/Desain-tanpa-judul.png"; 
 const logoKanan = "https://cdn-icons-png.flaticon.com/512/3389/3389081.png";
+
+let dbSiswa = JSON.parse(localStorage.getItem('db_perpus')) || [];
+let dataKunjungan = JSON.parse(localStorage.getItem('riwayat_kunjungan')) || [];
+
+function checkLogin() {
+    const input = document.getElementById('passInput').value;
+    if(input === MASTER_PASS) {
+        document.getElementById('loginOverlay').style.display = 'none';
+        document.getElementById('mainApp').style.display = 'block';
+        initApp();
+    } else {
+        document.getElementById('loginError').style.display = 'block';
+    }
+}
+
+function logout() { location.reload(); }
 
 function openTab(id) {
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
@@ -160,121 +166,69 @@ function openTab(id) {
     event.currentTarget.classList.add('active');
 }
 
-// Logic Siswa
 function tambahSiswaManual() {
     const nama = document.getElementById('inNama').value;
     const nis = document.getElementById('inNIS').value;
     const kelas = document.getElementById('inKelas').value;
-    const jk = document.getElementById('inJK').value;
-    if(!nama || !nis) return alert("Nama dan NIS wajib diisi!");
-    dbSiswa.push({ Nama: nama, NIS: nis, Kelas: kelas, JK: jk });
+    if(!nama || !nis) return alert("Lengkapi data!");
+    dbSiswa.push({ Nama: nama, NIS: nis, Kelas: kelas });
     localStorage.setItem('db_perpus', JSON.stringify(dbSiswa));
-    alert("Berhasil disimpan!");
+    alert("Tersimpan!");
     initApp();
 }
 
 document.getElementById('uploadDb').addEventListener('change', function(e) {
     const reader = new FileReader();
-    reader.onload = (event) => {
-        const data = new Uint8Array(event.target.result);
-        const workbook = XLSX.read(data, {type: 'array'});
-        const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
-        dbSiswa = [...dbSiswa, ...sheetData];
+    reader.onload = (ev) => {
+        const data = new Uint8Array(ev.target.result);
+        const wb = XLSX.read(data, {type: 'array'});
+        dbSiswa = [...dbSiswa, ...XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]])];
         localStorage.setItem('db_perpus', JSON.stringify(dbSiswa));
         initApp();
     };
     reader.readAsArrayBuffer(e.target.files[0]);
 });
 
-function initApp() {
-    document.getElementById('dbStatus').innerText = "✅ Total: " + dbSiswa.length + " Siswa Terdaftar";
-    generateCards();
-    renderTables();
-}
-
-// Logic Scanner
 function startScanner() {
-    if(!html5QrCode) {
-        html5QrCode = new Html5Qrcode("reader");
-        html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (text) => handleScan(text));
-    }
-}
-
-function handleScan(nis) {
-    const siswa = dbSiswa.find(s => String(s.NIS || s.NISN || s.nis).trim() === String(nis).trim());
-    if(!siswa) return;
-    currentSiswa = siswa;
-    
-    const waktu = new Date().toLocaleString('id-ID', {day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'});
-    const pinjaman = dataPinjam.find(p => String(p.nis) === String(nis));
-    
-    dataKunjungan.unshift({ 
-        Waktu: waktu, 
-        Nama: (siswa.Nama || siswa.NAMA), 
-        Kelas: (siswa.Kelas || siswa.KELAS), 
-        Status: pinjaman ? 'Sedang Meminjam' : 'Bersih' 
+    const html5QrCode = new Html5Qrcode("reader");
+    html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (text) => {
+        const s = dbSiswa.find(x => String(x.NIS || x.NISN).trim() === String(text).trim());
+        if(s) {
+            const waktu = new Date().toLocaleString();
+            dataKunjungan.unshift({ Waktu: waktu, Nama: s.Nama, Kelas: s.Kelas });
+            localStorage.setItem('riwayat_kunjungan', JSON.stringify(dataKunjungan));
+            renderTables();
+            new Audio('https://www.soundjay.com/buttons/beep-07a.mp3').play();
+        }
     });
-    localStorage.setItem('riwayat_kunjungan', JSON.stringify(dataKunjungan));
-    
-    const resBox = document.getElementById('statusResult');
-    resBox.style.display = "block";
-    document.getElementById('resNama').innerText = siswa.Nama || siswa.NAMA;
-    document.getElementById('resKelas').innerText = "Kelas: " + (siswa.Kelas || siswa.KELAS);
-
-    if(pinjaman) {
-        resBox.style.borderColor = "var(--warning)";
-        document.getElementById('resStatus').innerHTML = "⚠️ STATUS: PINJAM BUKU (" + pinjaman.buku + ")";
-        document.getElementById('actionPinjam').style.display = "none";
-    } else {
-        resBox.style.borderColor = "var(--success)";
-        document.getElementById('resStatus').innerText = "✅ STATUS: BERSIH / SIAP PINJAM";
-        document.getElementById('actionPinjam').style.display = "flex";
-    }
-    new Audio('https://www.soundjay.com/buttons/beep-07a.mp3').play();
-    renderTables();
-}
-
-function simpanPinjam() {
-    const buku = document.getElementById('judulBuku').value;
-    if(!buku) return alert("Isi judul buku!");
-    dataPinjam.push({ nis: currentSiswa.NIS || currentSiswa.NISN, buku: buku });
-    localStorage.setItem('data_pinjam', JSON.stringify(dataPinjam));
-    document.getElementById('statusResult').style.display = "none";
-    renderTables();
 }
 
 function renderTables() {
-    const tbody = document.querySelector("#tableKunjungan tbody");
-    tbody.innerHTML = dataKunjungan.map(k => `
-        <tr><td>${k.Waktu}</td><td>${k.Nama}</td><td>${k.Kelas}</td><td>${k.Status}</td></tr>
+    document.querySelector("#tableKunjungan tbody").innerHTML = dataKunjungan.map(k => `
+        <tr><td>${k.Waktu}</td><td>${k.Nama}</td><td>${k.Kelas}</td></tr>
     `).join('');
 }
 
-// Logic Reports
 function exportLaporan() {
-    if(dataKunjungan.length === 0) return alert("Belum ada data kunjungan untuk didownload.");
-    const worksheet = XLSX.utils.json_to_sheet(dataKunjungan);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Laporan");
-    XLSX.writeFile(workbook, `Laporan_Perpus_${new Date().toLocaleDateString()}.xlsx`);
+    const ws = XLSX.utils.json_to_sheet(dataKunjungan);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Laporan");
+    XLSX.writeFile(wb, "Laporan_Kunjungan.xlsx");
 }
 
-function resetKunjungan() {
-    if(confirm("Hapus semua riwayat kunjungan hari ini?")) {
-        dataKunjungan = [];
-        localStorage.setItem('riwayat_kunjungan', JSON.stringify([]));
-        renderTables();
-    }
+function initApp() {
+    generateCards();
+    renderTables();
 }
 
 function generateCards() {
     const container = document.getElementById('cardContainer');
     container.innerHTML = "";
     dbSiswa.forEach(row => {
-        const nis = row['NIS'] || row['NISN'] || '000';
-        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${nis}`;
+        const nis = row.NIS || row.NISN || "000";
+        const qr = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${nis}`;
         container.innerHTML += `
-            <div class="id-card">
+            <div class="id-card-base">
                 <div class="blue-top-line"></div>
                 <div class="card-header">
                     <img src="${logoKiri}" class="logo-side">
@@ -285,32 +239,33 @@ function generateCards() {
                 <div class="card-title"><h1>KARTU ANGGOTA PERPUSTAKAAN</h1></div>
                 <div class="card-body">
                     <table class="info-table">
-                        <tr><td>Nama</td><td>:</td><td><b>${row.Nama || row.NAMA}</b></td></tr>
-                        <tr><td>NIS</td><td>:</td><td><b>${nis}</b></td></tr>
-                        <tr><td>Kelas</td><td>:</td><td><b>${row.Kelas || row.KELAS}</b></td></tr>
+                        <tr><td width="50">Nama</td><td>: <b>${row.Nama || row.NAMA}</b></td></tr>
+                        <tr><td>NIS</td><td>: <b>${nis}</b></td></tr>
+                        <tr><td>Kelas</td><td>: <b>${row.Kelas || row.KELAS}</b></td></tr>
                     </table>
-                    <div class="qr-wrapper"><img src="${qrUrl}" class="qr-code-img"></div>
+                    <div class="qr-wrapper"><img src="${qr}" style="width:100%"></div>
                 </div>
             </div>
-            <div class="id-card">
+            <div class="id-card-base">
                 <div class="blue-top-line"></div>
                 <div class="back-content">
-                    <div class="back-header">TATA TERTIB</div>
+                    <div class="back-header">TATA TERTIB PERPUSTAKAAN</div>
                     <ul class="rules-list">
                         <li>Kartu wajib dibawa setiap kunjungan.</li>
-                        <li>Peminjaman maksimal 1 minggu.</li>
+                        <li>Peminjaman maksimal 2 buku / 1 minggu.</li>
+                        <li>Dilarang merusak atau mencoret buku.</li>
+                        <li>Keterlambatan dikenakan denda.</li>
                         <li>Menjaga ketenangan di perpustakaan.</li>
                     </ul>
                     <div class="staff-section">
-                        <div style="font-weight:bold; margin-bottom:5mm;">Petugas Perpustakaan</div>
-                        <div>( ........................................ )</div>
+                        <b>Petugas Perpustakaan</b><br><br>
+                        ( ........................................ )
                     </div>
                     <div class="quote-box">"MEMBACA ADALAH JENDELA DUNIA"</div>
                 </div>
             </div>`;
     });
 }
-initApp();
 </script>
 </body>
 </html>
