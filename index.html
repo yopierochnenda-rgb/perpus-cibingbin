@@ -3,114 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Perpus SMPN 1 Cibingbin</title>
+    <title>Scanner Perpustakaan Digital</title>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
-        body { font-family: sans-serif; text-align: center; margin: 20px; background: #f0f2f5; }
-        #reader { width: 100%; max-width: 500px; margin: auto; background: white; padding: 10px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .buttons { margin: 20px 0; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
-        button { padding: 12px 20px; cursor: pointer; border: none; border-radius: 5px; font-weight: bold; transition: 0.3s; }
-        .btn-hadir { background: #007bff; color: white; }
-        .btn-pinjam { background: #ffc107; color: black; }
-        .btn-kembali { background: #28a745; color: white; }
-        button.active { outline: 4px solid #333; transform: scale(1.05); }
-        #status-msg { margin: 15px; padding: 10px; font-weight: bold; }
-        .monitor-section { margin-top: 30px; background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 600px; margin-inline: auto; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-        th { background: #f8f9fa; }
-        .loading { color: #888; font-style: italic; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; margin: 20px; background-color: #f4f4f9; }
+        #reader { width: 100%; max-width: 500px; margin: auto; border: 5px solid #333; border-radius: 10px; overflow: hidden; }
+        .buttons { margin: 20px 0; display: flex; justify-content: center; gap: 10px; }
+        button { padding: 15px 25px; font-size: 16px; cursor: pointer; border: none; border-radius: 5px; transition: 0.3s; color: white; font-weight: bold; }
+        .btn-pinjam { background-color: #2196F3; }
+        .btn-kembali { background-color: #f44336; }
+        .btn-kunjungan { background-color: #4CAF50; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        #status { margin-top: 20px; font-weight: bold; padding: 10px; border-radius: 5px; display: inline-block; }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        table { width: 100%; max-width: 600px; margin: 20px auto; border-collapse: collapse; background: white; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #333; color: white; }
     </style>
 </head>
 <body>
 
-    <h2>📚 Perpus SMPN 1 Cibingbin</h2>
+    <h2>Scanner Perpustakaan Digital</h2>
     
+    <div id="reader"></div>
+
     <div class="buttons">
-        <button id="btn-hadir" class="btn-hadir" onclick="setStatus('Kunjungan')">KUNJUNGAN</button>
         <button id="btn-pinjam" class="btn-pinjam" onclick="setStatus('Pinjam')">PINJAM</button>
         <button id="btn-kembali" class="btn-kembali" onclick="setStatus('Kembali')">KEMBALI</button>
+        <button id="btn-kunjungan" class="btn-kunjungan" onclick="setStatus('Kunjungan')">KUNJUNGAN</button>
     </div>
 
-    <div id="reader"></div>
-    <div id="status-msg">Silakan pilih mode (Kunjungan/Pinjam/Kembali)</div>
+    <div id="status">Pilih mode lalu scan kartu</div>
 
-    <div class="monitor-section">
-        <h3>📊 Daftar Belum Kembali</h3>
-        <table id="peminjaman-table">
-            <thead>
-                <tr>
-                    <th>Nama</th>
-                    <th>Kelas</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody id="peminjaman-body">
-                <tr><td colspan="3" class="loading">Memuat data...</td></tr>
+    <h3>Daftar Belum Kembali / Kunjungan Hari Ini</h3>
+    <table id="dataTable">
+        <thead>
+            <tr>
+                <th>Nama</th>
+                <th>NIS</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
             </tbody>
-        </table>
-    </div>
+    </table>
 
     <script>
+        // GANTI URL DI BAWAH INI DENGAN URL APPS SCRIPT ANDA YANG BARU (/exec)
         const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbz3AryEjqVcnPdwMseCci2sgdUdNWJ3jPXXSvmPSUISZADK9S9gYcPF7ARdOnRFn3Dr/exec";
+        
         let currentStatus = "";
+        let isProcessing = false; // Kunci Delay
 
         function setStatus(status) {
             currentStatus = status;
-            document.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
-            if(status === 'Kunjungan') document.getElementById('btn-hadir').classList.add('active');
-            if(status === 'Pinjam') document.getElementById('btn-pinjam').classList.add('active');
-            if(status === 'Kembali') document.getElementById('btn-kembali').classList.add('active');
-            document.getElementById('status-msg').innerText = "Mode: " + status + " | Siap Scan...";
+            document.getElementById('status').innerHTML = "Mode: <b>" + status + "</b>. Silahkan Scan Kartu.";
+            document.getElementById('status').className = "";
         }
 
-        function onScanSuccess(decodedText) {
+        function onScanSuccess(decodedText, decodedResult) {
             if (!currentStatus) {
-                alert("Pilih mode (Kunjungan/Pinjam/Kembali) dulu!");
+                alert("Pilih mode (Pinjam/Kembali/Kunjungan) terlebih dahulu!");
                 return;
             }
 
-            document.getElementById('status-msg').innerText = "Mengirim data...";
+            if (isProcessing) return; // ABAIKAN JIKA SEDANG DELAY
+
+            isProcessing = true; // AKTIFKAN DELAY
             
+            const statusDiv = document.getElementById('status');
+            statusDiv.innerHTML = "⏳ Sedang memproses data...";
+            
+            // Suara Beep
+            var audio = new Audio('https://www.soundjay.com/button/beep-07.wav');
+            audio.play();
+
             fetch(URL_SCRIPT, {
                 method: "POST",
-                body: JSON.stringify({ id: decodedText, status: currentStatus }),
+                body: JSON.stringify({ id: decodedText, status: currentStatus })
             })
             .then(res => res.json())
             .then(data => {
-                document.getElementById('status-msg').innerText = "✅ Berhasil: " + data.nama + " (" + currentStatus + ")";
-                refreshMonitor(); // Update tabel setelah scan
+                if (data.result === "success") {
+                    statusDiv.innerHTML = "✅ Berhasil: " + data.nama + " (" + currentStatus + ")";
+                    statusDiv.className = "success";
+                    loadData(); // Update tabel
+                } else {
+                    statusDiv.innerHTML = "❌ Gagal mengirim data.";
+                    statusDiv.className = "error";
+                }
             })
             .catch(err => {
-                document.getElementById('status-msg').innerText = "❌ Gagal mengirim data.";
-                console.error(err);
+                statusDiv.innerHTML = "❌ Error Koneksi.";
+                statusDiv.className = "error";
+            })
+            .finally(() => {
+                // TUNGGU 3 DETIK SEBELUM BISA SCAN LAGI
+                setTimeout(() => {
+                    isProcessing = false;
+                    if (currentStatus) {
+                        statusDiv.innerHTML = "Mode: <b>" + currentStatus + "</b>. Scanner Siap Kembali.";
+                    }
+                }, 3000); 
             });
         }
 
-        // FUNGSI UNTUK MENAMPILKAN DATA DI MONITOR
-        function refreshMonitor() {
+        function loadData() {
             fetch(URL_SCRIPT + "?action=read")
             .then(res => res.json())
             .then(data => {
-                const body = document.getElementById('peminjaman-body');
-                body.innerHTML = "";
-                const dipinjam = data.filter(item => item.status === "Pinjam");
-                
-                if (dipinjam.length === 0) {
-                    body.innerHTML = "<tr><td colspan='3'>Semua buku sudah kembali</td></tr>";
-                } else {
-                    dipinjam.forEach(item => {
-                        body.innerHTML += `<tr><td>${item.nama}</td><td>${item.kelas}</td><td style='color:orange'>Pinjam</td></tr>`;
-                    });
-                }
+                let html = "";
+                data.forEach(row => {
+                    html += `<tr><td>${row.nama}</td><td>${row.nis}</td><td>${row.status}</td></tr>`;
+                });
+                document.getElementById('tableBody').innerHTML = html || "<tr><td colspan='3'>Tidak ada data hari ini</td></tr>";
             });
         }
 
         let html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
         html5QrcodeScanner.render(onScanSuccess);
-        
-        // Jalankan monitor saat halaman dibuka
-        refreshMonitor();
+
+        // Load data saat halaman dibuka
+        loadData();
     </script>
 </body>
 </html>
