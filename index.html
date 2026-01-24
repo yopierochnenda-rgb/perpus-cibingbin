@@ -9,29 +9,24 @@
         :root { --primary: #2c3e50; --success: #27ae60; --warning: #f1c40f; --danger: #e74c3c; --blue: #3498db; }
         body, html { height: 100%; margin: 0; font-family: 'Segoe UI', sans-serif; }
 
-        /* Background Login Mewah */
+        /* Background Login */
         #login-container { 
             background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
                         url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1350&q=80');
             background-size: cover; background-position: center;
             display: flex; justify-content: center; align-items: center; height: 100vh; 
         }
-
-        #login-box { 
-            padding: 40px; background: rgba(255, 255, 255, 0.95); 
-            border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); 
-            width: 85%; max-width: 320px; text-align: center; backdrop-filter: blur(5px);
-        }
-
+        #login-box { padding: 40px; background: rgba(255, 255, 255, 0.95); border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); width: 85%; max-width: 320px; text-align: center; backdrop-filter: blur(5px); }
         .logo-perpus { width: 70px; margin-bottom: 10px; }
 
-        /* Navigasi + Tombol Logout */
+        /* Navigasi */
         .nav-menu { display: none; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
         .nav-container { display: flex; max-width: 800px; margin: 0 auto; align-items: center; }
-        .nav-item { flex: 1; padding: 15px; text-align: center; font-weight: bold; color: #7f8c8d; cursor: pointer; border-bottom: 4px solid transparent; font-size: 0.9rem; }
+        .nav-item { flex: 1; padding: 15px; text-align: center; font-weight: bold; color: #7f8c8d; cursor: pointer; border-bottom: 4px solid transparent; }
         .nav-active { border-bottom: 4px solid var(--blue); color: var(--blue); background: #f9f9f9; }
-        .btn-logout { padding: 10px 15px; background: var(--danger); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-right: 10px; font-size: 0.8rem; }
+        .btn-logout { padding: 8px 12px; background: var(--danger); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-right: 10px; }
 
+        /* Page Layout */
         .page { display: none; padding: 15px; max-width: 800px; margin: 0 auto; }
         .header-title { background: var(--primary); color: white; padding: 20px; border-radius: 15px; margin-bottom: 20px; }
         
@@ -40,20 +35,27 @@
 
         .btn-group { margin: 15px 0; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
         .mode-btn { padding: 18px 5px; font-size: 0.75rem; cursor: pointer; border: none; border-radius: 10px; color: white; font-weight: bold; opacity: 0.4; }
-        .active-mode { opacity: 1 !important; border: 2px solid #000; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        .active-mode { opacity: 1 !important; border: 2px solid #000; }
         
         #status-bar { margin: 15px 0; padding: 20px; border-radius: 12px; font-weight: bold; background: #fff; border: 2px solid #ddd; }
         .table-container { background: white; border-radius: 15px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; font-size: 0.85rem; }
+        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
         
         .download-btn { background: var(--primary); color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-weight: bold; margin-bottom: 20px; cursor: pointer; }
+
+        /* AREA TANDA TANGAN (Hanya muncul saat print) */
+        .footer-print { display: none; margin-top: 50px; text-align: right; }
+        .signature-box { display: inline-block; text-align: center; width: 250px; }
 
         @media print {
             .nav-menu, .header-title, .download-btn, #reader, .btn-group, #status-bar, #login-container { display: none !important; }
             .page { display: block !important; }
             #page-scan { display: none !important; }
+            .footer-print { display: block !important; }
             body { background: white; }
+            table { width: 100%; border: 1px solid #ccc; }
+            th { background: #f2f2f2 !important; }
         }
     </style>
 </head>
@@ -64,7 +66,7 @@
             <img src="https://cdn-icons-png.flaticon.com/512/2232/2232688.png" class="logo-perpus">
             <h2 style="color: var(--primary); margin: 0;">E-PERPUS</h2>
             <p style="color: #666; margin-bottom: 25px; font-size: 14px;">SMPN 1 CIBINGBIN</p>
-            <input type="password" id="passInput" style="padding:15px; width:100%; border:2px solid #ddd; border-radius:12px; box-sizing: border-box; text-align:center;" placeholder="PIN Keamanan">
+            <input type="password" id="passInput" style="padding:15px; width:100%; border:2px solid #ddd; border-radius:12px; text-align:center;" placeholder="PIN Petugas">
             <button style="background: var(--primary); margin-top: 20px; width: 100%; padding: 15px; color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer;" onclick="checkLogin()">MASUK SISTEM</button>
         </div>
     </div>
@@ -89,13 +91,22 @@
     </div>
 
     <div id="page-data" class="page">
-        <div class="header-title" style="text-align:center;"><h2>DATA HARIAN</h2></div>
-        <button class="download-btn" onclick="window.print()">📥 CETAK LAPORAN (PDF)</button>
+        <div class="header-title" style="text-align:center;"><h2>DATA LAPORAN</h2></div>
+        <button class="download-btn" onclick="preparePrint()">📥 CETAK LAPORAN (PDF)</button>
+        
         <div class="table-container">
             <table>
                 <thead><tr><th>JAM</th><th>NAMA SISWA</th><th>STATUS</th></tr></thead>
                 <tbody id="tableBody"></tbody>
             </table>
+        </div>
+
+        <div class="footer-print">
+            <div class="signature-box">
+                <p id="print-location-date">Cibingbin, ...</p>
+                <p style="margin-bottom: 60px;">Petugas Perpustakaan,</p>
+                <p><strong>( ............................................ )</strong></p>
+            </div>
         </div>
     </div>
 
@@ -103,7 +114,6 @@
         const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbwygpq5H26qWHJFx74nHrrZVulQINLfO2HMmoDSq0tZdSL_cwZO71NXPz1yt7wI5KNWbA/exec";
         let currentMode = "";
         let isProcessing = false;
-        let refreshInterval;
 
         function checkLogin() {
             if (document.getElementById('passInput').value === "1234") { 
@@ -111,15 +121,11 @@
                 document.getElementById('main-nav').style.display = "block";
                 switchPage('scan');
                 initScanner(); loadData();
-                refreshInterval = setInterval(loadData, 6000); 
+                setInterval(loadData, 6000); 
             } else { alert("PIN Salah!"); }
         }
 
-        function logout() {
-            if(confirm("Apakah Anda ingin keluar dari sistem?")) {
-                location.reload(); // Cara termudah untuk logout dan reset semua state
-            }
-        }
+        function logout() { if(confirm("Logout?")) location.reload(); }
 
         function switchPage(pageName) {
             document.getElementById('page-scan').style.display = (pageName === 'scan') ? 'block' : 'none';
@@ -128,12 +134,19 @@
             document.getElementById('nav-data').classList.toggle('nav-active', pageName === 'data');
         }
 
+        function preparePrint() {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const today = new Date().toLocaleDateString('id-ID', options);
+            document.getElementById('print-location-date').innerHTML = "Cibingbin, " + today;
+            window.print();
+        }
+
         function setMode(mode, btn) {
             currentMode = mode;
             document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active-mode'));
             btn.classList.add('active-mode');
             let bar = document.getElementById('status-bar');
-            bar.innerHTML = "MODE: " + mode.toUpperCase();
+            bar.innerHTML = "SIAP SCAN: " + mode.toUpperCase();
             bar.style.background = (mode==='Pinjam') ? '#f1c40f' : (mode==='dikembalikan' ? '#e74c3c' : '#27ae60');
             bar.style.color = (mode==='Pinjam') ? 'black' : 'white';
         }
@@ -142,7 +155,7 @@
             if (!currentMode || isProcessing) return;
             isProcessing = true;
             let bar = document.getElementById('status-bar');
-            bar.innerHTML = "⌛ MEMPROSES...";
+            bar.innerHTML = "⌛ MENGIRIM DATA...";
             fetch(URL_SCRIPT, { method: "POST", mode: 'no-cors', body: JSON.stringify({ id: decodedText, status: currentMode }) })
             .then(() => {
                 bar.innerHTML = "✅ BERHASIL!";
@@ -151,9 +164,7 @@
             });
         }
 
-        function initScanner() {
-            new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 }).render(onScanSuccess);
-        }
+        function initScanner() { new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 }).render(onScanSuccess); }
 
         function loadData() {
             fetch(URL_SCRIPT + "?action=read").then(res => res.json()).then(data => {
