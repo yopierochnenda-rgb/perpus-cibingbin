@@ -2,252 +2,115 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Sistem Dashboard Perpustakaan - SMPN 1 Cibingbin</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Perpus SMPN 1 Cibingbin</title>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
-        :root { --primary: #0d47a1; --success: #2e7d32; --danger: #d32f2f; --warning: #f57c00; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; margin: 0; }
-        
-        /* Login */
-        #loginPage { position: fixed; inset: 0; background: var(--primary); display: flex; align-items: center; justify-content: center; z-index: 10000; }
-        .login-card { background: white; padding: 30px; border-radius: 15px; width: 320px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        
-        /* Dashboard */
-        .navbar { background: var(--primary); padding: 15px 25px; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .container { padding: 20px; max-width: 1200px; margin: auto; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .card-ui { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        
-        #reader { width: 100%; border-radius: 10px; overflow: hidden; background: #000; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; font-size: 14px; }
-        th, td { border: 1px solid #dee2e6; padding: 12px; text-align: left; }
-        th { background: var(--primary); color: white; }
-        
-        input, select, button { padding: 12px; margin: 8px 0; border-radius: 6px; border: 1px solid #ced4da; font-size: 14px; }
-        .btn-blue { background: var(--primary); color: white; border: none; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-blue:hover { opacity: 0.9; }
-
-        /* Status Scanner */
-        #scanMsg { margin-top: 15px; padding: 15px; border-radius: 8px; display: none; text-align: center; font-weight: bold; border: 2px solid transparent; }
-        
-        /* --- PRINT AREA (UKURAN KTP) --- */
-        #printArea { display: none; grid-template-columns: repeat(2, 85.6mm); gap: 10mm; padding: 10mm; justify-content: center; }
-        .id-card-base { width: 85.6mm; height: 53.98mm; border: 0.2mm solid #000; border-radius: 3mm; position: relative; overflow: hidden; display: flex; flex-direction: column; background: white; box-sizing: border-box; font-size: 8pt; }
-        .card-line { height: 2mm; background: var(--primary); }
-        .card-header { padding: 2mm; display: flex; align-items: center; justify-content: space-between; border-bottom: 0.5pt solid #eee; }
-        .card-body { padding: 2mm 4mm; display: flex; justify-content: space-between; align-items: center; flex-grow: 1; }
-        .qr-box { width: 18mm; height: 18mm; border: 0.2pt solid #ccc; padding: 1mm; }
-
-        @media print {
-            #mainApp, #loginPage, .navbar { display: none !important; }
-            body { background: white; }
-            #printArea { display: grid !important; }
-            .id-card-base { -webkit-print-color-adjust: exact; page-break-inside: avoid; }
-        }
+        body { font-family: sans-serif; text-align: center; margin: 20px; background: #f0f2f5; }
+        #reader { width: 100%; max-width: 500px; margin: auto; background: white; padding: 10px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .buttons { margin: 20px 0; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        button { padding: 12px 20px; cursor: pointer; border: none; border-radius: 5px; font-weight: bold; transition: 0.3s; }
+        .btn-hadir { background: #007bff; color: white; }
+        .btn-pinjam { background: #ffc107; color: black; }
+        .btn-kembali { background: #28a745; color: white; }
+        button.active { outline: 4px solid #333; transform: scale(1.05); }
+        #status-msg { margin: 15px; padding: 10px; font-weight: bold; }
+        .monitor-section { margin-top: 30px; background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 600px; margin-inline: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        th { background: #f8f9fa; }
+        .loading { color: #888; font-style: italic; }
     </style>
 </head>
 <body>
 
-<div id="loginPage">
-    <div class="login-card">
-        <h2 style="color:var(--primary); margin-top:0;">Perpus Login</h2>
-        <input type="password" id="pass" placeholder="Password (admin123)" style="width:100%; box-sizing: border-box;">
-        <button onclick="doLogin()" class="btn-blue" style="width:100%; margin-top:15px;">MASUK KE DASHBOARD</button>
-    </div>
-</div>
-
-<div id="mainApp" style="display:none">
-    <div class="navbar">
-        <div style="font-size: 1.2rem; font-weight: bold;">SMPN 1 CIBINGBIN</div>
-        <button onclick="location.reload()" style="background:#ff4444; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; font-weight:bold;">Keluar</button>
-    </div>
-
-    <div class="container">
-        <div class="grid">
-            <div class="card-ui">
-                <h3>📷 Scanner Kunjungan</h3>
-                <div id="reader"></div>
-                <div id="scanMsg"></div>
-            </div>
-            
-            <div class="card-ui">
-                <h3>➕ Input Siswa Baru</h3>
-                <div style="display: flex; flex-direction: column;">
-                    <input type="text" id="inNama" placeholder="Nama Lengkap">
-                    <input type="text" id="inNIS" placeholder="NIS/NISN">
-                    <select id="inJK">
-                        <option value="L">Laki-laki (L)</option>
-                        <option value="P">Perempuan (P)</option>
-                    </select>
-                    <input type="text" id="inKelas" placeholder="Kelas (Contoh: 7A)">
-                    <button onclick="saveSiswa()" class="btn-blue">Simpan Data Siswa</button>
-                </div>
-                <hr style="margin: 20px 0;">
-                <small>Impor Massal:</small>
-                <input type="file" id="upEx" accept=".xlsx, .xls">
-            </div>
-        </div>
-
-        <div class="card-ui">
-            <div style="display:flex; justify-content:space-between; align-items:center">
-                <h3>📊 Laporan Hari Ini</h3>
-                <button onclick="downloadExcel()" style="background:var(--success); color:white; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; font-weight:bold;">📥 Download Laporan</button>
-            </div>
-            <table id="logTable">
-                <thead><tr><th>Waktu</th><th>Nama</th><th>Kelas</th><th>Info Scanner</th></tr></thead>
-                <tbody></tbody>
-            </table>
-        </div>
-
-        <div class="card-ui" style="text-align:center">
-            <h3>🖨️ Menu Pencetakan</h3>
-            <button onclick="window.print()" class="btn-blue" style="background:var(--warning); color:black; padding: 15px 30px;">PRINT SEMUA KARTU (A4)</button>
-        </div>
-    </div>
-</div>
-
-<div id="printArea"></div>
-
-<script>
-let dbSiswa = JSON.parse(localStorage.getItem('db_perpus')) || [];
-let logs = [];
-
-function doLogin() {
-    if(document.getElementById('pass').value === 'admin123') {
-        document.getElementById('loginPage').style.display='none';
-        document.getElementById('mainApp').style.display='block';
-        startScanner();
-        renderCetak();
-    } else { alert("Password Salah!"); }
-}
-
-function startScanner() {
-    const html5QrCode = new Html5Qrcode("reader");
-    html5QrCode.start({ facingMode: "environment" }, { fps: 15, qrbox: 280 }, (text) => {
-        handleScan(text);
-    });
-}
-
-function handleScan(text) {
-    let nisScan = "";
+    <h2>📚 Perpus SMPN 1 Cibingbin</h2>
     
-    // LOGIKA PENDETEKSI KARTU LAMA: Ambil angka di antara "NIS:" dan "|"
-    if(text.includes("NIS:")) {
-        try {
-            nisScan = text.split("NIS:")[1].split("|")[0].trim();
-        } catch(e) { nisScan = text.trim(); }
-    } else {
-        nisScan = text.trim();
-    }
+    <div class="buttons">
+        <button id="btn-hadir" class="btn-hadir" onclick="setStatus('Kunjungan')">KUNJUNGAN</button>
+        <button id="btn-pinjam" class="btn-pinjam" onclick="setStatus('Pinjam')">PINJAM</button>
+        <button id="btn-kembali" class="btn-kembali" onclick="setStatus('Kembali')">KEMBALI</button>
+    </div>
 
-    const siswa = dbSiswa.find(s => String(s.NIS || s.NISN || s.nis).trim() === nisScan);
-    const msg = document.getElementById('scanMsg');
-    msg.style.display = "block";
+    <div id="reader"></div>
+    <div id="status-msg">Silakan pilih mode (Kunjungan/Pinjam/Kembali)</div>
 
-    if(siswa) {
-        msg.style.background = "#e8f5e9"; msg.style.color = "#1b5e20"; msg.style.borderColor = "#c8e6c9";
-        msg.innerHTML = `✅ BERHASIL SCAN<br><span style="font-size:1.2rem">${siswa.Nama || siswa.NAMA}</span>`;
-        logs.unshift({ Waktu: new Date().toLocaleTimeString('id-ID'), Nama: (siswa.Nama || siswa.NAMA), Kelas: (siswa.Kelas || siswa.KELAS), Info: "Kartu Terdeteksi" });
-        updateLogTable();
-        new Audio('https://www.soundjay.com/buttons/beep-07a.mp3').play();
-    } else {
-        msg.style.background = "#ffebee"; msg.style.color = "#b71c1c"; msg.style.borderColor = "#ffcdd2";
-        msg.innerHTML = `❌ NIS TIDAK DITEMUKAN<br>ID: ${nisScan}`;
-    }
-}
+    <div class="monitor-section">
+        <h3>📊 Daftar Belum Kembali</h3>
+        <table id="peminjaman-table">
+            <thead>
+                <tr>
+                    <th>Nama</th>
+                    <th>Kelas</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="peminjaman-body">
+                <tr><td colspan="3" class="loading">Memuat data...</td></tr>
+            </tbody>
+        </table>
+    </div>
 
-function saveSiswa() {
-    const n = document.getElementById('inNama').value;
-    const ni = document.getElementById('inNIS').value;
-    const jk = document.getElementById('inJK').value;
-    const k = document.getElementById('inKelas').value;
-    if(!n || !ni) return alert("Nama dan NIS wajib diisi!");
-    dbSiswa.push({ Nama: n, NIS: ni, JK: jk, Kelas: k });
-    localStorage.setItem('db_perpus', JSON.stringify(dbSiswa));
-    alert("Siswa Berhasil Ditambahkan!");
-    renderCetak();
-}
+    <script>
+        const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbz3AryEjqVcnPdwMseCci2sgdUdNWJ3jPXXSvmPSUISZADK9S9gYcPF7ARdOnRFn3Dr/exec";
+        let currentStatus = "";
 
-document.getElementById('upEx').addEventListener('change', (e) => {
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-        const data = new Uint8Array(ev.target.result);
-        const wb = XLSX.read(data, {type: 'array'});
-        dbSiswa = [...dbSiswa, ...XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]])];
-        localStorage.setItem('db_perpus', JSON.stringify(dbSiswa));
-        alert("Impor Excel Berhasil!");
-        renderCetak();
-    };
-    reader.readAsArrayBuffer(e.target.files[0]);
-});
+        function setStatus(status) {
+            currentStatus = status;
+            document.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+            if(status === 'Kunjungan') document.getElementById('btn-hadir').classList.add('active');
+            if(status === 'Pinjam') document.getElementById('btn-pinjam').classList.add('active');
+            if(status === 'Kembali') document.getElementById('btn-kembali').classList.add('active');
+            document.getElementById('status-msg').innerText = "Mode: " + status + " | Siap Scan...";
+        }
 
-function updateLogTable() {
-    document.querySelector("#logTable tbody").innerHTML = logs.map(l => `<tr><td>${l.Waktu}</td><td>${l.Nama}</td><td>${l.Kelas}</td><td>${l.Info}</td></tr>`).join('');
-}
+        function onScanSuccess(decodedText) {
+            if (!currentStatus) {
+                alert("Pilih mode (Kunjungan/Pinjam/Kembali) dulu!");
+                return;
+            }
 
-function downloadExcel() {
-    const ws = XLSX.utils.json_to_sheet(logs);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Riwayat_Kunjungan");
-    XLSX.writeFile(wb, `Laporan_Perpus_${new Date().toLocaleDateString()}.xlsx`);
-}
+            document.getElementById('status-msg').innerText = "Mengirim data...";
+            
+            fetch(URL_SCRIPT, {
+                method: "POST",
+                body: JSON.stringify({ id: decodedText, status: currentStatus }),
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('status-msg').innerText = "✅ Berhasil: " + data.nama + " (" + currentStatus + ")";
+                refreshMonitor(); // Update tabel setelah scan
+            })
+            .catch(err => {
+                document.getElementById('status-msg').innerText = "❌ Gagal mengirim data.";
+                console.error(err);
+            });
+        }
 
-function renderCetak() {
-    const area = document.getElementById('printArea');
-    area.innerHTML = "";
-    dbSiswa.forEach(s => {
-        const nama = s.Nama || s.NAMA || "-";
-        const nis = s.NIS || s.NISN || s.nis || "0";
-        const jk = s.JK || s.Jenis_Kelamin || "L/P";
-        const kelas = s.Kelas || s.KELAS || "-";
+        // FUNGSI UNTUK MENAMPILKAN DATA DI MONITOR
+        function refreshMonitor() {
+            fetch(URL_SCRIPT + "?action=read")
+            .then(res => res.json())
+            .then(data => {
+                const body = document.getElementById('peminjaman-body');
+                body.innerHTML = "";
+                const dipinjam = data.filter(item => item.status === "Pinjam");
+                
+                if (dipinjam.length === 0) {
+                    body.innerHTML = "<tr><td colspan='3'>Semua buku sudah kembali</td></tr>";
+                } else {
+                    dipinjam.forEach(item => {
+                        body.innerHTML += `<tr><td>${item.nama}</td><td>${item.kelas}</td><td style='color:orange'>Pinjam</td></tr>`;
+                    });
+                }
+            });
+        }
+
+        let html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
+        html5QrcodeScanner.render(onScanSuccess);
         
-        // QR Code berisi teks panjang agar sama dengan kartu lama jika Anda ingin seragam total
-        const qrData = `Nama: ${nama} | NIS: ${nis} | JK: ${jk} | Kelas: ${kelas}`;
-        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrData)}`;
-
-        area.innerHTML += `
-            <div class="id-card-base">
-                <div class="card-line"></div>
-                <div class="card-header">
-                    <img src="https://i.postimg.cc/zvwCjX6D/Desain-tanpa-judul.png" style="height:8mm">
-                    <div style="text-align:center; font-weight:bold; flex-grow:1; font-size:7pt">
-                        SMP NEGERI 1 CIBINGBIN<br>
-                        <span style="font-size:5pt; font-weight:normal">KUNINGAN - JAWA BARAT</span>
-                    </div>
-                    <img src="https://cdn-icons-png.flaticon.com/512/3389/3389081.png" style="height:8mm">
-                </div>
-                <div style="text-align:center; font-weight:bold; margin-top:1mm; color:var(--primary)">KARTU ANGGOTA PERPUSTAKAAN</div>
-                <div class="card-body">
-                    <table style="border:none; font-size:7pt; width:100%">
-                        <tr><td style="border:none; padding:1px">Nama</td><td style="border:none; padding:1px">: ${nama}</td></tr>
-                        <tr><td style="border:none; padding:1px">Jenis Kelamin</td><td style="border:none; padding:1px">: ${jk}</td></tr>
-                        <tr><td style="border:none; padding:1px">NIS</td><td style="border:none; padding:1px">: ${nis}</td></tr>
-                        <tr><td style="border:none; padding:1px">Kelas</td><td style="border:none; padding:1px">: ${kelas}</td></tr>
-                        <tr><td style="border:none; padding:1px">Berlaku</td><td style="border:none; padding:1px; color:blue">: SELAMA MENJADI SISWA</td></tr>
-                    </table>
-                    <div class="qr-box">
-                        <img src="${qrUrl}" style="width:100%">
-                    </div>
-                </div>
-            </div>
-            <div class="id-card-base">
-                <div class="card-line"></div>
-                <div style="padding:4mm; font-size:6.5pt; line-height:1.4">
-                    <center><b>TATA TERTIB PERPUSTAKAAN</b></center>
-                    <ol style="padding-left:4mm; margin-top:2mm">
-                        <li>Kartu wajib dibawa saat meminjam buku.</li>
-                        <li>Dilarang mencoret, merusak, atau menghilangkan buku.</li>
-                        <li>Buku wajib dikembalikan tepat waktu.</li>
-                    </ol>
-                    <div style="margin-top:5mm; text-align:center">
-                        Petugas Perpustakaan<br><br><br>
-                        ( ................................... )
-                    </div>
-                </div>
-            </div>`;
-    });
-}
-</script>
+        // Jalankan monitor saat halaman dibuka
+        refreshMonitor();
+    </script>
 </body>
 </html>
