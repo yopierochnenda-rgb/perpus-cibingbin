@@ -7,62 +7,39 @@
     <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
         :root { --primary: #2c3e50; --success: #27ae60; --warning: #f1c40f; --danger: #e74c3c; --blue: #3498db; }
-        
         body, html { height: 100%; margin: 0; font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; }
         .flex-center { display: flex; justify-content: center; align-items: center; height: 100vh; }
-        
-        #login-box { 
-            padding: 40px; 
-            background: white; 
-            border-radius: 20px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
-            width: 90%; 
-            max-width: 350px; 
-            text-align: center;
-        }
-
+        #login-box { padding: 40px; background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 90%; max-width: 350px; text-align: center; }
         #scanner-ui { display: none; padding: 10px; max-width: 600px; margin: 0 auto; text-align: center; }
-        
         .header { background: var(--primary); color: white; padding: 20px; border-radius: 0 0 20px 20px; margin: -10px -10px 20px -10px; }
         
-        /* CSS PERBAIKAN FONT TOMBOL KAMERA */
+        /* TOMBOL KAMERA TEBAL & JELAS */
         #reader { width: 100%; border: 4px solid var(--primary); border-radius: 15px; overflow: hidden; background: white; margin-top: 10px; }
         #reader button { 
-            background-color: var(--blue) !important; 
+            background-color: #0056b3 !important; 
             color: white !important; 
-            font-weight: bold !important; 
-            text-transform: uppercase !important;
-            padding: 10px 20px !important;
-            margin: 10px 0 !important;
-            border-radius: 5px !important;
-            font-size: 16px !important; /* Ukuran font diperbesar */
-            border: none !important;
+            font-weight: 800 !important; 
+            padding: 12px 25px !important;
+            margin: 15px 0 !important;
+            border-radius: 8px !important;
+            font-size: 18px !important; 
+            border: 2px solid #fff !important;
+            cursor: pointer;
         }
-        #reader__dashboard_section_csr button { color: var(--primary) !important; }
 
         .btn-group { margin: 15px 0; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-        .mode-btn { padding: 15px 5px; font-size: 0.8rem; cursor: pointer; border: none; border-radius: 8px; color: white; font-weight: bold; transition: 0.2s; }
+        .mode-btn { padding: 15px 5px; font-size: 0.8rem; cursor: pointer; border: 3px solid transparent; border-radius: 8px; color: white; font-weight: bold; opacity: 0.6; }
+        .active-mode { opacity: 1 !important; border-color: #000 !important; transform: scale(1.05); }
         
         .kunjung { background-color: var(--success); }
         .pinjam { background-color: var(--warning); color: black; }
         .kembali { background-color: var(--danger); }
         .download-btn { background-color: #34495e; width: 100%; margin: 10px 0; font-size: 0.9rem; padding: 15px; color: white; border-radius: 8px; border: none; font-weight: bold;}
 
-        #status-bar { 
-            margin: 15px 0; 
-            padding: 15px; 
-            border-radius: 10px; 
-            font-weight: bold; 
-            background: #fff; 
-            border: 2px solid #ddd;
-            min-height: 20px;
-            transition: all 0.5s ease;
-        }
-        
+        #status-bar { margin: 15px 0; padding: 15px; border-radius: 10px; font-weight: bold; background: #fff; border: 2px solid #ddd; min-height: 20px; transition: 0.3s; }
         .table-container { background: white; border-radius: 15px; padding: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-top: 20px; overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
         th, td { padding: 12px 8px; border-bottom: 1px solid #eee; text-align: left; }
-        
         .row-kunjung { border-left: 5px solid var(--success); }
         .row-pinjam { border-left: 5px solid var(--warning); }
         .row-kembali { border-left: 5px solid var(--danger); }
@@ -79,39 +56,28 @@
         <div id="login-box">
             <h2 style="color: var(--primary); margin-bottom: 5px;">E-PERPUS</h2>
             <p style="margin-top: 0; color: #666;">SMPN 1 CIBINGBIN</p>
-            <input type="password" id="passInput" style="padding:15px; width:100%; border:1px solid #ddd; border-radius:10px; box-sizing: border-box;" placeholder="PIN Petugas">
-            <button style="background: var(--primary); margin-top:20px; width:100%; font-size: 1rem; color:white; border:none; border-radius:8px; padding:12px; font-weight:bold;" onclick="checkLogin()">MASUK</button>
+            <input type="password" id="passInput" style="padding:15px; width:100%; border:1px solid #ddd; border-radius:10px; box-sizing: border-box;" placeholder="PIN: 1234">
+            <button style="background: var(--primary); margin-top:20px; width:100%; font-size: 1rem; color:white; border:none; border-radius:8px; padding:12px; font-weight:bold; cursor:pointer;" onclick="checkLogin()">MASUK</button>
         </div>
     </div>
 
     <div id="scanner-ui">
         <div class="header">
             <h1 style="margin:0; font-size:1.2rem;">SMPN 1 CIBINGBIN</h1>
-            <p style="margin:5px 0 0; font-size:0.8rem;">Laporan Kunjungan Perpustakaan</p>
+            <p style="margin:5px 0 0; font-size:0.8rem;">Sistem Laporan Perpustakaan Digital</p>
         </div>
-
         <div id="reader"></div>
-        
         <div class="btn-group">
-            <button class="mode-btn kunjung" onclick="setMode('Kunjungan')">KUNJUNGAN</button>
-            <button class="mode-btn pinjam" onclick="setMode('Pinjam')">PINJAM</button>
-            <button class="mode-btn kembali" onclick="setMode('dikembalikan')">KEMBALI</button>
+            <button id="btn-kunjung" class="mode-btn kunjung" onclick="setMode('Kunjungan', this)">KUNJUNGAN</button>
+            <button id="btn-pinjam" class="mode-btn pinjam" onclick="setMode('Pinjam', this)">PINJAM</button>
+            <button id="btn-kembali" class="mode-btn kembali" onclick="setMode('dikembalikan', this)">KEMBALI</button>
         </div>
-
-        <div id="status-bar">⚠️ PILIH MODE DULU SEBELUM SCAN</div>
-        
+        <div id="status-bar">⚠️ PILIH MODE DAHULU</div>
         <button class="download-btn" onclick="window.print()">📥 CETAK LAPORAN (PDF)</button>
-
         <div class="table-container">
             <div class="print-only" style="display:none;">LAPORAN KUNJUNGAN PERPUSTAKAAN SMPN 1 CIBINGBIN</div>
             <table>
-                <thead>
-                    <tr>
-                        <th>JAM</th>
-                        <th>NAMA PENGUNJUNG</th>
-                        <th>STATUS</th>
-                    </tr>
-                </thead>
+                <thead><tr><th>JAM</th><th>NAMA</th><th>STATUS</th></tr></thead>
                 <tbody id="tableBody"></tbody>
             </table>
         </div>
@@ -126,30 +92,38 @@
             if (document.getElementById('passInput').value === "1234") { 
                 document.getElementById('login-container').style.display = "none";
                 document.getElementById('scanner-ui').style.display = "block";
-                initScanner(); 
-                loadData();
+                initScanner(); loadData();
                 setInterval(loadData, 6000); 
             } else { alert("PIN Salah!"); }
         }
 
-        function setMode(mode) {
+        function setMode(mode, btn) {
             currentMode = mode;
+            // Reset semua tombol
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active-mode'));
+            // Aktifkan tombol yang diklik
+            btn.classList.add('active-mode');
+            
             let bar = document.getElementById('status-bar');
-            bar.innerHTML = "MODE: " + mode.toUpperCase();
+            bar.innerHTML = "MODE AKTIF: " + mode.toUpperCase();
             bar.style.background = (mode==='Pinjam') ? '#f1c40f' : (mode==='dikembalikan' ? '#e74c3c' : '#27ae60');
             bar.style.color = (mode==='Pinjam') ? 'black' : 'white';
         }
 
         function onScanSuccess(decodedText) {
+            // Validasi mode yang dipilih
             if (!currentMode) {
-                alert("Klik tombol Kunjungan/Pinjam/Kembali dulu!");
+                alert("Pilih salah satu mode (Kunjungan/Pinjam/Kembali) dulu!");
                 return;
             }
-            if (isProcessing) return;
+            if (isProcessing) return; 
 
             isProcessing = true;
             let bar = document.getElementById('status-bar');
-            bar.innerHTML = "⌛ SEDANG MEMPROSES DATA...";
+            let originalBg = bar.style.background;
+            let originalColor = bar.style.color;
+
+            bar.innerHTML = "⌛ SEDANG MEMPROSES...";
             bar.style.background = "#3498db";
             bar.style.color = "white";
 
@@ -158,14 +132,15 @@
                 mode: 'no-cors',
                 body: JSON.stringify({ id: decodedText, status: currentMode })
             }).then(() => {
-                bar.innerHTML = "✅ BERHASIL DISIMPAN KE SHEETS";
+                bar.innerHTML = "✅ BERHASIL DISIMPAN";
                 bar.style.background = "#2ecc71";
-                
-                // Jeda 3 detik agar petugas bisa baca status sukses
                 setTimeout(() => { 
                     loadData();
                     isProcessing = false; 
-                    setMode(currentMode); 
+                    // Kembalikan status ke mode awal
+                    bar.innerHTML = "SIAP SCAN: " + currentMode.toUpperCase();
+                    bar.style.background = originalBg;
+                    bar.style.color = originalColor;
                 }, 3000);
             }).catch(err => {
                 isProcessing = false;
@@ -190,7 +165,7 @@
                     rows += `<tr class="${sClass}"><td>${jam}</td><td>${item.nama}</td><td>${item.status}</td></tr>`; 
                 });
                 document.getElementById('tableBody').innerHTML = rows;
-            });
+            }).catch(e => console.log("Gagal sinkron"));
         }
     </script>
 </body>
