@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perpustakaan Digital - Petugas</title>
+    <title>E-PERPUS - Login Petugas</title>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
         body { font-family: 'Segoe UI', Arial, sans-serif; text-align: center; background-color: #f0f2f5; margin: 0; padding: 20px; }
@@ -12,7 +12,7 @@
         #reader { width: 100%; max-width: 450px; margin: 20px auto; border: 5px solid #333; border-radius: 10px; overflow: hidden; }
         .btn-group { margin: 20px 0; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
         button { padding: 12px 20px; font-size: 14px; cursor: pointer; border: none; border-radius: 8px; color: white; font-weight: bold; transition: 0.3s; }
-        .btn-login { background-color: #4A90E2; width: 100%; margin-top: 10px; }
+        .btn-login { background-color: #2c3e50; width: 100%; margin-top: 10px; }
         .pinjam { background-color: #2196F3; }
         .kembali { background-color: #F44336; }
         .kunjung { background-color: #4CAF50; }
@@ -21,29 +21,29 @@
         table { width: 100%; max-width: 600px; margin: 20px auto; border-collapse: collapse; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
         th { background-color: #333; color: white; }
-        input { padding: 12px; width: 80%; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        input { padding: 12px; width: 85%; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
     </style>
 </head>
 <body>
 
     <div id="login-box">
-        <h2 style="margin-top:0">Pintu Petugas</h2>
-        <p>Silahkan masukkan password untuk akses scanner</p>
-        <input type="password" id="passInput" placeholder="Password Petugas">
+        <h1 style="margin-top:0; color: #2c3e50;">E-PERPUS</h1>
+        <p>Silahkan masukkan password petugas</p>
+        <input type="password" id="passInput" placeholder="Password">
         <button class="btn-login" onclick="checkLogin()">MASUK SISTEM</button>
     </div>
 
     <div id="scanner-ui">
-        <h2>Scanner Perpustakaan</h2>
+        <h2 style="color: #2c3e50;">E-PERPUS SCANNER</h2>
         <div id="reader"></div>
 
         <div class="btn-group">
-            <button class="pinjam" onclick="setMode('Pinjam')">MODE: PINJAM</button>
-            <button class="kembali" onclick="setMode('Kembali')">MODE: KEMBALI</button>
-            <button class="kunjung" onclick="setMode('Kunjungan')">MODE: KUNJUNGAN</button>
+            <button class="pinjam" onclick="setMode('Pinjam')">PINJAM</button>
+            <button class="kembali" onclick="setMode('Kembali')">KEMBALI</button>
+            <button class="kunjung" onclick="setMode('Kunjungan')">KUNJUNGAN</button>
         </div>
 
-        <div id="status">Pilih Mode Pinjam/Kembali/Kunjungan</div>
+        <div id="status">Pilih mode dulu (Pinjam/Kembali/Kunjungan)</div>
 
         <h3>Data Hari Ini / Belum Kembali</h3>
         <table>
@@ -60,8 +60,8 @@
     </div>
 
     <script>
-        // MASUKKAN URL /exec TERBARU ANDA DI SINI
-        const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbz3AryEjqVcnPdwMseCci2sgdUdNWJ3jPXXSvmPSUISZADK9S9gYcPF7ARdOnRFn3Dr/exec";
+        // URL SCRIPT TERBARU ANDA
+        const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbzRS51AaCtyefrqMle1c7EOeXbGA0xXYlVevsagjhbpzAA4aukC6XAj709yf5jY2io8/exec";
         
         let currentMode = "";
         let isProcessing = false;
@@ -81,20 +81,20 @@
         function setMode(mode) {
             currentMode = mode;
             const statusDiv = document.getElementById('status');
-            statusDiv.innerHTML = "Mode Aktif: <span style='color:blue'>" + mode + "</span>. Silahkan Scan Kartu.";
+            statusDiv.innerHTML = "Mode: <span style='color:blue'>" + mode + "</span>. Silahkan Scan.";
             statusDiv.classList.remove("success");
         }
 
         function onScanSuccess(decodedText) {
             if (!currentMode) {
-                alert("Pilih mode dulu (Pinjam/Kembali/Kunjungan)!");
+                alert("Klik tombol mode dulu!");
                 return;
             }
-            if (isProcessing) return; // Mencegah scan dobel (Delay)
+            if (isProcessing) return; 
 
             isProcessing = true;
             const statusDiv = document.getElementById('status');
-            statusDiv.innerHTML = "⏳ Sedang memproses data " + decodedText + "...";
+            statusDiv.innerHTML = "⏳ Memproses NIS: " + decodedText + "...";
 
             // Bunyi Beep
             new Audio('https://www.soundjay.com/button/beep-07.wav').play();
@@ -105,18 +105,18 @@
             })
             .then(res => res.json())
             .then(data => {
-                statusDiv.innerHTML = "✅ Berhasil! Nama: " + data.nama + " [" + currentMode + "]";
+                statusDiv.innerHTML = "✅ Berhasil: " + data.nama + " (" + currentMode + ")";
                 statusDiv.classList.add("success");
-                loadData(); // Update Tabel
+                loadData(); 
             })
             .catch(err => {
-                statusDiv.innerHTML = "❌ Gagal Terkirim. Cek Koneksi.";
+                statusDiv.innerHTML = "❌ Gagal Terkirim. Cek Apps Script.";
             })
             .finally(() => {
-                // DELAY 3 DETIK SEBELUM BISA SCAN LAGI
+                // JEDA 3 DETIK (ANTI-DOBEL)
                 setTimeout(() => {
                     isProcessing = false;
-                    statusDiv.innerHTML = "Mode Aktif: " + currentMode + ". Siap scan berikutnya.";
+                    statusDiv.innerHTML = "Mode: " + currentMode + ". Siap scan lagi.";
                 }, 3000);
             });
         }
