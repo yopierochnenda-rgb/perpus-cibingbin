@@ -3,38 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-PERPUS - Login Petugas</title>
+    <title>E-PERPUS - Petugas</title>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; text-align: center; background-color: #f0f2f5; margin: 0; padding: 20px; }
-        #login-box { margin-top: 100px; padding: 30px; background: white; border-radius: 15px; display: inline-block; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; background-color: #f4f7f6; margin: 0; padding: 20px; }
+        #login-box { margin-top: 80px; padding: 30px; background: white; border-radius: 15px; display: inline-block; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 90%; max-width: 350px; }
         #scanner-ui { display: none; }
-        #reader { width: 100%; max-width: 450px; margin: 20px auto; border: 5px solid #333; border-radius: 10px; overflow: hidden; }
-        .btn-group { margin: 20px 0; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
-        button { padding: 12px 20px; font-size: 14px; cursor: pointer; border: none; border-radius: 8px; color: white; font-weight: bold; transition: 0.3s; }
-        .btn-login { background-color: #2c3e50; width: 100%; margin-top: 10px; }
-        .pinjam { background-color: #2196F3; }
-        .kembali { background-color: #F44336; }
-        .kunjung { background-color: #4CAF50; }
-        #status { margin: 20px; padding: 15px; border-radius: 8px; font-weight: bold; background: #eee; }
-        .success { background-color: #d4edda !important; color: #155724; }
-        table { width: 100%; max-width: 600px; margin: 20px auto; border-collapse: collapse; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-        th { background-color: #333; color: white; }
-        input { padding: 12px; width: 85%; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        #reader { width: 100%; max-width: 400px; margin: 20px auto; border: 5px solid #2c3e50; border-radius: 10px; overflow: hidden; }
+        .btn-group { margin: 20px 0; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+        button { padding: 12px 15px; font-size: 14px; cursor: pointer; border: none; border-radius: 8px; color: white; font-weight: bold; transition: 0.3s; }
+        .btn-login { background-color: #2c3e50; width: 100%; margin-top: 15px; }
+        .pinjam { background-color: #3498db; }
+        .kembali { background-color: #e74c3c; }
+        .kunjung { background-color: #27ae60; }
+        #status { margin: 15px; padding: 12px; border-radius: 8px; font-weight: bold; background: #ecf0f1; border: 1px solid #bdc3c7; }
+        .success { background-color: #d4edda !important; color: #155724; border-color: #c3e6cb !important; }
+        table { width: 100%; max-width: 500px; margin: 20px auto; border-collapse: collapse; background: white; font-size: 14px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #2c3e50; color: white; }
+        input { padding: 12px; width: 100%; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
     </style>
 </head>
 <body>
 
     <div id="login-box">
-        <h1 style="margin-top:0; color: #2c3e50;">E-PERPUS</h1>
-        <p>Silahkan masukkan password petugas</p>
-        <input type="password" id="passInput" placeholder="Password">
-        <button class="btn-login" onclick="checkLogin()">MASUK SISTEM</button>
+        <h1 style="color: #2c3e50; margin-bottom: 5px;">E-PERPUS</h1>
+        <p style="color: #7f8c8d;">Login Khusus Petugas</p>
+        <input type="password" id="passInput" placeholder="Masukkan Password">
+        <button class="btn-login" onclick="checkLogin()">MASUK</button>
     </div>
 
     <div id="scanner-ui">
-        <h2 style="color: #2c3e50;">E-PERPUS SCANNER</h2>
+        <h2 style="color: #2c3e50;">SCANNER E-PERPUS</h2>
         <div id="reader"></div>
 
         <div class="btn-group">
@@ -43,24 +43,24 @@
             <button class="kunjung" onclick="setMode('Kunjungan')">KUNJUNGAN</button>
         </div>
 
-        <div id="status">Pilih mode dulu (Pinjam/Kembali/Kunjungan)</div>
+        <div id="status">Pilih mode (Pinjam/Kembali/Kunjungan)</div>
 
-        <h3>Data Hari Ini / Belum Kembali</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Nama</th>
-                    <th>NIS</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody">
-                </tbody>
-        </table>
+        <div style="overflow-x:auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nama</th>
+                        <th>NIS</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
     </div>
 
     <script>
-        // URL SCRIPT TERBARU ANDA
+        // URL SCRIPT ANDA
         const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbzRS51AaCtyefrqMle1c7EOeXbGA0xXYlVevsagjhbpzAA4aukC6XAj709yf5jY2io8/exec";
         
         let currentMode = "";
@@ -68,7 +68,7 @@
 
         function checkLogin() {
             const pass = document.getElementById('passInput').value;
-            if (pass === "1234") { // Password default Anda
+            if (pass === "1234") { 
                 document.getElementById('login-box').style.display = "none";
                 document.getElementById('scanner-ui').style.display = "block";
                 initScanner();
@@ -81,13 +81,13 @@
         function setMode(mode) {
             currentMode = mode;
             const statusDiv = document.getElementById('status');
-            statusDiv.innerHTML = "Mode: <span style='color:blue'>" + mode + "</span>. Silahkan Scan.";
+            statusDiv.innerHTML = "Mode: <span style='color:#2980b9'>" + mode + "</span>. Siap Scan.";
             statusDiv.classList.remove("success");
         }
 
         function onScanSuccess(decodedText) {
             if (!currentMode) {
-                alert("Klik tombol mode dulu!");
+                alert("Pilih mode dulu!");
                 return;
             }
             if (isProcessing) return; 
@@ -105,15 +105,15 @@
             })
             .then(res => res.json())
             .then(data => {
-                statusDiv.innerHTML = "✅ Berhasil: " + data.nama + " (" + currentMode + ")";
+                statusDiv.innerHTML = "✅ Berhasil: " + data.nama;
                 statusDiv.classList.add("success");
                 loadData(); 
             })
             .catch(err => {
-                statusDiv.innerHTML = "❌ Gagal Terkirim. Cek Apps Script.";
+                statusDiv.innerHTML = "❌ Gagal. Pastikan Apps Script sudah New Version.";
             })
             .finally(() => {
-                // JEDA 3 DETIK (ANTI-DOBEL)
+                // DELAY 3 DETIK AGAR TIDAK DOUBLE SCAN
                 setTimeout(() => {
                     isProcessing = false;
                     statusDiv.innerHTML = "Mode: " + currentMode + ". Siap scan lagi.";
@@ -134,7 +134,7 @@
                 data.forEach(item => {
                     rows += `<tr><td>${item.nama}</td><td>${item.nis}</td><td>${item.status}</td></tr>`;
                 });
-                document.getElementById('tableBody').innerHTML = rows || "<tr><td colspan='3'>Tidak ada data</td></tr>";
+                document.getElementById('tableBody').innerHTML = rows || "<tr><td colspan='3' style='text-align:center'>Tidak ada data hari ini</td></tr>";
             });
         }
     </script>
