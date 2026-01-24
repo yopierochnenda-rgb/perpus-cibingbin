@@ -3,129 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scanner Perpustakaan Digital</title>
+    <title>Perpustakaan Digital - Petugas</title>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; margin: 20px; background-color: #f4f4f9; }
-        #reader { width: 100%; max-width: 500px; margin: auto; border: 5px solid #333; border-radius: 10px; overflow: hidden; }
-        .buttons { margin: 20px 0; display: flex; justify-content: center; gap: 10px; }
-        button { padding: 15px 25px; font-size: 16px; cursor: pointer; border: none; border-radius: 5px; transition: 0.3s; color: white; font-weight: bold; }
-        .btn-pinjam { background-color: #2196F3; }
-        .btn-kembali { background-color: #f44336; }
-        .btn-kunjungan { background-color: #4CAF50; }
-        button:disabled { background-color: #ccc; cursor: not-allowed; }
-        #status { margin-top: 20px; font-weight: bold; padding: 10px; border-radius: 5px; display: inline-block; }
-        .success { background-color: #d4edda; color: #155724; }
-        .error { background-color: #f8d7da; color: #721c24; }
-        table { width: 100%; max-width: 600px; margin: 20px auto; border-collapse: collapse; background: white; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; text-align: center; background-color: #f0f2f5; margin: 0; padding: 20px; }
+        #login-box { margin-top: 100px; padding: 30px; background: white; border-radius: 15px; display: inline-block; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        #scanner-ui { display: none; }
+        #reader { width: 100%; max-width: 450px; margin: 20px auto; border: 5px solid #333; border-radius: 10px; overflow: hidden; }
+        .btn-group { margin: 20px 0; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        button { padding: 12px 20px; font-size: 14px; cursor: pointer; border: none; border-radius: 8px; color: white; font-weight: bold; transition: 0.3s; }
+        .btn-login { background-color: #4A90E2; width: 100%; margin-top: 10px; }
+        .pinjam { background-color: #2196F3; }
+        .kembali { background-color: #F44336; }
+        .kunjung { background-color: #4CAF50; }
+        #status { margin: 20px; padding: 15px; border-radius: 8px; font-weight: bold; background: #eee; }
+        .success { background-color: #d4edda !important; color: #155724; }
+        table { width: 100%; max-width: 600px; margin: 20px auto; border-collapse: collapse; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
         th { background-color: #333; color: white; }
+        input { padding: 12px; width: 80%; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px; }
     </style>
 </head>
 <body>
 
-    <h2>Scanner Perpustakaan Digital</h2>
-    
-    <div id="reader"></div>
-
-    <div class="buttons">
-        <button id="btn-pinjam" class="btn-pinjam" onclick="setStatus('Pinjam')">PINJAM</button>
-        <button id="btn-kembali" class="btn-kembali" onclick="setStatus('Kembali')">KEMBALI</button>
-        <button id="btn-kunjungan" class="btn-kunjungan" onclick="setStatus('Kunjungan')">KUNJUNGAN</button>
+    <div id="login-box">
+        <h2 style="margin-top:0">Pintu Petugas</h2>
+        <p>Silahkan masukkan password untuk akses scanner</p>
+        <input type="password" id="passInput" placeholder="Password Petugas">
+        <button class="btn-login" onclick="checkLogin()">MASUK SISTEM</button>
     </div>
 
-    <div id="status">Pilih mode lalu scan kartu</div>
+    <div id="scanner-ui">
+        <h2>Scanner Perpustakaan</h2>
+        <div id="reader"></div>
 
-    <h3>Daftar Belum Kembali / Kunjungan Hari Ini</h3>
-    <table id="dataTable">
-        <thead>
-            <tr>
-                <th>Nama</th>
-                <th>NIS</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody id="tableBody">
-            </tbody>
-    </table>
+        <div class="btn-group">
+            <button class="pinjam" onclick="setMode('Pinjam')">MODE: PINJAM</button>
+            <button class="kembali" onclick="setMode('Kembali')">MODE: KEMBALI</button>
+            <button class="kunjung" onclick="setMode('Kunjungan')">MODE: KUNJUNGAN</button>
+        </div>
+
+        <div id="status">Pilih Mode Pinjam/Kembali/Kunjungan</div>
+
+        <h3>Data Hari Ini / Belum Kembali</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nama</th>
+                    <th>NIS</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                </tbody>
+        </table>
+    </div>
 
     <script>
-        // GANTI URL DI BAWAH INI DENGAN URL APPS SCRIPT ANDA YANG BARU (/exec)
+        // MASUKKAN URL /exec TERBARU ANDA DI SINI
         const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbz3AryEjqVcnPdwMseCci2sgdUdNWJ3jPXXSvmPSUISZADK9S9gYcPF7ARdOnRFn3Dr/exec";
         
-        let currentStatus = "";
-        let isProcessing = false; // Kunci Delay
+        let currentMode = "";
+        let isProcessing = false;
 
-        function setStatus(status) {
-            currentStatus = status;
-            document.getElementById('status').innerHTML = "Mode: <b>" + status + "</b>. Silahkan Scan Kartu.";
-            document.getElementById('status').className = "";
+        function checkLogin() {
+            const pass = document.getElementById('passInput').value;
+            if (pass === "1234") { // Password default Anda
+                document.getElementById('login-box').style.display = "none";
+                document.getElementById('scanner-ui').style.display = "block";
+                initScanner();
+                loadData();
+            } else {
+                alert("Password Salah!");
+            }
         }
 
-        function onScanSuccess(decodedText, decodedResult) {
-            if (!currentStatus) {
-                alert("Pilih mode (Pinjam/Kembali/Kunjungan) terlebih dahulu!");
+        function setMode(mode) {
+            currentMode = mode;
+            const statusDiv = document.getElementById('status');
+            statusDiv.innerHTML = "Mode Aktif: <span style='color:blue'>" + mode + "</span>. Silahkan Scan Kartu.";
+            statusDiv.classList.remove("success");
+        }
+
+        function onScanSuccess(decodedText) {
+            if (!currentMode) {
+                alert("Pilih mode dulu (Pinjam/Kembali/Kunjungan)!");
                 return;
             }
+            if (isProcessing) return; // Mencegah scan dobel (Delay)
 
-            if (isProcessing) return; // ABAIKAN JIKA SEDANG DELAY
-
-            isProcessing = true; // AKTIFKAN DELAY
-            
+            isProcessing = true;
             const statusDiv = document.getElementById('status');
-            statusDiv.innerHTML = "⏳ Sedang memproses data...";
-            
-            // Suara Beep
-            var audio = new Audio('https://www.soundjay.com/button/beep-07.wav');
-            audio.play();
+            statusDiv.innerHTML = "⏳ Sedang memproses data " + decodedText + "...";
+
+            // Bunyi Beep
+            new Audio('https://www.soundjay.com/button/beep-07.wav').play();
 
             fetch(URL_SCRIPT, {
                 method: "POST",
-                body: JSON.stringify({ id: decodedText, status: currentStatus })
+                body: JSON.stringify({ id: decodedText, status: currentMode })
             })
             .then(res => res.json())
             .then(data => {
-                if (data.result === "success") {
-                    statusDiv.innerHTML = "✅ Berhasil: " + data.nama + " (" + currentStatus + ")";
-                    statusDiv.className = "success";
-                    loadData(); // Update tabel
-                } else {
-                    statusDiv.innerHTML = "❌ Gagal mengirim data.";
-                    statusDiv.className = "error";
-                }
+                statusDiv.innerHTML = "✅ Berhasil! Nama: " + data.nama + " [" + currentMode + "]";
+                statusDiv.classList.add("success");
+                loadData(); // Update Tabel
             })
             .catch(err => {
-                statusDiv.innerHTML = "❌ Error Koneksi.";
-                statusDiv.className = "error";
+                statusDiv.innerHTML = "❌ Gagal Terkirim. Cek Koneksi.";
             })
             .finally(() => {
-                // TUNGGU 3 DETIK SEBELUM BISA SCAN LAGI
+                // DELAY 3 DETIK SEBELUM BISA SCAN LAGI
                 setTimeout(() => {
                     isProcessing = false;
-                    if (currentStatus) {
-                        statusDiv.innerHTML = "Mode: <b>" + currentStatus + "</b>. Scanner Siap Kembali.";
-                    }
-                }, 3000); 
+                    statusDiv.innerHTML = "Mode Aktif: " + currentMode + ". Siap scan berikutnya.";
+                }, 3000);
             });
+        }
+
+        function initScanner() {
+            let scanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
+            scanner.render(onScanSuccess);
         }
 
         function loadData() {
             fetch(URL_SCRIPT + "?action=read")
             .then(res => res.json())
             .then(data => {
-                let html = "";
-                data.forEach(row => {
-                    html += `<tr><td>${row.nama}</td><td>${row.nis}</td><td>${row.status}</td></tr>`;
+                let rows = "";
+                data.forEach(item => {
+                    rows += `<tr><td>${item.nama}</td><td>${item.nis}</td><td>${item.status}</td></tr>`;
                 });
-                document.getElementById('tableBody').innerHTML = html || "<tr><td colspan='3'>Tidak ada data hari ini</td></tr>";
+                document.getElementById('tableBody').innerHTML = rows || "<tr><td colspan='3'>Tidak ada data</td></tr>";
             });
         }
-
-        let html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
-        html5QrcodeScanner.render(onScanSuccess);
-
-        // Load data saat halaman dibuka
-        loadData();
     </script>
 </body>
 </html>
