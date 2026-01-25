@@ -9,46 +9,44 @@
         :root { --primary: #2c3e50; --success: #27ae60; --warning: #f1c40f; --danger: #e74c3c; --blue: #3498db; }
         body, html { height: 100%; margin: 0; font-family: 'Segoe UI', sans-serif; background: #f4f7f6; }
 
-        /* Login */
+        /* Login & Nav */
         #login-container { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1350&q=80'); background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        #login-box { padding: 40px; background: rgba(255, 255, 255, 0.95); border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); width: 85%; max-width: 320px; text-align: center; }
-
-        /* Navigation */
+        #login-box { padding: 40px; background: rgba(255, 255, 255, 0.95); border-radius: 25px; width: 85%; max-width: 320px; text-align: center; }
         .nav-menu { display: none; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
-        .nav-container { display: flex; max-width: 1000px; margin: 0 auto; align-items: center; }
+        .nav-container { display: flex; max-width: 1000px; margin: 0 auto; }
         .nav-item { flex: 1; padding: 15px 5px; text-align: center; font-weight: bold; color: #7f8c8d; cursor: pointer; border-bottom: 4px solid transparent; font-size: 0.75rem; }
         .nav-active { border-bottom: 4px solid var(--blue); color: var(--blue); background: #f9f9f9; }
 
         /* Page Layout */
         .page { display: none; padding: 15px; max-width: 950px; margin: 0 auto; }
         .header-title { background: var(--primary); color: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; text-align: center; }
-        
-        /* Scanner */
         #reader { width: 100%; border: 4px solid var(--primary); border-radius: 15px; overflow: hidden; background: white; }
-        #reader button { background: #0056b3 !important; color: white !important; padding: 10px !important; border-radius: 8px !important; margin: 10px 0; border: none !important; cursor: pointer; }
         .btn-group { margin: 15px 0; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
         .mode-btn { padding: 15px 5px; font-size: 0.7rem; cursor: pointer; border: none; border-radius: 10px; color: white; font-weight: bold; opacity: 0.4; }
         .active-mode { opacity: 1 !important; border: 2px solid #000; }
-        #status-bar { margin: 10px 0; padding: 15px; border-radius: 12px; font-weight: bold; background: #fff; border: 2px solid #ddd; text-align: center; transition: 0.3s; }
+        #status-bar { margin: 10px 0; padding: 15px; border-radius: 12px; font-weight: bold; background: #fff; border: 2px solid #ddd; text-align: center; }
 
         /* Tables */
         .table-container { background: white; border-radius: 15px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; min-width: 600px; }
         th, td { padding: 12px; border: 1px solid #eee; text-align: left; font-size: 0.8rem; }
-        th { background: #f8f9fa; color: var(--primary); }
-        .badge-denda { background: var(--danger); color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; }
+        th { background: #f8f9fa; }
         .status-badge { padding: 4px 8px; border-radius: 4px; color: white; font-size: 0.7rem; font-weight: bold; }
+        .badge-denda { background: var(--danger); color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; }
 
-        /* Print Header */
-        .print-only-header { display: none; width: 100%; margin-bottom: 20px; border-bottom: 4px double #000; padding-bottom: 10px; }
-        .kop-table { width: 100%; border: none !important; }
-        .logo-img { width: 70px; }
-        
+        /* KOP SURAT & TTD (Print Only) */
+        #print-header { display: none; }
+        #print-footer { display: none; margin-top: 30px; }
+        .kop-table { width: 100%; border: none !important; border-bottom: 4px double black !important; margin-bottom: 20px; }
+        .kop-table td { border: none !important; }
+
         @media print {
-            .nav-menu, .header-title, button, #reader, .btn-group, #status-bar { display: none !important; }
-            .page { display: block !important; padding: 0 !important; }
-            .print-only-header { display: block !important; }
-            th, td { border: 1px solid #000 !important; }
+            .nav-menu, button, #reader, .btn-group, #status-bar, .header-title, #page-pinjam { display: none !important; }
+            #page-dash { display: block !important; width: 100% !important; padding: 0 !important; }
+            #print-header, #print-footer { display: block !important; }
+            table { min-width: 100% !important; border: 1px solid black; }
+            th, td { border: 1px solid black !important; padding: 8px; }
+            body { background: white; }
         }
     </style>
 </head>
@@ -56,11 +54,10 @@
 
     <div id="login-container">
         <div id="login-box">
-            <img src="https://cdn-icons-png.flaticon.com/512/2232/2232688.png" style="width:60px;">
-            <h2 style="color: var(--primary);">E-PERPUS</h2>
-            <p style="font-size: 12px; color: #666;">SMPN 1 CIBINGBIN</p>
+            <h2 style="color: var(--primary); margin:0;">E-PERPUS</h2>
+            <p style="font-size: 12px; color: #666; margin-bottom:20px;">SMPN 1 CIBINGBIN</p>
             <input type="password" id="passInput" style="padding:15px; width:90%; border:2px solid #ddd; border-radius:12px; text-align:center;" placeholder="PIN">
-            <button style="background: var(--primary); margin-top: 15px; width: 100%; padding: 15px; color: white; border: none; border-radius: 12px; font-weight: bold;" onclick="checkLogin()">MASUK</button>
+            <button style="background: var(--primary); margin-top: 15px; width: 100%; padding: 15px; color: white; border: none; border-radius: 12px; font-weight: bold; cursor:pointer;" onclick="checkLogin()">MASUK</button>
         </div>
     </div>
 
@@ -69,7 +66,7 @@
             <div id="nav-scan" class="nav-item nav-active" onclick="switchPage('scan')">1. SCAN QR</div>
             <div id="nav-dash" class="nav-item" onclick="switchPage('dash')">2. DASHBOARD</div>
             <div id="nav-pinjam" class="nav-item" onclick="switchPage('pinjam')">3. STATUS PINJAMAN</div>
-            <button onclick="location.reload()" style="background:none; border:none; color:red; font-weight:bold; padding:10px;">LOGOUT</button>
+            <button onclick="location.reload()" style="background:none; border:none; color:red; font-weight:bold; cursor:pointer;">LOGOUT</button>
         </div>
     </div>
 
@@ -85,33 +82,47 @@
     </div>
 
     <div id="page-dash" class="page">
+        <div id="print-header">
+            <table class="kop-table">
+                <tr>
+                    <td width="15%"><img src="logo-smp.png" width="70"></td>
+                    <td width="70%" align="center">
+                        <h2 style="margin:0;">PEMERINTAH KABUPATEN KUNINGAN</h2>
+                        <h1 style="margin:0;">SMP NEGERI 1 CIBINGBIN</h1>
+                        <p style="margin:5px 0; font-size:12px;">Alamat: Jl. Raya Pasar Cibingbin No. 250, Kuningan - Jawa Barat 45587</p>
+                    </td>
+                    <td width="15%" align="right"><img src="https://cdn-icons-png.flaticon.com/512/2232/2232688.png" width="70"></td>
+                </tr>
+            </table>
+            <h3 align="center">LAPORAN AKTIVITAS PERPUSTAKAAN</h3>
+        </div>
+
         <div class="header-title"><h3>RIWAYAT AKTIVITAS</h3></div>
-        <button onclick="window.print()" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; border-radius:10px; margin-bottom:15px; font-weight:bold;">📥 DOWNLOAD LAPORAN</button>
+        <button onclick="window.print()" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; border-radius:10px; margin-bottom:15px; font-weight:bold; cursor:pointer;">📥 DOWNLOAD LAPORAN (PDF)</button>
+        
         <div class="table-container">
             <table>
-                <thead><tr><th>TANGGAL/JAM</th><th>NAMA SISWA</th><th>STATUS</th></tr></thead>
+                <thead><tr><th>TANGGAL</th><th>NAMA SISWA</th><th>KEGIATAN</th></tr></thead>
                 <tbody id="bodyDash"></tbody>
             </table>
+        </div>
+
+        <div id="print-footer">
+            <div style="float: right; text-align: center; width: 250px;">
+                <p>Cibingbin, <span id="tgl-ttd"></span></p>
+                <p>Petugas Perpustakaan,</p>
+                <br><br><br>
+                <p><strong>( ________________________ )</strong></p>
+            </div>
+            <div style="clear: both;"></div>
         </div>
     </div>
 
     <div id="page-pinjam" class="page">
-        <div class="print-only-header">
-            <table class="kop-table">
-                <tr>
-                    <td><img src="logo-smp.png" class="logo-img"></td>
-                    <td style="text-align:center;">
-                        <h2>SMP NEGERI 1 CIBINGBIN</h2>
-                        <p>Jl. Raya Pasar Cibingbin No. 250, Kuningan - Jawa Barat</p>
-                    </td>
-                    <td><img src="https://cdn-icons-png.flaticon.com/512/2232/2232688.png" class="logo-img"></td>
-                </tr>
-            </table>
-        </div>
-        <div class="header-title" style="background:var(--blue)"><h3>DAFTAR PINJAMAN & INFO DENDA</h3></div>
+        <div class="header-title" style="background:var(--blue)"><h3>BUKU YANG BELUM DIKEMBALIKAN</h3></div>
         <div class="table-container">
             <table>
-                <thead><tr><th>NAMA SISWA</th><th>TGL PINJAM</th><th>BATAS KEMBALI</th><th>INFORMASI DENDA</th></tr></thead>
+                <thead><tr><th>NAMA SISWA</th><th>TGL PINJAM</th><th>BATAS KEMBALI</th><th>INFO DENDA</th></tr></thead>
                 <tbody id="bodyPinjam"></tbody>
             </table>
         </div>
@@ -127,6 +138,7 @@
                 document.getElementById('login-container').style.display="none";
                 document.getElementById('main-nav').style.display="block";
                 switchPage('scan'); initScanner(); loadData(); setInterval(loadData, 10000);
+                document.getElementById('tgl-ttd').innerText = new Date().toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'});
             } else { alert("PIN Salah!"); }
         }
 
@@ -142,73 +154,53 @@
             document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active-mode'));
             b.classList.add('active-mode');
             document.getElementById('status-bar').innerHTML = "MODE: " + m.toUpperCase();
-            document.getElementById('status-bar').style.background = "#fff";
         }
 
         function onScanSuccess(t) {
             if(!currentMode || isProcessing) return;
-            
             isProcessing = true;
             let bar = document.getElementById('status-bar');
-            bar.innerHTML = "⌛ SEDANG MEMPROSES...";
-            bar.style.background = "#f1c40f";
-
+            bar.innerHTML = "⌛ MENYIMPAN..."; bar.style.background = "#f1c40f";
+            
             fetch(URL_SCRIPT, { method: "POST", mode: 'no-cors', body: JSON.stringify({ id: t, status: currentMode }) })
             .then(() => { 
-                bar.innerHTML = "✅ BERHASIL DICATAT!";
-                bar.style.background = "#27ae60";
-                bar.style.color = "white";
-                
-                // JEDA 5 DETIK
+                bar.innerHTML = "✅ BERHASIL!"; bar.style.background = "#27ae60"; bar.style.color = "white";
                 setTimeout(() => { 
                     isProcessing = false; 
-                    bar.innerHTML = "MODE: " + currentMode.toUpperCase();
-                    bar.style.background = "#fff";
-                    bar.style.color = "black";
+                    bar.innerHTML = "MODE: " + currentMode.toUpperCase(); 
+                    bar.style.background = "#fff"; bar.style.color = "black";
                 }, 5000);
-                
                 loadData(); 
-            }).catch(() => {
-                isProcessing = false;
-                bar.innerHTML = "❌ GAGAL, COBA LAGI";
-                bar.style.background = "#e74c3c";
             });
         }
 
-        function initScanner() { 
-            new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 }).render(onScanSuccess); 
-        }
+        function initScanner() { new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 }).render(onScanSuccess); }
 
         function loadData() {
             fetch(URL_SCRIPT + "?action=read").then(res => res.json()).then(data => {
                 let dash = ""; let pinjamTab = "";
-                let reverseData = [...data].reverse();
-                
-                reverseData.forEach(item => {
-                    let warna = item.status === 'Pinjam' ? '#f39c12' : (item.status === 'dikembalikan' ? '#e74c3c' : '#27ae60');
-                    dash += `<tr>
-                        <td>${new Date().toLocaleDateString('id-ID')}</td>
-                        <td>${item.nama}</td>
-                        <td><span class="status-badge" style="background:${warna}">${item.status}</span></td>
-                    </tr>`;
-                    
-                    if(item.status === "Pinjam") {
-                        let tglPinjam = new Date(); 
-                        let estimasi = new Date(); estimasi.setDate(tglPinjam.getDate() + 7);
-                        let hariIni = new Date();
-                        let dendaRupiah = 0;
-                        if(hariIni > estimasi) {
-                            let telat = Math.ceil((hariIni - estimasi) / (1000*60*60*24));
-                            dendaRupiah = telat * 500;
-                        }
-                        pinjamTab += `<tr>
-                            <td>${item.nama}</td>
-                            <td>${tglPinjam.toLocaleDateString('id-ID')}</td>
-                            <td>${estimasi.toLocaleDateString('id-ID')}</td>
-                            <td><span class="${dendaRupiah > 0 ? 'badge-denda' : ''}">${dendaRupiah > 0 ? 'Denda: Rp ' + dendaRupiah : 'Belum Jatuh Tempo'}</span></td>
-                        </tr>`;
-                    }
+                let statusAktif = {};
+
+                // Filter siswa yang BENAR-BENAR masih bawa buku
+                data.forEach(item => {
+                    if (item.status === "Pinjam") { statusAktif[item.nama] = item; }
+                    else if (item.status === "dikembalikan") { delete statusAktif[item.nama]; }
                 });
+
+                // Dashboard
+                [...data].reverse().forEach(item => {
+                    let warna = item.status === 'Pinjam' ? '#f39c12' : (item.status === 'dikembalikan' ? '#e74c3c' : '#27ae60');
+                    dash += `<tr><td>${new Date().toLocaleDateString('id-ID')}</td><td>${item.nama}</td><td><span class="status-badge" style="background:${warna}">${item.status}</span></td></tr>`;
+                });
+
+                // Menu Pinjaman Aktif
+                Object.values(statusAktif).forEach(item => {
+                    let tglP = new Date(); let est = new Date(); est.setDate(tglP.getDate() + 7);
+                    let hariIni = new Date(); let denda = 0;
+                    if(hariIni > est) { denda = Math.ceil((hariIni - est) / (1000*60*60*24)) * 500; }
+                    pinjamTab += `<tr><td>${item.nama}</td><td>${tglP.toLocaleDateString('id-ID')}</td><td>${est.toLocaleDateString('id-ID')}</td><td><span class="${denda > 0 ? 'badge-denda' : ''}">${denda > 0 ? 'Denda: Rp ' + denda : 'Belum Jatuh Tempo'}</span></td></tr>`;
+                });
+
                 document.getElementById('bodyDash').innerHTML = dash;
                 document.getElementById('bodyPinjam').innerHTML = pinjamTab;
             });
