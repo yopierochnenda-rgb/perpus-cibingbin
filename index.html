@@ -13,7 +13,7 @@
         #login-container { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1350&q=80'); background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; height: 100vh; }
         #login-box { padding: 40px; background: rgba(255, 255, 255, 0.95); border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); width: 85%; max-width: 320px; text-align: center; }
 
-        /* Navigation 3 Menu */
+        /* Navigation */
         .nav-menu { display: none; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
         .nav-container { display: flex; max-width: 1000px; margin: 0 auto; align-items: center; }
         .nav-item { flex: 1; padding: 15px 5px; text-align: center; font-weight: bold; color: #7f8c8d; cursor: pointer; border-bottom: 4px solid transparent; font-size: 0.75rem; }
@@ -25,10 +25,11 @@
         
         /* Scanner */
         #reader { width: 100%; border: 4px solid var(--primary); border-radius: 15px; overflow: hidden; background: white; }
+        #reader button { background: #0056b3 !important; color: white !important; padding: 10px !important; border-radius: 8px !important; margin: 10px 0; border: none !important; cursor: pointer; }
         .btn-group { margin: 15px 0; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
         .mode-btn { padding: 15px 5px; font-size: 0.7rem; cursor: pointer; border: none; border-radius: 10px; color: white; font-weight: bold; opacity: 0.4; }
         .active-mode { opacity: 1 !important; border: 2px solid #000; }
-        #status-bar { margin: 10px 0; padding: 15px; border-radius: 12px; font-weight: bold; background: #fff; border: 2px solid #ddd; text-align: center; }
+        #status-bar { margin: 10px 0; padding: 15px; border-radius: 12px; font-weight: bold; background: #fff; border: 2px solid #ddd; text-align: center; transition: 0.3s; }
 
         /* Tables */
         .table-container { background: white; border-radius: 15px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow-x: auto; }
@@ -67,8 +68,8 @@
         <div class="nav-container">
             <div id="nav-scan" class="nav-item nav-active" onclick="switchPage('scan')">1. SCAN QR</div>
             <div id="nav-dash" class="nav-item" onclick="switchPage('dash')">2. DASHBOARD</div>
-            <div id="nav-denda" class="nav-item" onclick="switchPage('denda')">3. TUNGGAKAN</div>
-            <button onclick="location.reload()" style="background:none; border:none; color:red; font-weight:bold; padding:10px;">X</button>
+            <div id="nav-pinjam" class="nav-item" onclick="switchPage('pinjam')">3. STATUS PINJAMAN</div>
+            <button onclick="location.reload()" style="background:none; border:none; color:red; font-weight:bold; padding:10px;">LOGOUT</button>
         </div>
     </div>
 
@@ -85,7 +86,7 @@
 
     <div id="page-dash" class="page">
         <div class="header-title"><h3>RIWAYAT AKTIVITAS</h3></div>
-        <button onclick="window.print()" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; border-radius:10px; margin-bottom:15px; font-weight:bold;">📥 DOWNLOAD LAPORAN KUNJUNGAN</button>
+        <button onclick="window.print()" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; border-radius:10px; margin-bottom:15px; font-weight:bold;">📥 DOWNLOAD LAPORAN</button>
         <div class="table-container">
             <table>
                 <thead><tr><th>TANGGAL/JAM</th><th>NAMA SISWA</th><th>STATUS</th></tr></thead>
@@ -94,7 +95,7 @@
         </div>
     </div>
 
-    <div id="page-denda" class="page">
+    <div id="page-pinjam" class="page">
         <div class="print-only-header">
             <table class="kop-table">
                 <tr>
@@ -107,11 +108,11 @@
                 </tr>
             </table>
         </div>
-        <div class="header-title" style="background:var(--danger)"><h3>DAFTAR TUNGGAKAN & DENDA</h3></div>
+        <div class="header-title" style="background:var(--blue)"><h3>DAFTAR PINJAMAN & INFO DENDA</h3></div>
         <div class="table-container">
             <table>
-                <thead><tr><th>NAMA SISWA</th><th>TGL PINJAM</th><th>BATAS KEMBALI</th><th>STATUS DENDA</th></tr></thead>
-                <tbody id="bodyDenda"></tbody>
+                <thead><tr><th>NAMA SISWA</th><th>TGL PINJAM</th><th>BATAS KEMBALI</th><th>INFORMASI DENDA</th></tr></thead>
+                <tbody id="bodyPinjam"></tbody>
             </table>
         </div>
     </div>
@@ -119,6 +120,7 @@
     <script>
         const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbwygpq5H26qWHJFx74nHrrZVulQINLfO2HMmoDSq0tZdSL_cwZO71NXPz1yt7wI5KNWbA/exec";
         let currentMode = "";
+        let isProcessing = false;
 
         function checkLogin() {
             if(document.getElementById('passInput').value === "1234") {
@@ -140,28 +142,49 @@
             document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active-mode'));
             b.classList.add('active-mode');
             document.getElementById('status-bar').innerHTML = "MODE: " + m.toUpperCase();
+            document.getElementById('status-bar').style.background = "#fff";
         }
 
         function onScanSuccess(t) {
-            if(!currentMode) return;
+            if(!currentMode || isProcessing) return;
+            
+            isProcessing = true;
+            let bar = document.getElementById('status-bar');
+            bar.innerHTML = "⌛ SEDANG MEMPROSES...";
+            bar.style.background = "#f1c40f";
+
             fetch(URL_SCRIPT, { method: "POST", mode: 'no-cors', body: JSON.stringify({ id: t, status: currentMode }) })
             .then(() => { 
-                document.getElementById('status-bar').innerHTML = "✅ BERHASIL DICATAT!";
-                setTimeout(() => { document.getElementById('status-bar').innerHTML = "MODE: " + currentMode.toUpperCase(); }, 2000);
+                bar.innerHTML = "✅ BERHASIL DICATAT!";
+                bar.style.background = "#27ae60";
+                bar.style.color = "white";
+                
+                // JEDA 5 DETIK
+                setTimeout(() => { 
+                    isProcessing = false; 
+                    bar.innerHTML = "MODE: " + currentMode.toUpperCase();
+                    bar.style.background = "#fff";
+                    bar.style.color = "black";
+                }, 5000);
+                
                 loadData(); 
+            }).catch(() => {
+                isProcessing = false;
+                bar.innerHTML = "❌ GAGAL, COBA LAGI";
+                bar.style.background = "#e74c3c";
             });
         }
 
-        function initScanner() { new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 }).render(onScanSuccess); }
+        function initScanner() { 
+            new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 }).render(onScanSuccess); 
+        }
 
         function loadData() {
             fetch(URL_SCRIPT + "?action=read").then(res => res.json()).then(data => {
-                let dash = ""; let dendaTab = "";
-                // Urutkan data terbaru di atas
+                let dash = ""; let pinjamTab = "";
                 let reverseData = [...data].reverse();
                 
                 reverseData.forEach(item => {
-                    // 1. Masukkan SEMUA ke Dashboard
                     let warna = item.status === 'Pinjam' ? '#f39c12' : (item.status === 'dikembalikan' ? '#e74c3c' : '#27ae60');
                     dash += `<tr>
                         <td>${new Date().toLocaleDateString('id-ID')}</td>
@@ -169,28 +192,25 @@
                         <td><span class="status-badge" style="background:${warna}">${item.status}</span></td>
                     </tr>`;
                     
-                    // 2. Filter Khusus PINJAM untuk Menu Tunggakan
                     if(item.status === "Pinjam") {
                         let tglPinjam = new Date(); 
                         let estimasi = new Date(); estimasi.setDate(tglPinjam.getDate() + 7);
                         let hariIni = new Date();
                         let dendaRupiah = 0;
-                        
                         if(hariIni > estimasi) {
                             let telat = Math.ceil((hariIni - estimasi) / (1000*60*60*24));
                             dendaRupiah = telat * 500;
                         }
-                        
-                        dendaTab += `<tr>
+                        pinjamTab += `<tr>
                             <td>${item.nama}</td>
                             <td>${tglPinjam.toLocaleDateString('id-ID')}</td>
                             <td>${estimasi.toLocaleDateString('id-ID')}</td>
-                            <td><span class="${dendaRupiah > 0 ? 'badge-denda' : ''}">${dendaRupiah > 0 ? 'Denda: Rp ' + dendaRupiah : 'Aman'}</span></td>
+                            <td><span class="${dendaRupiah > 0 ? 'badge-denda' : ''}">${dendaRupiah > 0 ? 'Denda: Rp ' + dendaRupiah : 'Belum Jatuh Tempo'}</span></td>
                         </tr>`;
                     }
                 });
                 document.getElementById('bodyDash').innerHTML = dash;
-                document.getElementById('bodyDenda').innerHTML = dendaTab;
+                document.getElementById('bodyPinjam').innerHTML = pinjamTab;
             });
         }
     </script>
