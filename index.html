@@ -9,50 +9,49 @@
         :root { --primary: #2c3e50; --success: #27ae60; --warning: #f1c40f; --danger: #e74c3c; --blue: #3498db; }
         body, html { height: 100%; margin: 0; font-family: 'Segoe UI', sans-serif; background: #f4f7f6; }
 
-        /* LOGIN BOX - PERBAIKAN LOGO */
+        /* Login Box */
         #login-container { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1350&q=80'); background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; height: 100vh; }
         #login-box { padding: 40px; background: rgba(255, 255, 255, 0.95); border-radius: 25px; width: 85%; max-width: 320px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .login-icon { font-size: 60px; display: block; margin-bottom: 10px; }
 
-        /* Navigation */
+        /* Nav & Layout */
         .nav-menu { display: none; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
         .nav-container { display: flex; max-width: 1000px; margin: 0 auto; }
         .nav-item { flex: 1; padding: 15px 5px; text-align: center; font-weight: bold; color: #7f8c8d; cursor: pointer; border-bottom: 4px solid transparent; font-size: 0.75rem; }
         .nav-active { border-bottom: 4px solid var(--blue); color: var(--blue); background: #f9f9f9; }
-
+        .page { display: none; padding: 15px; max-width: 950px; margin: 0 auto; }
+        .header-title { background: var(--primary); color: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; text-align: center; }
+        #reader { width: 100%; border: 4px solid var(--primary); border-radius: 15px; overflow: hidden; background: white; }
+        
         /* Input Manual */
         #input-buku-container { display: none; margin: 15px 0; padding: 15px; background: #fff; border: 2px solid var(--warning); border-radius: 12px; }
         #judulBuku { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; margin-bottom: 10px; font-size: 1rem; }
 
-        /* Layout Page */
-        .page { display: none; padding: 15px; max-width: 950px; margin: 0 auto; }
-        .header-title { background: var(--primary); color: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; text-align: center; }
-        #reader { width: 100%; border: 4px solid var(--primary); border-radius: 15px; overflow: hidden; background: white; }
         .btn-group { margin: 15px 0; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
         .mode-btn { padding: 15px 5px; font-size: 0.7rem; cursor: pointer; border: none; border-radius: 10px; color: white; font-weight: bold; opacity: 0.4; }
         .active-mode { opacity: 1 !important; border: 2px solid #000; }
         #status-bar { margin: 10px 0; padding: 15px; border-radius: 12px; font-weight: bold; background: #fff; border: 2px solid #ddd; text-align: center; }
 
-        /* Table */
         .table-container { background: white; border-radius: 15px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; min-width: 600px; }
         th, td { padding: 12px; border: 1px solid #eee; text-align: left; font-size: 0.8rem; }
         th { background: #f8f9fa; }
-        .status-badge { padding: 4px 8px; border-radius: 4px; color: white; font-size: 0.7rem; font-weight: bold; }
-        .badge-denda { background: var(--danger); color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; }
 
-        /* Print Header */
+        /* KHUSUS PRINT - PERBAIKAN LOGO KECIL */
         #print-header { display: none; }
         #print-footer { display: none; margin-top: 30px; }
         .kop-table { width: 100%; border: none !important; border-bottom: 4px double black !important; margin-bottom: 20px; }
-        .kop-table td { border: none !important; }
+        .kop-table td { border: none !important; vertical-align: middle; }
+        .logo-cetak { width: 100px; height: auto; } /* Ukuran logo diperbesar ke 100px */
 
         @media print {
-            .nav-menu, button, #reader, .btn-group, #status-bar, .header-title, #page-pinjam, #input-buku-container { display: none !important; }
+            .nav-menu, button, #reader, .btn-group, #status-bar, .header-title, #page-pinjam, #input-buku-container, #login-container { display: none !important; }
             #page-dash { display: block !important; width: 100% !important; padding: 0 !important; }
-            #print-header, #print-footer { display: block !important; }
+            #print-header { display: block !important; }
+            #print-footer { display: block !important; }
             table { min-width: 100% !important; border: 1px solid black; }
-            th, td { border: 1px solid black !important; padding: 8px; }
+            th, td { border: 1px solid black !important; padding: 8px; color: black !important; }
+            @page { margin: 1cm; }
         }
     </style>
 </head>
@@ -97,13 +96,13 @@
         <div id="print-header">
             <table class="kop-table">
                 <tr>
-                    <td width="15%"><img src="logo-smp.png" width="70" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2232/2232688.png'"></td>
+                    <td width="15%"><img src="logo-smp.png" class="logo-cetak" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/9/9c/Logo_Tut_Wuri_Handayani.png'"></td>
                     <td width="70%" align="center">
                         <h2 style="margin:0;">PEMERINTAH KABUPATEN KUNINGAN</h2>
                         <h1 style="margin:0;">SMP NEGERI 1 CIBINGBIN</h1>
                         <p style="margin:5px 0; font-size:12px;">Alamat: Jl. Raya Pasar Cibingbin No. 250, Kuningan - Jawa Barat 45587</p>
                     </td>
-                    <td width="15%" align="right">📚</td>
+                    <td width="15%" align="right"><span style="font-size: 40px;">📚</span></td>
                 </tr>
             </table>
             <h3 align="center">LAPORAN AKTIVITAS PERPUSTAKAAN</h3>
