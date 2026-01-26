@@ -5,16 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-PERPUS SMPN 1 CIBINGBIN</title>
     <script src="https://unpkg.com/html5-qrcode"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         :root { --primary: #2c3e50; --success: #27ae60; --warning: #f1c40f; --danger: #e74c3c; --blue: #3498db; }
         body, html { height: 100%; margin: 0; font-family: 'Segoe UI', sans-serif; background: #f4f7f6; }
 
-        /* Login Box */
+        /* LOGIN BOX DENGAN IKON GRAFIS */
         #login-container { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1350&q=80'); background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; height: 100vh; }
         #login-box { padding: 40px; background: rgba(255, 255, 255, 0.95); border-radius: 25px; width: 85%; max-width: 320px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        .login-icon { font-size: 60px; display: block; margin-bottom: 10px; }
+        .login-icon-grafis { font-size: 70px; color: var(--primary); margin-bottom: 10px; }
 
-        /* Nav & Layout */
+        /* Nav & Page */
         .nav-menu { display: none; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
         .nav-container { display: flex; max-width: 1000px; margin: 0 auto; }
         .nav-item { flex: 1; padding: 15px 5px; text-align: center; font-weight: bold; color: #7f8c8d; cursor: pointer; border-bottom: 4px solid transparent; font-size: 0.75rem; }
@@ -22,10 +23,10 @@
         .page { display: none; padding: 15px; max-width: 950px; margin: 0 auto; }
         .header-title { background: var(--primary); color: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; text-align: center; }
         #reader { width: 100%; border: 4px solid var(--primary); border-radius: 15px; overflow: hidden; background: white; }
-        
-        /* Input Manual */
+
+        /* Input Buku Manual */
         #input-buku-container { display: none; margin: 15px 0; padding: 15px; background: #fff; border: 2px solid var(--warning); border-radius: 12px; }
-        #judulBuku { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; margin-bottom: 10px; font-size: 1rem; }
+        #judulBuku { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; margin-bottom: 10px; }
 
         .btn-group { margin: 15px 0; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
         .mode-btn { padding: 15px 5px; font-size: 0.7rem; cursor: pointer; border: none; border-radius: 10px; color: white; font-weight: bold; opacity: 0.4; }
@@ -37,21 +38,18 @@
         th, td { padding: 12px; border: 1px solid #eee; text-align: left; font-size: 0.8rem; }
         th { background: #f8f9fa; }
 
-        /* KHUSUS PRINT - PERBAIKAN LOGO KECIL */
+        /* KOP SURAT */
         #print-header { display: none; }
         #print-footer { display: none; margin-top: 30px; }
         .kop-table { width: 100%; border: none !important; border-bottom: 4px double black !important; margin-bottom: 20px; }
         .kop-table td { border: none !important; vertical-align: middle; }
-        .logo-cetak { width: 100px; height: auto; } /* Ukuran logo diperbesar ke 100px */
 
         @media print {
             .nav-menu, button, #reader, .btn-group, #status-bar, .header-title, #page-pinjam, #input-buku-container, #login-container { display: none !important; }
             #page-dash { display: block !important; width: 100% !important; padding: 0 !important; }
-            #print-header { display: block !important; }
-            #print-footer { display: block !important; }
+            #print-header, #print-footer { display: block !important; }
             table { min-width: 100% !important; border: 1px solid black; }
             th, td { border: 1px solid black !important; padding: 8px; color: black !important; }
-            @page { margin: 1cm; }
         }
     </style>
 </head>
@@ -59,7 +57,7 @@
 
     <div id="login-container">
         <div id="login-box">
-            <span class="login-icon">📚</span>
+            <i class="material-icons login-icon-grafis">auto_stories</i>
             <h2 style="color: var(--primary); margin:0;">E-PERPUS</h2>
             <p style="font-size: 12px; color: #666; margin-bottom:20px;">SMPN 1 CIBINGBIN</p>
             <input type="password" id="passInput" style="padding:15px; width:90%; border:2px solid #ddd; border-radius:12px; text-align:center;" placeholder="PIN">
@@ -82,7 +80,7 @@
         <div id="input-buku-container">
             <p style="margin:0 0 10px 0; font-weight:bold; color:var(--primary);">Siswa: <span id="namaTerdeteksi">-</span></p>
             <input type="text" id="judulBuku" placeholder="Ketik Judul Buku Manual...">
-            <button onclick="simpanDataPinjam()" style="width:100%; padding:12px; background:var(--success); color:white; border:none; border-radius:8px; font-weight:bold; cursor: pointer;">KONFIRMASI PINJAM (3 HARI)</button>
+            <button onclick="simpanDataPinjam()" style="width:100%; padding:12px; background:var(--success); color:white; border:none; border-radius:8px; font-weight:bold; cursor: pointer;">KONFIRMASI PINJAM</button>
         </div>
         <div class="btn-group">
             <button class="mode-btn" style="background:var(--success)" onclick="setMode('Kunjungan', this)">KUNJUNGAN</button>
@@ -96,13 +94,15 @@
         <div id="print-header">
             <table class="kop-table">
                 <tr>
-                    <td width="15%"><img src="logo-smp.png" class="logo-cetak" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/9/9c/Logo_Tut_Wuri_Handayani.png'"></td>
+                    <td width="15%"><img src="logo-smp.png" width="80" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/9/9c/Logo_Tut_Wuri_Handayani.png'"></td>
                     <td width="70%" align="center">
                         <h2 style="margin:0;">PEMERINTAH KABUPATEN KUNINGAN</h2>
                         <h1 style="margin:0;">SMP NEGERI 1 CIBINGBIN</h1>
                         <p style="margin:5px 0; font-size:12px;">Alamat: Jl. Raya Pasar Cibingbin No. 250, Kuningan - Jawa Barat 45587</p>
                     </td>
-                    <td width="15%" align="right"><span style="font-size: 40px;">📚</span></td>
+                    <td width="15%" align="right">
+                        <i class="material-icons" style="font-size: 50px; color: black;">auto_stories</i>
+                    </td>
                 </tr>
             </table>
             <h3 align="center">LAPORAN AKTIVITAS PERPUSTAKAAN</h3>
