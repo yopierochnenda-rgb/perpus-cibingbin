@@ -10,12 +10,12 @@
         :root { --primary: #2c3e50; --success: #27ae60; --warning: #f1c40f; --danger: #e74c3c; --blue: #3498db; }
         body, html { height: 100%; margin: 0; font-family: 'Segoe UI', sans-serif; background: #f4f7f6; }
 
-        /* LOGIN BOX DENGAN IKON GRAFIS */
+        /* Login Box */
         #login-container { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1350&q=80'); background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; height: 100vh; }
         #login-box { padding: 40px; background: rgba(255, 255, 255, 0.95); border-radius: 25px; width: 85%; max-width: 320px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .login-icon-grafis { font-size: 70px; color: var(--primary); margin-bottom: 10px; }
 
-        /* Nav & Page */
+        /* Nav & Layout */
         .nav-menu { display: none; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
         .nav-container { display: flex; max-width: 1000px; margin: 0 auto; }
         .nav-item { flex: 1; padding: 15px 5px; text-align: center; font-weight: bold; color: #7f8c8d; cursor: pointer; border-bottom: 4px solid transparent; font-size: 0.75rem; }
@@ -23,8 +23,7 @@
         .page { display: none; padding: 15px; max-width: 950px; margin: 0 auto; }
         .header-title { background: var(--primary); color: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; text-align: center; }
         #reader { width: 100%; border: 4px solid var(--primary); border-radius: 15px; overflow: hidden; background: white; }
-
-        /* Input Buku Manual */
+        
         #input-buku-container { display: none; margin: 15px 0; padding: 15px; background: #fff; border: 2px solid var(--warning); border-radius: 12px; }
         #judulBuku { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; margin-bottom: 10px; }
 
@@ -38,13 +37,14 @@
         th, td { padding: 12px; border: 1px solid #eee; text-align: left; font-size: 0.8rem; }
         th { background: #f8f9fa; }
 
-        /* KOP SURAT */
-        #print-header { display: none; }
-        #print-footer { display: none; margin-top: 30px; }
-        .kop-table { width: 100%; border: none !important; border-bottom: 4px double black !important; margin-bottom: 20px; }
+        /* KOP SURAT PRESISI TENGAH */
+        #print-header { display: none; width: 100%; }
+        #print-footer { display: none; margin-top: 40px; }
+        .kop-table { width: 100%; border-collapse: collapse; border: none !important; border-bottom: 4px double black !important; margin-bottom: 20px; }
         .kop-table td { border: none !important; vertical-align: middle; }
 
         @media print {
+            body { background: white; }
             .nav-menu, button, #reader, .btn-group, #status-bar, .header-title, #page-pinjam, #input-buku-container, #login-container { display: none !important; }
             #page-dash { display: block !important; width: 100% !important; padding: 0 !important; }
             #print-header, #print-footer { display: block !important; }
@@ -94,19 +94,22 @@
         <div id="print-header">
             <table class="kop-table">
                 <tr>
-                    <td width="15%"><img src="logo-smp.png" width="80" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/9/9c/Logo_Tut_Wuri_Handayani.png'"></td>
-                    <td width="70%" align="center">
-                        <h2 style="margin:0;">PEMERINTAH KABUPATEN KUNINGAN</h2>
-                        <h1 style="margin:0;">SMP NEGERI 1 CIBINGBIN</h1>
-                        <p style="margin:5px 0; font-size:12px;">Alamat: Jl. Raya Pasar Cibingbin No. 250, Kuningan - Jawa Barat 45587</p>
+                    <td width="15%" align="center">
+                        <img src="logo-smp.png" width="85" onerror="this.src='https://via.placeholder.com/85?text=Logo+Sekolah'">
                     </td>
-                    <td width="15%" align="right">
+                    <td width="70%" align="center">
+                        <h2 style="margin:0; font-size: 18px; color: black;">PEMERINTAH KABUPATEN KUNINGAN</h2>
+                        <h1 style="margin:0; font-size: 22px; color: black;">SMP NEGERI 1 CIBINGBIN</h1>
+                        <p style="margin:5px 0; font-size:12px; color: black;">Alamat: Jl. Raya Pasar Cibingbin No. 250, Kuningan - Jawa Barat 45587</p>
+                    </td>
+                    <td width="15%" align="center">
                         <i class="material-icons" style="font-size: 50px; color: black;">auto_stories</i>
                     </td>
                 </tr>
             </table>
-            <h3 align="center">LAPORAN AKTIVITAS PERPUSTAKAAN</h3>
+            <h3 align="center" style="margin-top: 10px; text-decoration: underline;">LAPORAN AKTIVITAS PERPUSTAKAAN</h3>
         </div>
+
         <div class="header-title"><h3>RIWAYAT AKTIVITAS</h3></div>
         <button onclick="window.print()" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; border-radius:10px; margin-bottom:15px; font-weight:bold; cursor: pointer;">📥 DOWNLOAD LAPORAN</button>
         <div class="table-container">
@@ -115,11 +118,12 @@
                 <tbody id="bodyDash"></tbody>
             </table>
         </div>
+
         <div id="print-footer">
-            <div style="float: right; text-align: center; width: 250px;">
+            <div style="float: right; text-align: center; width: 250px; color: black;">
                 <p>Cibingbin, <span id="tgl-ttd"></span></p>
                 <p>Petugas Perpustakaan,</p><br><br><br>
-                <p><strong>( ________________________ )</strong></p>
+                <p><strong>( Rizki Anggraeni S.Pust )</strong></p>
             </div>
             <div style="clear: both;"></div>
         </div>
