@@ -3,253 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-PERPUS SMPN 1 CIBINGBIN</title>
+    <title>E-Perpus SMPN 1 Cibingbin</title>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
-        :root { --primary: #2c3e50; --success: #27ae60; --warning: #f1c40f; --danger: #e74c3c; --blue: #3498db; }
-        body, html { height: 100%; margin: 0; font-family: 'Segoe UI', sans-serif; background: #f4f7f6; }
-
-        /* Navigasi */
-        .nav-menu { display: none; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
-        .nav-container { display: flex; max-width: 1000px; margin: 0 auto; }
-        .nav-item { flex: 1; padding: 15px 5px; text-align: center; font-weight: bold; color: #7f8c8d; cursor: pointer; border-bottom: 4px solid transparent; font-size: 0.7rem; }
-        .nav-active { border-bottom: 4px solid var(--blue); color: var(--blue); background: #f9f9f9; }
-
-        .page { display: none; padding: 15px; max-width: 950px; margin: 0 auto; }
-        
-        /* Modal Input Buku */
-        #modal-buku {
-            display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); align-items: center; justify-content: center;
-        }
-        .modal-content {
-            background: white; padding: 25px; border-radius: 20px; width: 85%; max-width: 350px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        /* UI Scanner & Buttons */
-        #reader { width: 100%; border-radius: 15px; overflow: hidden; background: #000; border: 2px solid var(--primary); }
-        .btn-group { margin: 15px 0; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-        .mode-btn { padding: 12px 5px; font-size: 0.7rem; cursor: pointer; border: none; border-radius: 10px; color: white; font-weight: bold; opacity: 0.4; }
-        .active-mode { opacity: 1 !important; border: 2px solid #000; }
-        #status-bar { padding: 15px; border-radius: 12px; font-weight: bold; background: #fff; border: 2px solid #ddd; text-align: center; margin-bottom: 10px; }
-
-        /* Tabel */
-        .table-container { background: white; border-radius: 15px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow-x: auto; margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; min-width: 600px; }
-        th, td { padding: 10px; border: 1px solid #ddd; text-align: left; font-size: 0.75rem; }
-        th { background: #f2f2f2 !important; }
-
-        #login-container { 
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
-            url('https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1500&q=80'); 
-            background-size: cover; background-position: center; height: 100vh; display: flex; justify-content: center; align-items: center; 
-        }
-        #login-box { padding: 35px; background: rgba(255,255,255,0.95); border-radius: 25px; width: 80%; max-width: 300px; text-align: center; }
-
-        @media print {
-            .nav-menu, button, .btn-group, #reader, input, #status-bar, .no-print, #modal-buku { display: none !important; }
-            .page { display: block !important; padding: 0; }
-            body { background: white; }
-        }
+        body { font-family: sans-serif; text-align: center; margin: 20px; background-color: #f4f4f4; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        #reader { width: 100%; border-radius: 10px; }
+        select, input, button { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #ccc; font-size: 16px; }
+        button { background-color: #28a745; color: white; border: none; cursor: pointer; font-weight: bold; }
+        button:hover { background-color: #218838; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 12px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #007bff; color: white; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        .unread { background-color: #fff3cd !important; font-weight: bold; } /* Menambahkan class unread */
     </style>
 </head>
 <body>
 
-    <div id="modal-buku">
-        <div class="modal-content">
-            <h3 style="margin:0 0 10px 0;">📕 Judul Buku</h3>
-            <p id="label-siswa" style="font-size: 12px; color: #666; margin-bottom: 15px;"></p>
-            <input type="text" id="inputNamaBuku" style="width:90%; padding:15px; border-radius:10px; border:2px solid var(--blue); margin-bottom:20px; font-size:1rem;" placeholder="Ketik Judul Buku...">
-            <div style="display:flex; gap:10px;">
-                <button onclick="batalSimpan()" style="flex:1; padding:12px; background:#ccc; border:none; border-radius:10px; font-weight:bold;">BATAL</button>
-                <button onclick="simpanTransaksiLengkap()" style="flex:1; padding:12px; background:var(--success); color:white; border:none; border-radius:10px; font-weight:bold;">SIMPAN</button>
-            </div>
-        </div>
-    </div>
+<div class="container">
+    <h2>E-Perpus Digital</h2>
+    <p>Silakan Scan Kartu Pelajar</p>
+    
+    <div id="reader"></div>
 
-    <div id="login-container">
-        <div id="login-box">
-            <img src="logo-smp.png" style="width:60px; margin-bottom:10px;">
-            <h2 style="margin:0;">E-PERPUS</h2>
-            <p style="font-size:11px; color:#666; margin-bottom:20px;">SMPN 1 CIBINGBIN</p>
-            <input type="password" id="passInput" style="padding:14px; width:90%; border-radius:10px; border:1px solid #ccc; text-align:center;" placeholder="PIN">
-            <button onclick="checkLogin()" style="width:100%; margin-top:15px; padding:14px; background:var(--primary); color:white; border:none; border-radius:10px; font-weight:bold;">MASUK</button>
-        </div>
-    </div>
+    <form id="scanForm">
+        <input type="text" id="nisInput" placeholder="ID Siswa / NIS" readonly>
+        
+        <select id="statusSelect">
+            <option value="Kunjungan">Hanya Kunjungan</option>
+            <option value="Pinjam">Pinjam Buku</option>
+            <option value="Kembali">Kembali Buku</option>
+        </select>
 
-    <div id="main-nav" class="nav-menu">
-        <div class="nav-container">
-            <div id="nav-welcome" class="nav-item nav-active" onclick="switchPage('welcome')">HOME</div>
-            <div id="nav-scan" class="nav-item" onclick="switchPage('scan')">SCANNER</div>
-            <div id="nav-dash" class="nav-item" onclick="switchPage('dash')">LAPORAN</div>
-            <div id="nav-pinjam" class="nav-item" onclick="switchPage('pinjam')">REKAP</div>
-        </div>
-    </div>
+        <input type="text" id="bukuInput" placeholder="Nama Buku (Jika Pinjam/Kembali)">
+        
+        <button type="button" onclick="kirimData()">KIRIM DATA</button>
+    </form>
 
-    <div id="page-welcome" class="page">
-        <div style="background:white; padding:30px; border-radius:20px; text-align:center; box-shadow: 0 10px 20px rgba(0,0,0,0.05);">
-            <h3>Selamat Datang, Petugas</h3>
-            <div style="display:grid; gap:10px; margin-top:20px;">
-                <button class="mode-btn" style="background:var(--blue); opacity:1; padding:20px;" onclick="switchPage('scan')">📸 MULAI SCAN</button>
-                <button class="mode-btn" style="background:var(--success); opacity:1; padding:20px;" onclick="switchPage('dash')">📊 LIHAT LAPORAN</button>
-            </div>
-        </div>
-    </div>
+    <h3>Laporan Aktivitas Terbaru</h3>
+    <table id="logTable">
+        <thead>
+            <tr>
+                <th>Waktu</th>
+                <th>Nama</th>
+                <th>Status</th>
+                <th>Buku</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td colspan="4">Memuat data...</td></tr>
+        </tbody>
+    </table>
+</div>
 
-    <div id="page-scan" class="page">
-        <div id="status-bar">PILIH MODE DAHULU</div>
-        <div id="scan-btn-container" style="text-align:center; margin-bottom:15px;">
-            <button id="start-btn" onclick="initScanner()" style="width:100%; padding:20px; background:var(--blue); color:white; border:none; border-radius:12px; font-weight:bold;">📷 AKTIFKAN KAMERA</button>
-        </div>
-        <div id="reader"></div>
-        <div class="btn-group">
-            <button id="btn-Kunjungan" class="mode-btn" style="background:var(--success)" onclick="setMode('Kunjungan')">KUNJUNGAN</button>
-            <button id="btn-Pinjam" class="mode-btn" style="background:var(--warning); color:black;" onclick="setMode('Pinjam')">PINJAM</button>
-            <button id="btn-Kembali" class="mode-btn" style="background:var(--danger)" onclick="setMode('dikembalikan')">KEMBALI</button>
-        </div>
-        <div style="display:flex; gap:10px;">
-            <input type="text" id="manualInput" style="flex:1; padding:12px; border-radius:8px; border:1px solid #ccc;" placeholder="Input NIS Manual...">
-            <button onclick="kirimManual()" style="padding:10px; background:var(--primary); color:white; border:none; border-radius:8px; font-weight:bold;">KIRIM</button>
-        </div>
-    </div>
+<script>
+    // --- GANTI URL DI BAWAH INI DENGAN URL SCRIPT BAPAK ---
+    const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbW43Yyk45Rn5YB83qOxjuBtKyxVjMLvpceMm_3dKV204ernLu01niAz8xqu8K1qrhpMQ/exec";
 
-    <div id="page-dash" class="page">
-        <button class="no-print" onclick="window.print()" style="width:100%; padding:15px; background:var(--success); color:white; border:none; border-radius:10px; margin-bottom:15px; font-weight:bold;">📥 DOWNLOAD PDF</button>
-        <div class="table-container">
-            <h3 style="text-align:center;">RIWAYAT AKTIVITAS (LOG)</h3>
-            <table>
-                <thead><tr><th>Waktu</th><th>Nama</th><th>NIS</th><th>Kelas</th><th>Status</th><th>Buku</th></tr></thead>
-                <tbody id="bodyDash"></tbody>
-            </table>
-        </div>
-    </div>
+    // 1. Inisialisasi Scanner
+    function onScanSuccess(decodedText) {
+        document.getElementById('nisInput').value = decodedText;
+        // Opsional: Bunyi beep atau alert
+    }
 
-    <div id="page-pinjam" class="page">
-        <div class="table-container">
-            <h3 style="text-align:center;">📖 DAFTAR PINJAMAN AKTIF</h3>
-            <table>
-                <thead><tr><th>Nama</th><th>Kelas</th><th>Judul Buku</th><th>Aksi</th></tr></thead>
-                <tbody id="bodyPinjam"></tbody>
-            </table>
-        </div>
-    </div>
+    let html5QrcodeScanner = new html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
+    html5QrcodeScanner.render(onScanSuccess);
 
-    <script>
-        // URL SCRIPT HASIL NEW DEPLOY TADI
-        const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbwhMKu4MpBYWULh7k08CGNPQnCl9vtzz8GieB5F1gZKXdDk21zc4NNkS7wxJMk2XJtG1Q/exec";
-        let currentMode = "";
-        let isProcessing = false;
-        let html5QrCode;
-        let tempNIS = "";
+    // 2. Fungsi Kirim Data ke Google Sheets
+    function kirimData() {
+        const id = document.getElementById('nisInput').value;
+        const status = document.getElementById('statusSelect').value;
+        const buku = document.getElementById('bukuInput').value;
 
-        function checkLogin() {
-            if(document.getElementById('passInput').value === "1234") {
-                document.getElementById('login-container').style.display="none";
-                document.getElementById('main-nav').style.display="block";
-                switchPage('welcome'); loadData();
-                setInterval(loadData, 15000); 
-            } else { alert("PIN SALAH!"); }
+        if (!id) {
+            alert("Scan kartu dulu Pak!");
+            return;
         }
 
-        function switchPage(p) {
-            stopScanner();
-            document.querySelectorAll('.page').forEach(pg => pg.style.display='none');
-            document.querySelectorAll('.nav-item').forEach(nv => nv.classList.remove('nav-active'));
-            document.getElementById('page-'+p).style.display='block';
-            if(document.getElementById('nav-'+p)) document.getElementById('nav-'+p).classList.add('nav-active');
-            if(p === 'scan') document.getElementById('start-btn').style.display = 'block';
-        }
+        fetch(URL_SCRIPT, {
+            method: "POST",
+            body: JSON.stringify({ id: id, status: status, buku: buku })
+        })
+        .then(res => res.text())
+        .then(data => {
+            alert("Data Berhasil Dicatat!");
+            document.getElementById('scanForm').reset();
+            muatData(); // Refresh tabel setelah kirim
+        })
+        .catch(err => alert("Gagal kirim data: " + err));
+    }
 
-        function initScanner() {
-            if (!currentMode) { alert("Pilih Mode Scan dulu!"); return; }
-            document.getElementById('start-btn').style.display = 'none';
-            html5QrCode = new Html5Qrcode("reader");
-            // Coba kamera belakang, jika gagal coba depan
-            html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (txt) => { processScan(txt); })
-            .catch(() => {
-                html5QrCode.start({ facingMode: "user" }, { fps: 10, qrbox: 250 }, (txt) => { processScan(txt); });
+    // 3. Fungsi Ambil Data dari Google Sheets (doGet)
+    function muatData() {
+        fetch(URL_SCRIPT)
+        .then(res => res.json())
+        .then(data => {
+            const tbody = document.querySelector("#logTable tbody");
+            tbody.innerHTML = "";
+            
+            // Tampilkan 10 data terbaru (dibalik)
+            data.reverse().slice(0, 10).forEach(row => {
+                const tr = document.createElement("tr");
+                
+                // Jika statusnya belum kembali atau perlu perhatian, bisa tambah class unread
+                // Di sini saya contohkan semua data baru dianggap "unread" secara visual
+                tr.classList.add("unread"); 
+
+                tr.innerHTML = `
+                    <td>${row.waktu}</td>
+                    <td>${row.nama}</td>
+                    <td>${row.status}</td>
+                    <td>${row.buku}</td>
+                `;
+                tbody.appendChild(tr);
             });
-        }
+        })
+        .catch(err => {
+            document.querySelector("#logTable tbody").innerHTML = "<tr><td colspan='4'>Gagal memuat data</td></tr>";
+        });
+    }
 
-        function stopScanner() { if (html5QrCode && html5QrCode.isScanning) { html5QrCode.stop().then(() => { document.getElementById('reader').innerHTML = ""; }); } }
+    // Muat data saat pertama kali buka halaman
+    muatData();
+</script>
 
-        function setMode(m) {
-            currentMode = m;
-            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active-mode'));
-            const id = (m === 'dikembalikan') ? 'btn-Kembali' : 'btn-' + m;
-            document.getElementById(id).classList.add('active-mode');
-            document.getElementById('status-bar').innerHTML = "MODE: " + m.toUpperCase();
-        }
-
-        function processScan(nis) {
-            if(isProcessing) return;
-            tempNIS = nis;
-            if(currentMode === "Pinjam") {
-                stopScanner();
-                document.getElementById('label-siswa').innerText = "NIS: " + nis;
-                document.getElementById('modal-buku').style.display = 'flex';
-                document.getElementById('inputNamaBuku').focus();
-            } else {
-                kirimData(nis, "-");
-            }
-        }
-
-        function simpanTransaksiLengkap() {
-            let buku = document.getElementById('inputNamaBuku').value;
-            if(!buku) { alert("Judul buku harus diisi!"); return; }
-            document.getElementById('modal-buku').style.display = 'none';
-            kirimData(tempNIS, buku);
-            document.getElementById('inputNamaBuku').value = "";
-        }
-
-        function batalSimpan() {
-            document.getElementById('modal-buku').style.display = 'none';
-            initScanner();
-        }
-
-        function kirimData(nis, buku) {
-            isProcessing = true;
-            let bar = document.getElementById('status-bar');
-            bar.innerHTML = "⌛ MENCATAT..."; bar.style.background = "#f1c40f";
-
-            fetch(URL_SCRIPT, { 
-                method: "POST", 
-                mode: 'no-cors', 
-                body: JSON.stringify({ id: nis, status: currentMode, buku: buku }) 
-            })
-            .then(() => { 
-                bar.innerHTML = "✅ BERHASIL!"; bar.style.background = "#27ae60"; bar.style.color = "white";
-                loadData();
-                setTimeout(() => { 
-                    isProcessing = false; 
-                    bar.innerHTML = "MODE: " + currentMode.toUpperCase(); 
-                    bar.style.background = "#fff"; bar.style.color = "black";
-                    if(currentMode === "Pinjam" && document.getElementById('page-scan').style.display === 'block') initScanner();
-                }, 2000);
-            });
-        }
-
-        function kirimManual() {
-            let val = document.getElementById('manualInput').value;
-            if(val) { processScan(val); document.getElementById('manualInput').value = ""; }
-        }
-
-        function loadData() {
-            fetch(URL_SCRIPT + "?action=read").then(res => res.json()).then(data => {
-                let dash = ""; let pinjamTab = ""; let aktif = {};
-                if(!data) return;
-                [...data].reverse().forEach(item => {
-                    dash += `<tr><td>${item.waktu}</td><td>${item.nama}</td><td>${item.nis}</td><td>${item.kelas}</td><td>${item.status}</td><td>${item.buku || '-'}</td></tr>`;
-                    if (item.status === "Pinjam") { aktif[item.nis] = item; }
-                    else if (item.status === "dikembalikan") { delete aktif[item.nis]; }
-                });
-                document.getElementById('bodyDash').innerHTML = dash;
-                Object.values(aktif).forEach(s => {
-                    pinjamTab += `<tr><td>${s.nama}</td><td>${s.kelas}</td><td>${s.buku || '-'}</td><td><button onclick="currentMode='dikembalikan';kirimData('${s.nis}','-')" style="background:var(--danger);color:white;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;">Kembali</button></td></tr>`;
-                });
-                document.getElementById('bodyPinjam').innerHTML = pinjamTab || "<tr><td colspan='4' style='text-align:center;'>Tidak ada pinjaman aktif</td></tr>";
-            }).catch(e => console.log("Load data error"));
-        }
-    </script>
 </body>
 </html>
