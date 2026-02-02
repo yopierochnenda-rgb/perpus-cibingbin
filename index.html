@@ -9,7 +9,7 @@
         :root { --primary: #2c3e50; --success: #27ae60; --warning: #f1c40f; --danger: #e74c3c; --blue: #3498db; }
         body, html { height: 100%; margin: 0; font-family: 'Segoe UI', sans-serif; background: #f4f7f6; }
 
-        /* NAV */
+        /* Navigasi */
         .nav-menu { display: none; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
         .nav-container { display: flex; max-width: 1000px; margin: 0 auto; }
         .nav-item { flex: 1; padding: 15px 5px; text-align: center; font-weight: bold; color: #7f8c8d; cursor: pointer; border-bottom: 4px solid transparent; font-size: 0.7rem; }
@@ -17,36 +17,37 @@
 
         .page { display: none; padding: 15px; max-width: 950px; margin: 0 auto; }
         
-        /* MODAL INPUT BUKU */
+        /* Modal Input Buku */
         #modal-buku {
             display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); align-items: center; justify-content: center;
         }
         .modal-content {
-            background: white; padding: 25px; border-radius: 20px; width: 85%; max-width: 350px; text-align: center;
+            background: white; padding: 25px; border-radius: 20px; width: 85%; max-width: 350px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        /* BACKGROUND LOGIN */
-        #login-container { 
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
-            url('https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1500&q=80'); 
-            background-size: cover; background-position: center; height: 100vh; display: flex; justify-content: center; align-items: center; 
-        }
-        #login-box { padding: 35px; background: rgba(255,255,255,0.95); border-radius: 25px; width: 80%; max-width: 300px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-
+        /* UI Scanner & Buttons */
         #reader { width: 100%; border-radius: 15px; overflow: hidden; background: #000; border: 2px solid var(--primary); }
         .btn-group { margin: 15px 0; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
         .mode-btn { padding: 12px 5px; font-size: 0.7rem; cursor: pointer; border: none; border-radius: 10px; color: white; font-weight: bold; opacity: 0.4; }
         .active-mode { opacity: 1 !important; border: 2px solid #000; }
         #status-bar { padding: 15px; border-radius: 12px; font-weight: bold; background: #fff; border: 2px solid #ddd; text-align: center; margin-bottom: 10px; }
 
-        .table-container { background: white; border-radius: 15px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow-x: auto; }
+        /* Tabel */
+        .table-container { background: white; border-radius: 15px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow-x: auto; margin-bottom: 20px; }
         table { width: 100%; border-collapse: collapse; min-width: 600px; }
         th, td { padding: 10px; border: 1px solid #ddd; text-align: left; font-size: 0.75rem; }
         th { background: #f2f2f2 !important; }
 
+        #login-container { 
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
+            url('https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1500&q=80'); 
+            background-size: cover; background-position: center; height: 100vh; display: flex; justify-content: center; align-items: center; 
+        }
+        #login-box { padding: 35px; background: rgba(255,255,255,0.95); border-radius: 25px; width: 80%; max-width: 300px; text-align: center; }
+
         @media print {
-            .nav-menu, button, .btn-group, #reader, input, #status-bar, .no-print, #scan-btn-container, #modal-buku { display: none !important; }
+            .nav-menu, button, .btn-group, #reader, input, #status-bar, .no-print, #modal-buku { display: none !important; }
             .page { display: block !important; padding: 0; }
             body { background: white; }
         }
@@ -58,7 +59,7 @@
         <div class="modal-content">
             <h3 style="margin:0 0 10px 0;">📕 Judul Buku</h3>
             <p id="label-siswa" style="font-size: 12px; color: #666; margin-bottom: 15px;"></p>
-            <input type="text" id="inputNamaBuku" style="width:90%; padding:15px; border-radius:10px; border:2px solid var(--blue); margin-bottom:20px; font-size:1rem;" placeholder="Ketik Judul Buku..." autocomplete="off">
+            <input type="text" id="inputNamaBuku" style="width:90%; padding:15px; border-radius:10px; border:2px solid var(--blue); margin-bottom:20px; font-size:1rem;" placeholder="Ketik Judul Buku...">
             <div style="display:flex; gap:10px;">
                 <button onclick="batalSimpan()" style="flex:1; padding:12px; background:#ccc; border:none; border-radius:10px; font-weight:bold;">BATAL</button>
                 <button onclick="simpanTransaksiLengkap()" style="flex:1; padding:12px; background:var(--success); color:white; border:none; border-radius:10px; font-weight:bold;">SIMPAN</button>
@@ -79,18 +80,18 @@
     <div id="main-nav" class="nav-menu">
         <div class="nav-container">
             <div id="nav-welcome" class="nav-item nav-active" onclick="switchPage('welcome')">HOME</div>
-            <div id="nav-scan" class="nav-item" onclick="switchPage('scan')">SCAN</div>
+            <div id="nav-scan" class="nav-item" onclick="switchPage('scan')">SCANNER</div>
             <div id="nav-dash" class="nav-item" onclick="switchPage('dash')">LAPORAN</div>
-            <div id="nav-pinjam" class="nav-item" onclick="switchPage('pinjam')">PINJAMAN</div>
+            <div id="nav-pinjam" class="nav-item" onclick="switchPage('pinjam')">REKAP</div>
         </div>
     </div>
 
     <div id="page-welcome" class="page">
-        <div style="background:white; padding:30px; border-radius:20px; text-align:center;">
+        <div style="background:white; padding:30px; border-radius:20px; text-align:center; box-shadow: 0 10px 20px rgba(0,0,0,0.05);">
             <h3>Selamat Datang, Petugas</h3>
             <div style="display:grid; gap:10px; margin-top:20px;">
-                <button class="mode-btn" style="background:var(--blue); opacity:1; padding:20px;" onclick="switchPage('scan')">📸 MENU SCANNER</button>
-                <button class="mode-btn" style="background:var(--success); opacity:1; padding:20px;" onclick="switchPage('dash')">📊 LAPORAN</button>
+                <button class="mode-btn" style="background:var(--blue); opacity:1; padding:20px;" onclick="switchPage('scan')">📸 MULAI SCAN</button>
+                <button class="mode-btn" style="background:var(--success); opacity:1; padding:20px;" onclick="switchPage('dash')">📊 LIHAT LAPORAN</button>
             </div>
         </div>
     </div>
@@ -98,7 +99,7 @@
     <div id="page-scan" class="page">
         <div id="status-bar">PILIH MODE DAHULU</div>
         <div id="scan-btn-container" style="text-align:center; margin-bottom:15px;">
-            <button id="start-btn" onclick="initScanner()" style="width:100%; padding:20px; background:var(--blue); color:white; border:none; border-radius:12px; font-weight:bold;">📷 BUKA KAMERA</button>
+            <button id="start-btn" onclick="initScanner()" style="width:100%; padding:20px; background:var(--blue); color:white; border:none; border-radius:12px; font-weight:bold;">📷 AKTIFKAN KAMERA</button>
         </div>
         <div id="reader"></div>
         <div class="btn-group">
@@ -107,7 +108,7 @@
             <button id="btn-Kembali" class="mode-btn" style="background:var(--danger)" onclick="setMode('dikembalikan')">KEMBALI</button>
         </div>
         <div style="display:flex; gap:10px;">
-            <input type="text" id="manualInput" style="flex:1; padding:12px; border-radius:8px; border:1px solid #ccc;" placeholder="NIS Manual...">
+            <input type="text" id="manualInput" style="flex:1; padding:12px; border-radius:8px; border:1px solid #ccc;" placeholder="Input NIS Manual...">
             <button onclick="kirimManual()" style="padding:10px; background:var(--primary); color:white; border:none; border-radius:8px; font-weight:bold;">KIRIM</button>
         </div>
     </div>
@@ -115,7 +116,7 @@
     <div id="page-dash" class="page">
         <button class="no-print" onclick="window.print()" style="width:100%; padding:15px; background:var(--success); color:white; border:none; border-radius:10px; margin-bottom:15px; font-weight:bold;">📥 DOWNLOAD PDF</button>
         <div class="table-container">
-            <h3 style="text-align:center;">LAPORAN AKTIVITAS</h3>
+            <h3 style="text-align:center;">RIWAYAT AKTIVITAS (LOG)</h3>
             <table>
                 <thead><tr><th>Waktu</th><th>Nama</th><th>NIS</th><th>Kelas</th><th>Status</th><th>Buku</th></tr></thead>
                 <tbody id="bodyDash"></tbody>
@@ -125,16 +126,17 @@
 
     <div id="page-pinjam" class="page">
         <div class="table-container">
-            <h3 style="text-align:center;">📖 PINJAMAN AKTIF</h3>
+            <h3 style="text-align:center;">📖 DAFTAR PINJAMAN AKTIF</h3>
             <table>
-                <thead><tr><th>Nama Siswa</th><th>Kelas</th><th>Judul Buku</th><th>Aksi</th></tr></thead>
+                <thead><tr><th>Nama</th><th>Kelas</th><th>Judul Buku</th><th>Aksi</th></tr></thead>
                 <tbody id="bodyPinjam"></tbody>
             </table>
         </div>
     </div>
 
     <script>
-        const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbwygpq5H26qWHJFx74nHrrZVulQINLfO2HMmoDSq0tZdSL_cwZO71NXPz1yt7wI5KNWbA/exec";
+        // URL SCRIPT HASIL NEW DEPLOY TADI
+        const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbwhMKu4MpBYWULh7k08CGNPQnCl9vtzz8GieB5F1gZKXdDk21zc4NNkS7wxJMk2XJtG1Q/exec";
         let currentMode = "";
         let isProcessing = false;
         let html5QrCode;
@@ -162,6 +164,7 @@
             if (!currentMode) { alert("Pilih Mode Scan dulu!"); return; }
             document.getElementById('start-btn').style.display = 'none';
             html5QrCode = new Html5Qrcode("reader");
+            // Coba kamera belakang, jika gagal coba depan
             html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (txt) => { processScan(txt); })
             .catch(() => {
                 html5QrCode.start({ facingMode: "user" }, { fps: 10, qrbox: 250 }, (txt) => { processScan(txt); });
@@ -221,7 +224,7 @@
                     isProcessing = false; 
                     bar.innerHTML = "MODE: " + currentMode.toUpperCase(); 
                     bar.style.background = "#fff"; bar.style.color = "black";
-                    if(currentMode === "Pinjam") initScanner();
+                    if(currentMode === "Pinjam" && document.getElementById('page-scan').style.display === 'block') initScanner();
                 }, 2000);
             });
         }
@@ -234,6 +237,7 @@
         function loadData() {
             fetch(URL_SCRIPT + "?action=read").then(res => res.json()).then(data => {
                 let dash = ""; let pinjamTab = ""; let aktif = {};
+                if(!data) return;
                 [...data].reverse().forEach(item => {
                     dash += `<tr><td>${item.waktu}</td><td>${item.nama}</td><td>${item.nis}</td><td>${item.kelas}</td><td>${item.status}</td><td>${item.buku || '-'}</td></tr>`;
                     if (item.status === "Pinjam") { aktif[item.nis] = item; }
@@ -243,8 +247,8 @@
                 Object.values(aktif).forEach(s => {
                     pinjamTab += `<tr><td>${s.nama}</td><td>${s.kelas}</td><td>${s.buku || '-'}</td><td><button onclick="currentMode='dikembalikan';kirimData('${s.nis}','-')" style="background:var(--danger);color:white;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;">Kembali</button></td></tr>`;
                 });
-                document.getElementById('bodyPinjam').innerHTML = pinjamTab;
-            });
+                document.getElementById('bodyPinjam').innerHTML = pinjamTab || "<tr><td colspan='4' style='text-align:center;'>Tidak ada pinjaman aktif</td></tr>";
+            }).catch(e => console.log("Load data error"));
         }
     </script>
 </body>
