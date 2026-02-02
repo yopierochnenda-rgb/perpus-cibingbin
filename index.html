@@ -12,19 +12,23 @@
         /* Navigation */
         .nav-menu { display: none; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
         .nav-container { display: flex; max-width: 1000px; margin: 0 auto; }
-        .nav-item { flex: 1; padding: 15px 5px; text-align: center; font-weight: bold; color: #7f8c8d; cursor: pointer; border-bottom: 4px solid transparent; font-size: 0.75rem; }
+        .nav-item { flex: 1; padding: 15px 5px; text-align: center; font-weight: bold; color: #7f8c8d; cursor: pointer; border-bottom: 4px solid transparent; font-size: 0.7rem; }
         .nav-active { border-bottom: 4px solid var(--blue); color: var(--blue); background: #f9f9f9; }
 
         .page { display: none; padding: 15px; max-width: 950px; margin: 0 auto; }
-        .header-title { background: var(--primary); color: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; text-align: center; }
         
-        /* Welcome Page Styles */
+        /* Kop Surat & Tanda Tangan */
+        .kop-surat { display: none; text-align: center; margin-bottom: 20px; }
+        .kop-surat img { width: 100%; max-width: 900px; height: auto; }
+        .ttd-container { display: none; margin-top: 30px; text-align: right; padding-right: 50px; }
+
+        /* Welcome Card */
         .welcome-card { background: white; padding: 30px; border-radius: 20px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-        .menu-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 20px; }
-        .menu-btn { padding: 20px; border-radius: 15px; border: none; color: white; font-weight: bold; font-size: 1rem; cursor: pointer; transition: 0.3s; }
+        .menu-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 20px; }
+        .menu-btn { padding: 18px; border-radius: 15px; border: none; color: white; font-weight: bold; font-size: 1rem; cursor: pointer; }
 
         /* Scanner */
-        #reader { width: 100%; border-radius: 15px; overflow: hidden; border: 3px solid var(--primary); background: #000; }
+        #reader { width: 100%; border-radius: 15px; overflow: hidden; border: 2px solid var(--primary); background: #000; }
         .btn-group { margin: 15px 0; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
         .mode-btn { padding: 15px 5px; font-size: 0.7rem; cursor: pointer; border: none; border-radius: 10px; color: white; font-weight: bold; opacity: 0.4; }
         .active-mode { opacity: 1 !important; border: 2px solid #000; }
@@ -32,11 +36,20 @@
 
         /* Tables */
         .table-container { background: white; border-radius: 15px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 600px; }
-        th, td { padding: 12px; border: 1px solid #eee; text-align: left; font-size: 0.8rem; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; margin-top: 10px; }
+        th, td { padding: 10px; border: 1px solid #000; text-align: left; font-size: 0.8rem; }
+        th { background: #f2f2f2 !important; }
 
-        #login-container { background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1350&q=80'); background-size: cover; height: 100vh; display: flex; justify-content: center; align-items: center; }
+        #login-container { background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('sekolah.jpg'); background-size: cover; height: 100vh; display: flex; justify-content: center; align-items: center; }
         #login-box { padding: 40px; background: white; border-radius: 25px; width: 80%; max-width: 300px; text-align: center; }
+
+        @media print {
+            .nav-menu, button, .btn-group, #reader, input, #status-bar { display: none !important; }
+            .page { display: block !important; padding: 0; }
+            .kop-surat, .ttd-container { display: block !important; }
+            body { background: white; }
+            .table-container { box-shadow: none; }
+        }
     </style>
 </head>
 <body>
@@ -44,7 +57,7 @@
     <div id="login-container">
         <div id="login-box">
             <h2 style="color: var(--primary); margin:0;">E-PERPUS</h2>
-            <p style="font-size:12px; color:#7f8c8d; margin-bottom:20px;">SMPN 1 CIBINGBIN</p>
+            <p style="font-size:12px; margin-bottom:20px;">SMPN 1 CIBINGBIN</p>
             <input type="password" id="passInput" style="padding:12px; width:90%; border-radius:10px; border:1px solid #ccc; text-align:center" placeholder="PIN PETUGAS">
             <button onclick="checkLogin()" style="width:100%; margin-top:15px; padding:12px; background:var(--primary); color:white; border:none; border-radius:10px; font-weight:bold;">MASUK</button>
         </div>
@@ -52,7 +65,7 @@
 
     <div id="main-nav" class="nav-menu">
         <div class="nav-container">
-            <div id="nav-welcome" class="nav-item" onclick="switchPage('welcome')">HOME</div>
+            <div id="nav-welcome" class="nav-item nav-active" onclick="switchPage('welcome')">HOME</div>
             <div id="nav-scan" class="nav-item" onclick="switchPage('scan')">SCAN</div>
             <div id="nav-dash" class="nav-item" onclick="switchPage('dash')">LAPORAN</div>
             <div id="nav-pinjam" class="nav-item" onclick="switchPage('pinjam')">PINJAMAN</div>
@@ -61,46 +74,51 @@
 
     <div id="page-welcome" class="page">
         <div class="welcome-card">
-            <h2 style="color: var(--primary); margin-bottom:5px;">Selamat Datang!</h2>
-            <p style="color: #7f8c8d;">Petugas Perpustakaan SMPN 1 Cibingbin</p>
+            <img src="logo-smp.png" style="width:100%; max-width:450px; margin-bottom:15px;">
+            <h3>Selamat Datang, Petugas!</h3>
             <div class="menu-grid">
-                <button class="menu-btn" style="background:var(--blue)" onclick="switchPage('scan')">📸 MULAI SCAN KARTU</button>
-                <button class="menu-btn" style="background:var(--success)" onclick="switchPage('dash')">📊 LIHAT REKAP LAPORAN</button>
-                <button class="menu-btn" style="background:var(--warning); color:black;" onclick="switchPage('pinjam')">📖 CEK PINJAMAN AKTIF</button>
+                <button class="menu-btn" style="background:var(--blue)" onclick="switchPage('scan')">📸 MULAI SCAN</button>
+                <button class="menu-btn" style="background:var(--success)" onclick="switchPage('dash')">📊 LAPORAN</button>
+                <button class="menu-btn" style="background:var(--warning); color:black;" onclick="switchPage('pinjam')">📖 PINJAMAN</button>
             </div>
+            <button onclick="location.reload()" style="margin-top:20px; color:var(--danger); border:none; background:none; font-weight:bold; cursor:pointer;">🚪 KELUAR</button>
         </div>
     </div>
 
     <div id="page-scan" class="page">
-        <div class="header-title"><h3>SCAN KARTU SISWA</h3></div>
         <div id="reader"></div>
         <div class="btn-group">
             <button class="mode-btn" style="background:var(--success)" onclick="setMode('Kunjungan', this)">KUNJUNGAN</button>
             <button class="mode-btn" style="background:var(--warning); color:black;" onclick="setMode('Pinjam', this)">PINJAM</button>
             <button class="mode-btn" style="background:var(--danger)" onclick="setMode('dikembalikan', this)">KEMBALI</button>
         </div>
-        <div id="status-bar">PILIH MODE DAHULU</div>
-        <div style="margin-top:15px; display:flex; gap:10px;">
-            <input type="text" id="manualInput" style="flex:1; padding:12px; border-radius:8px; border:1px solid #ccc;" placeholder="Input manual NIS...">
-            <button onclick="kirimManual()" style="padding:10px 20px; background:var(--primary); color:white; border:none; border-radius:8px; font-weight:bold">KIRIM</button>
-        </div>
+        <div id="status-bar">PILIH MODE</div>
+        <input type="text" id="manualInput" style="width:94%; padding:12px; margin-top:10px; border-radius:8px; border:1px solid #ccc;" placeholder="Manual NIS...">
+        <button onclick="kirimManual()" style="width:100%; margin-top:10px; padding:12px; background:var(--primary); color:white; border:none; border-radius:8px;">KIRIM</button>
     </div>
 
     <div id="page-dash" class="page">
-        <div class="header-title"><h3>LAPORAN AKTIVITAS</h3></div>
+        <div class="kop-surat"><img src="logo-smp.png"></div>
+        <button onclick="window.print()" style="width:100%; padding:15px; background:var(--success); color:white; border:none; border-radius:10px; margin-bottom:15px; font-weight:bold;">📥 DOWNLOAD LAPORAN (PDF)</button>
         <div class="table-container">
             <table>
                 <thead><tr><th>Waktu</th><th>Nama</th><th>NIS</th><th>Kelas</th><th>Status</th></tr></thead>
                 <tbody id="bodyDash"></tbody>
             </table>
         </div>
+        <div class="ttd-container">
+            <p>Cibingbin, <span id="tgl-ttd"></span></p>
+            <p style="margin-bottom:60px;">Petugas Perpustakaan,</p>
+            <p><strong>Rizki Angriani, S.Pust</strong></p>
+        </div>
     </div>
 
     <div id="page-pinjam" class="page">
-        <div class="header-title" style="background:var(--blue)"><h3>DAFTAR PINJAMAN AKTIF</h3></div>
+        <div class="kop-surat"><img src="logo-smp.png"></div>
         <div class="table-container">
+            <h3 style="text-align:center;">DAFTAR PINJAMAN AKTIF</h3>
             <table>
-                <thead><tr><th>Nama</th><th>Kelas</th><th>Status</th></tr></thead>
+                <thead><tr><th>Nama Siswa</th><th>Kelas</th><th>Status</th></tr></thead>
                 <tbody id="bodyPinjam"></tbody>
             </table>
         </div>
@@ -110,29 +128,39 @@
         const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbwygpq5H26qWHJFx74nHrrZVulQINLfO2HMmoDSq0tZdSL_cwZO71NXPz1yt7wI5KNWbA/exec";
         let currentMode = "";
         let isProcessing = false;
-        let scannerStarted = false;
+        let html5QrCode;
 
         function checkLogin() {
             if(document.getElementById('passInput').value === "1234") {
                 document.getElementById('login-container').style.display="none";
                 document.getElementById('main-nav').style.display="block";
-                switchPage('welcome'); 
-                loadData();
-                setInterval(loadData, 7000); 
+                switchPage('welcome'); loadData();
+                updateTgl();
+                setInterval(loadData, 10000); 
             } else { alert("PIN Salah!"); }
+        }
+
+        function updateTgl() {
+            const n = new Date();
+            const bln = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+            document.getElementById('tgl-ttd').innerText = n.getDate() + " " + bln[n.getMonth()] + " " + n.getFullYear();
         }
 
         function switchPage(p) {
             document.querySelectorAll('.page').forEach(pg => pg.style.display='none');
             document.querySelectorAll('.nav-item').forEach(nv => nv.classList.remove('nav-active'));
             document.getElementById('page-'+p).style.display='block';
-            document.getElementById('nav-'+p).classList.add('nav-active');
+            if(document.getElementById('nav-'+p)) document.getElementById('nav-'+p).classList.add('nav-active');
+            if (p === 'scan') { startScanner(); } else { stopScanner(); }
+        }
 
-            // Kamera hanya menyala di halaman scan
-            if (p === 'scan' && !scannerStarted) {
-                initScanner();
-                scannerStarted = true;
-            }
+        function startScanner() {
+            if (!html5QrCode) { html5QrCode = new Html5Qrcode("reader"); }
+            html5QrCode.start({ facingMode: "environment" }, { fps: 5, qrbox: 250 }, kirimData);
+        }
+
+        function stopScanner() {
+            if (html5QrCode && html5QrCode.isScanning) { html5QrCode.stop(); }
         }
 
         function setMode(m, b) {
@@ -146,25 +174,19 @@
             if(!currentMode || isProcessing) return;
             isProcessing = true;
             let bar = document.getElementById('status-bar');
-            bar.innerHTML = "⌛ Mencatat data...";
-            bar.style.background = "#f1c40f";
+            bar.innerHTML = "⌛ Mencatat..."; bar.style.background = "#f1c40f";
 
             fetch(URL_SCRIPT, { method: "POST", mode: 'no-cors', body: JSON.stringify({ id: nis, status: currentMode }) })
             .then(() => { 
                 bar.innerHTML = "✅ BERHASIL"; bar.style.background = "#27ae60"; bar.style.color = "white";
                 loadData();
-                setTimeout(() => { isProcessing = false; bar.innerHTML = "MODE: " + currentMode; bar.style.background = "#fff"; bar.style.color = "black"; }, 2000);
+                setTimeout(() => { isProcessing = false; bar.innerHTML = "MODE: " + currentMode; bar.style.background = "#fff"; bar.style.color = "black"; }, 2500);
             });
         }
 
         function kirimManual() {
             let val = document.getElementById('manualInput').value;
             if(val) { kirimData(val); document.getElementById('manualInput').value = ""; }
-        }
-
-        function initScanner() { 
-            const html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 5, qrbox: { width: 250, height: 180 } });
-            html5QrcodeScanner.render(kirimData); 
         }
 
         function loadData() {
@@ -177,7 +199,7 @@
                 });
                 document.getElementById('bodyDash').innerHTML = dash;
                 Object.values(aktif).forEach(s => {
-                    pinjamTab += `<tr><td>${s.nama}</td><td>${s.kelas}</td><td><b style="color:orange">Pinjam</b></td></tr>`;
+                    pinjamTab += `<tr><td>${s.nama}</td><td>${s.kelas}</td><td><b>Pinjam</b></td></tr>`;
                 });
                 document.getElementById('bodyPinjam').innerHTML = pinjamTab;
             });
