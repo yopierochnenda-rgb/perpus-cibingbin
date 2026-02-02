@@ -9,29 +9,31 @@
         :root { --primary: #2c3e50; --success: #27ae60; --warning: #f39c12; --danger: #e74c3c; --blue: #3498db; }
         body, html { height: 100%; margin: 0; font-family: 'Segoe UI', sans-serif; background: #f4f7f6; }
 
-        /* Login */
+        /* Login Screen */
         #login-container { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1350&q=80'); background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; height: 100vh; }
         #login-box { padding: 40px; background: rgba(255, 255, 255, 0.95); border-radius: 20px; width: 85%; max-width: 300px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         
-        /* Navigasi Menu */
+        /* Menu Navigasi Modern */
         .nav-menu { display: none; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
         .nav-container { display: flex; max-width: 1200px; margin: 0 auto; overflow-x: auto; scrollbar-width: none; }
         .nav-item { flex: none; padding: 15px 18px; text-align: center; font-weight: bold; color: #7f8c8d; cursor: pointer; border-bottom: 4px solid transparent; white-space: nowrap; font-size: 13px; }
         .nav-active { border-bottom: 4px solid var(--primary); color: var(--primary); background: #f9f9f9; }
 
-        /* Halaman */
+        /* Halaman Konten */
         .page { display: none; padding: 20px; max-width: 800px; margin: 0 auto; }
         .header-title { color: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; text-align: center; font-weight: bold; }
         
-        /* Scanner Area */
+        /* Area Scanner */
         #reader { width: 100%; border-radius: 15px; overflow: hidden; background: white; border: 3px solid #ddd; }
         #status-bar { padding: 15px; border-radius: 12px; font-weight: bold; background: #fff; border: 2px solid #ddd; text-align: center; margin-top: 15px; }
 
-        /* Tabel */
+        /* Tabel Data */
         .table-container { background: white; border-radius: 15px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; min-width: 500px; }
         th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; font-size: 14px; }
         th { background: #f8f9fa; color: #666; }
+        
+        /* Baris Baru (Unread) */
         .unread { background-color: #fff9c4 !important; font-weight: bold; }
         .status-badge { padding: 4px 8px; border-radius: 5px; color: white; font-size: 11px; font-weight: bold; }
     </style>
@@ -42,7 +44,7 @@
         <div id="login-box">
             <h2 style="color: var(--primary); margin:0;">E-PERPUS</h2>
             <p style="font-size: 11px; color: #666; margin-bottom:20px;">SMPN 1 CIBINGBIN</p>
-            <input type="password" id="passInput" style="padding:15px; width:80%; border:2px solid #ddd; border-radius:10px; text-align:center;" placeholder="PIN">
+            <input type="password" id="passInput" style="padding:15px; width:80%; border:2px solid #ddd; border-radius:10px; text-align:center;" placeholder="MASUKKAN PIN">
             <button style="background: var(--primary); margin-top: 15px; width: 100%; padding: 15px; color: white; border: none; border-radius: 10px; font-weight: bold; cursor:pointer;" onclick="checkLogin()">MASUK</button>
         </div>
     </div>
@@ -52,7 +54,7 @@
             <div id="nav-Kunjungan" class="nav-item" onclick="startScan('Kunjungan')">KUNJUNGAN</div>
             <div id="nav-Pinjam" class="nav-item" onclick="startScan('Pinjam')">PINJAM</div>
             <div id="nav-Kembali" class="nav-item" onclick="startScan('Kembali')">KEMBALI</div>
-            <div id="nav-Dash" class="nav-item" onclick="showDash()">RIWAYAT</div>
+            <div id="nav-Dash" class="nav-item" onclick="showDash()">RIWAYAT AKTIVITAS</div>
             <div class="nav-item" style="color:var(--blue)" onclick="window.open('https://docs.google.com/spreadsheets/d/1Bf2R7xndXp1v_fU_P2B7uK677tWJ7h8-8Xw1-vE8FkM/edit', '_blank')">DOWNLOAD</div>
             <div class="nav-item" style="color:var(--danger)" onclick="location.reload()">LOGOUT</div>
         </div>
@@ -61,11 +63,11 @@
     <div id="page-scan" class="page">
         <div id="header-color" class="header-title">HALAMAN SCAN</div>
         <div id="reader"></div>
-        <div id="status-bar">SIAP SCAN...</div>
+        <div id="status-bar">MENGHUBUNGKAN KAMERA...</div>
     </div>
 
     <div id="page-dash" class="page">
-        <div class="header-title" style="background:var(--primary)">RIWAYAT AKTIVITAS SISWA</div>
+        <div class="header-title" style="background:var(--primary)">RIWAYAT LOG AKTIVITAS</div>
         <div class="table-container">
             <table>
                 <thead><tr><th>WAKTU</th><th>NAMA</th><th>KELAS</th><th>STATUS</th></tr></thead>
@@ -75,7 +77,9 @@
     </div>
 
     <script>
+        // URL SCRIPT BAPAK SUDAH TERPASANG DI SINI
         const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbxa5zUTzwU0Mqsp2ilCJzI0__gLgrGVkSJd5xdzTr1_iKLOOjBPpLEHzMPsPkD3VfBO/exec";
+        
         let currentMode = "";
         let isProcessing = false;
         let scanner = null;
@@ -84,37 +88,37 @@
             if(document.getElementById('passInput').value === "1234") {
                 document.getElementById('login-container').style.display="none";
                 document.getElementById('main-nav').style.display="block";
-                startScan('Kunjungan'); // Default awal
-            } else { alert("PIN Salah!"); }
+                startScan('Kunjungan'); // Masuk ke Kunjungan secara default
+            } else { alert("PIN Salah! Coba 1234"); }
         }
 
-        // Fungsi Memulai Scan Berdasarkan Menu yang Dipilih
+        // Fungsi Memulai Scan
         function startScan(mode) {
             currentMode = mode;
-            // Update UI Navigasi
             document.querySelectorAll('.nav-item').forEach(nv => nv.classList.remove('nav-active'));
             document.getElementById('nav-'+mode).classList.add('nav-active');
             
-            // Tampilkan Halaman Scan
             document.getElementById('page-dash').style.display = 'none';
             document.getElementById('page-scan').style.display = 'block';
             
-            // Set Warna Header sesuai Mode
             let h = document.getElementById('header-color');
             let bar = document.getElementById('status-bar');
+
+            // Ganti Warna Header sesuai Menu
             if(mode === 'Kunjungan') { h.style.background = 'var(--success)'; h.innerText = "MODE: KUNJUNGAN"; }
             if(mode === 'Pinjam') { h.style.background = 'var(--warning)'; h.innerText = "MODE: PINJAM BUKU"; }
             if(mode === 'Kembali') { h.style.background = 'var(--danger)'; h.innerText = "MODE: KEMBALI BUKU"; }
             
-            bar.innerText = "SILAKAN SCAN KARTU...";
+            bar.innerText = "SIAP SCAN KARTU...";
             bar.style.background = "#fff";
 
-            // Jalankan Kamera
-            if(scanner) scanner.clear();
+            // Reset Kamera jika sudah ada
+            if(scanner) { scanner.clear(); }
             scanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
-            scanner.render(t => { if(!isProcessing) kirimData(t); });
+            scanner.render(onScanSuccess);
         }
 
+        // Fungsi Menampilkan Riwayat
         function showDash() {
             if(scanner) { scanner.clear(); scanner = null; }
             document.getElementById('page-scan').style.display = 'none';
@@ -124,32 +128,47 @@
             loadData();
         }
 
-        function kirimData(nis) {
+        function onScanSuccess(t) {
+            if(isProcessing) return;
             isProcessing = true;
-            let bar = document.getElementById('status-bar');
-            bar.innerHTML = "⌛ MENCATAT: " + nis;
             
-            fetch(URL_SCRIPT, { method: "POST", body: JSON.stringify({ id: nis, status: currentMode }) })
-            .then(() => { 
+            let bar = document.getElementById('status-bar');
+            bar.innerHTML = "⌛ SEDANG MENCATAT: " + t;
+            bar.style.background = "#fff9c4";
+
+            fetch(URL_SCRIPT, { method: "POST", body: JSON.stringify({ id: t, status: currentMode }) })
+            .then(res => {
                 bar.innerHTML = "✅ BERHASIL DICATAT!";
                 bar.style.background = "#d4edda";
                 setTimeout(() => { 
                     isProcessing = false; 
-                    bar.innerHTML = "SIAP SCAN BERIKUTNYA..."; 
+                    bar.innerHTML = "SIAP SCAN BERIKUTNYA...";
                     bar.style.background = "#fff";
                 }, 2000);
+            })
+            .catch(e => {
+                alert("Error: " + e);
+                isProcessing = false;
             });
         }
 
         function loadData() {
             fetch(URL_SCRIPT).then(res => res.json()).then(data => {
                 let dash = "";
+                // Reverse data supaya yang paling baru di atas
                 [...data].reverse().forEach((item, index) => {
                     let warna = item.status === 'Pinjam' ? 'var(--warning)' : (item.status === 'Kembali' ? 'var(--danger)' : 'var(--success)');
+                    // Baris paling atas dikasih warna kuning (unread)
                     let barisBaru = (index === 0) ? "class='unread'" : "";
-                    dash += `<tr ${barisBaru}><td>${item.waktu}</td><td>${item.nama}</td><td>${item.kelas || '-'}</td><td><span class="status-badge" style="background:${warna}">${item.status}</span></td></tr>`;
+                    
+                    dash += `<tr ${barisBaru}>
+                        <td>${item.waktu}</td>
+                        <td>${item.nama}</td>
+                        <td>${item.kelas || '-'}</td>
+                        <td><span class="status-badge" style="background:${warna}">${item.status}</span></td>
+                    </tr>`;
                 });
-                document.getElementById('bodyDash').innerHTML = dash;
+                document.getElementById('bodyDash').innerHTML = dash || "<tr><td colspan='4'>Belum ada data riwayat</td></tr>";
             });
         }
     </script>
