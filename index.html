@@ -18,62 +18,65 @@
         .page { display: none; padding: 15px; max-width: 950px; margin: 0 auto; }
         .header-title { background: var(--primary); color: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; text-align: center; }
         
-        /* Scanner Box - Dibuat lebih stabil */
-        #reader { width: 100%; border-radius: 15px; overflow: hidden; border: 2px solid var(--primary); background: #000; }
+        /* Scanner Box - Dibuat Lebih Tenang/Diam */
+        #reader { width: 100%; border-radius: 15px; overflow: hidden; border: 3px solid var(--primary); background: #000; }
 
         .btn-group { margin: 15px 0; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-        .mode-btn { padding: 15px 5px; font-size: 0.7rem; cursor: pointer; border: none; border-radius: 10px; color: white; font-weight: bold; opacity: 0.4; }
-        .active-mode { opacity: 1 !important; border: 2px solid #000; }
-        #status-bar { padding: 15px; border-radius: 12px; font-weight: bold; background: #fff; border: 2px solid #ddd; text-align: center; }
+        .mode-btn { padding: 15px 5px; font-size: 0.7rem; cursor: pointer; border: none; border-radius: 10px; color: white; font-weight: bold; opacity: 0.4; transition: 0.3s; }
+        .active-mode { opacity: 1 !important; border: 2px solid #000; transform: scale(1.05); }
+        #status-bar { padding: 15px; border-radius: 12px; font-weight: bold; background: #fff; border: 2px solid #ddd; text-align: center; margin-top: 10px; }
 
         .table-container { background: white; border-radius: 15px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow-x: auto; margin-bottom: 20px; }
         table { width: 100%; border-collapse: collapse; min-width: 600px; }
         th, td { padding: 12px; border: 1px solid #eee; text-align: left; font-size: 0.8rem; }
-        th { background: #f8f9fa; }
+        th { background: #f8f9fa; color: var(--primary); }
 
         #login-container { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1350&q=80'); background-size: cover; height: 100vh; display: flex; justify-content: center; align-items: center; }
         #login-box { padding: 40px; background: white; border-radius: 25px; width: 80%; max-width: 300px; text-align: center; }
+
+        @media print {
+            .nav-menu, .btn-group, button, #reader, input { display: none !important; }
+            .page { display: block !important; }
+        }
     </style>
 </head>
 <body>
 
     <div id="login-container">
         <div id="login-box">
-            <h2 style="color: var(--primary);">E-PERPUS</h2>
-            <p style="font-size:12px">SMPN 1 CIBINGBIN</p>
-            <input type="password" id="passInput" style="padding:12px; width:90%; border-radius:10px; border:1px solid #ccc; text-align:center" placeholder="PIN">
-            <button onclick="checkLogin()" style="width:100%; margin-top:10px; padding:12px; background:var(--primary); color:white; border:none; border-radius:10px; font-weight:bold">MASUK</button>
+            <h2 style="color: var(--primary); margin-bottom:5px;">E-PERPUS</h2>
+            <p style="font-size:12px; margin-bottom:20px;">SMPN 1 CIBINGBIN</p>
+            <input type="password" id="passInput" style="padding:12px; width:90%; border-radius:10px; border:1px solid #ccc; text-align:center" placeholder="PIN PETUGAS">
+            <button onclick="checkLogin()" style="width:100%; margin-top:15px; padding:12px; background:var(--primary); color:white; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">MASUK</button>
         </div>
     </div>
 
     <div id="main-nav" class="nav-menu">
         <div class="nav-container">
-            <div id="nav-scan" class="nav-item nav-active" onclick="switchPage('scan')">SCAN / INPUT</div>
+            <div id="nav-scan" class="nav-item nav-active" onclick="switchPage('scan')">SCANNER</div>
             <div id="nav-dash" class="nav-item" onclick="switchPage('dash')">LAPORAN</div>
             <div id="nav-pinjam" class="nav-item" onclick="switchPage('pinjam')">PINJAMAN</div>
         </div>
     </div>
 
     <div id="page-scan" class="page">
-        <div class="header-title"><h3>MENU SCANNER</h3></div>
+        <div class="header-title"><h3>MENU SCAN KARTU</h3></div>
         <div id="reader"></div>
-        
         <div style="margin:15px 0; display:flex; gap:10px;">
-            <input type="text" id="manualInput" style="flex:1; padding:12px; border-radius:8px; border:1px solid #ccc;" placeholder="Ketik NIS...">
+            <input type="text" id="manualInput" style="flex:1; padding:12px; border-radius:8px; border:1px solid #ccc;" placeholder="Ketik NIS manual...">
             <button onclick="kirimManual()" style="padding:10px 20px; background:var(--primary); color:white; border:none; border-radius:8px; font-weight:bold">KIRIM</button>
         </div>
-
         <div class="btn-group">
             <button class="mode-btn" style="background:var(--success)" onclick="setMode('Kunjungan', this)">KUNJUNGAN</button>
             <button class="mode-btn" style="background:var(--warning); color:black;" onclick="setMode('Pinjam', this)">PINJAM</button>
             <button class="mode-btn" style="background:var(--danger)" onclick="setMode('dikembalikan', this)">KEMBALI</button>
         </div>
-        <div id="status-bar">PILIH MODE DAHULU</div>
+        <div id="status-bar">SILAKAN PILIH MODE</div>
     </div>
 
     <div id="page-dash" class="page">
-        <div class="header-title"><h3>LAPORAN</h3></div>
-        <button onclick="window.print()" style="width:100%; padding:15px; background:var(--success); color:white; border:none; border-radius:10px; margin-bottom:20px; font-weight:bold;">📥 DOWNLOAD PDF</button>
+        <div class="header-title"><h3>RIWAYAT AKTIVITAS</h3></div>
+        <button onclick="window.print()" style="width:100%; padding:15px; background:var(--success); color:white; border:none; border-radius:10px; margin-bottom:20px; font-weight:bold; cursor:pointer">📥 DOWNLOAD PDF LAPORAN</button>
         <div class="table-container">
             <table>
                 <thead><tr><th>Waktu</th><th>Nama</th><th>NIS</th><th>Kelas</th><th>Status</th></tr></thead>
@@ -83,10 +86,10 @@
     </div>
 
     <div id="page-pinjam" class="page">
-        <div class="header-title" style="background:var(--blue)"><h3>PINJAMAN AKTIF</h3></div>
+        <div class="header-title" style="background:var(--blue)"><h3>DAFTAR PINJAMAN AKTIF</h3></div>
         <div class="table-container">
             <table>
-                <thead><tr><th>Nama</th><th>Kelas</th><th>Status</th></tr></thead>
+                <thead><tr><th>Nama Siswa</th><th>Kelas</th><th>Status</th></tr></thead>
                 <tbody id="bodyPinjam"></tbody>
             </table>
         </div>
@@ -102,7 +105,7 @@
                 document.getElementById('login-container').style.display="none";
                 document.getElementById('main-nav').style.display="block";
                 switchPage('scan'); initScanner(); loadData();
-                setInterval(loadData, 7000); 
+                setInterval(loadData, 5000); // Auto update data setiap 5 detik
             } else { alert("PIN Salah!"); }
         }
 
@@ -117,22 +120,26 @@
             currentMode = m;
             document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active-mode'));
             b.classList.add('active-mode');
-            document.getElementById('status-bar').innerHTML = "MODE: " + m.toUpperCase();
+            document.getElementById('status-bar').innerHTML = "MODE AKTIF: " + m.toUpperCase();
         }
 
         function kirimData(nis) {
             if(!currentMode || isProcessing) return;
             isProcessing = true;
             let bar = document.getElementById('status-bar');
-            bar.innerHTML = "⌛ Mencatat...";
+            bar.innerHTML = "⌛ Sedang Mencatat...";
             bar.style.background = "#f1c40f";
 
             fetch(URL_SCRIPT, { method: "POST", mode: 'no-cors', body: JSON.stringify({ id: nis, status: currentMode }) })
             .then(() => { 
-                bar.innerHTML = "✅ BERHASIL"; 
+                bar.innerHTML = "✅ BERHASIL DICATAT"; 
                 bar.style.background = "#27ae60"; bar.style.color = "white";
-                loadData();
-                setTimeout(() => { isProcessing = false; bar.innerHTML = "MODE: " + currentMode; bar.style.background = "#fff"; bar.style.color = "black"; }, 2500);
+                loadData(); // Langsung update tabel
+                setTimeout(() => { 
+                    isProcessing = false; 
+                    bar.innerHTML = "MODE: " + currentMode; 
+                    bar.style.background = "#fff"; bar.style.color = "black";
+                }, 2000);
             });
         }
 
@@ -141,12 +148,11 @@
             if(val) { kirimData(val); document.getElementById('manualInput').value = ""; }
         }
 
-        // FUNGSI SCANNER YANG LEBIH DIAM & STABIL
         function initScanner() { 
             const html5QrcodeScanner = new Html5QrcodeScanner("reader", { 
-                fps: 5,           // Mengurangi FPS agar kamera tidak terlalu agresif/bergetar
-                qrbox: { width: 250, height: 150 }, // Box lebih fokus persegi panjang seperti kartu
-                aspectRatio: 1.0  // Menjaga rasio kamera tetap stabil
+                fps: 5, // Kamera lebih tenang
+                qrbox: { width: 250, height: 180 }, // Box pas untuk kartu
+                aspectRatio: 1.0
             });
             html5QrcodeScanner.render(kirimData); 
         }
@@ -161,10 +167,10 @@
                 });
                 document.getElementById('bodyDash').innerHTML = dash;
                 Object.values(aktif).forEach(s => {
-                    pinjamTab += `<tr><td>${s.nama}</td><td>${s.kelas}</td><td><b style="color:orange">Pinjam</b></td></tr>`;
+                    pinjamTab += `<tr><td>${s.nama}</td><td>${s.kelas}</td><td><b style="color:orange">Belum Kembali</b></td></tr>`;
                 });
                 document.getElementById('bodyPinjam').innerHTML = pinjamTab;
-            });
+            }).catch(e => console.log("Menghubungkan ke server..."));
         }
     </script>
 </body>
