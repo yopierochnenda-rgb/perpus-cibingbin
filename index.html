@@ -6,29 +6,48 @@
     <title>E-PERPUS SMPN 1 CIBINGBIN</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.autotable.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
     
     <style>
         :root { --primary: #1e293b; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --blue: #3b82f6; }
         body, html { height: 100%; margin: 0; font-family: 'Segoe UI', sans-serif; background: #f1f5f9; }
-        #login-container { background: var(--primary); display: flex; justify-content: center; align-items: center; height: 100vh; }
-        #login-box { padding: 35px; background: white; border-radius: 20px; width: 300px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        
+        /* LOGIN BACKGROUND */
+        #login-container { 
+            background: linear-gradient(rgba(30, 41, 59, 0.8), rgba(30, 41, 59, 0.8)), 
+                        url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1350&q=80'); 
+            background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; height: 100vh; 
+        }
+        #login-box { padding: 40px; background: rgba(255, 255, 255, 0.95); border-radius: 24px; width: 320px; text-align: center; box-shadow: 0 20px 25px rgba(0,0,0,0.2); backdrop-filter: blur(5px); }
+        
+        /* Navigasi */
         .nav-menu { display: none; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
         .nav-container { display: flex; max-width: 1200px; margin: 0 auto; overflow-x: auto; scrollbar-width: none; }
         .nav-item { flex: none; padding: 16px 20px; font-weight: bold; color: #64748b; cursor: pointer; border-bottom: 4px solid transparent; white-space: nowrap; font-size: 13px; }
         .nav-active { border-bottom: 4px solid var(--blue); color: var(--blue); background: #f8fafc; }
+
+        /* Content */
         .page { display: none; padding: 20px; max-width: 900px; margin: 0 auto; }
         .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         #notif-atas { display: none; padding: 15px; border-radius: 10px; text-align: center; font-weight: bold; margin-bottom: 15px; border: 2px solid #e2e8f0; }
         #reader { width: 100%; border-radius: 12px; overflow: hidden; border: 3px solid #e2e8f0; }
+        
+        /* Form Manual */
+        .form-group { margin-bottom: 15px; text-align: left; }
+        .form-group label { display: block; font-size: 13px; font-weight: bold; color: #475569; margin-bottom: 5px; }
+        .form-group input, .form-group select { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; }
+        
+        /* Table */
         .table-container { overflow-x: auto; margin-top: 15px; }
         table { width: 100%; border-collapse: collapse; min-width: 600px; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; font-size: 13px; }
         th { background: #f8fafc; color: #475569; }
         .unread { background-color: #fef9c3 !important; font-weight: bold; border-left: 5px solid var(--warning); }
         .status-badge { padding: 5px 10px; border-radius: 6px; color: white; font-size: 11px; font-weight: bold; text-transform: uppercase; }
-        .btn-pdf { background: #e11d48; color: white; border: none; padding: 12px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+
+        .btn-blue { background: var(--blue); color: white; border: none; padding: 12px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; }
+        .btn-pdf { background: #e11d48; color: white; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 12px; }
         #live-indicator { font-size: 10px; color: var(--success); font-weight: normal; margin-left: 5px; }
     </style>
 </head>
@@ -36,10 +55,11 @@
 
     <div id="login-container">
         <div id="login-box">
+            <div style="background: var(--blue); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 24px;">📚</div>
             <h2 style="margin:0; color: var(--primary);">E-PERPUS</h2>
             <p style="font-size: 12px; color: #64748b; margin-bottom: 25px;">SMPN 1 CIBINGBIN</p>
-            <input type="password" id="passInput" style="width: 85%; padding: 15px; border: 2px solid #ddd; border-radius: 12px; text-align: center;" placeholder="PIN">
-            <button style="width: 100%; margin-top: 20px; padding: 15px; background: var(--blue); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer;" onclick="checkLogin()">MASUK</button>
+            <input type="password" id="passInput" style="width: 85%; padding: 12px; border: 2px solid #ddd; border-radius: 10px; text-align: center;" placeholder="PIN">
+            <button class="btn-blue" style="margin-top: 15px;" onclick="checkLogin()">MASUK</button>
         </div>
     </div>
 
@@ -48,6 +68,7 @@
             <div id="nav-Kunjungan" class="nav-item" onclick="startMode('Kunjungan')">KUNJUNGAN</div>
             <div id="nav-Pinjam" class="nav-item" onclick="startMode('Pinjam')">PINJAM</div>
             <div id="nav-Kembali" class="nav-item" onclick="startMode('Kembali')">KEMBALI</div>
+            <div id="nav-Manual" class="nav-item" onclick="showManual()">INPUT MANUAL</div>
             <div id="nav-Riwayat" class="nav-item" onclick="showRiwayat()">RIWAYAT <span id="live-indicator">● LIVE</span></div>
             <div class="nav-item" style="color:var(--danger)" onclick="location.reload()">LOGOUT</div>
         </div>
@@ -60,11 +81,38 @@
         </div>
     </div>
 
+    <div id="page-manual" class="page">
+        <div class="card">
+            <h3 style="margin:0 0 20px 0;">INPUT DATA MANUAL</h3>
+            <div class="form-group">
+                <label>Status Aktivitas</label>
+                <select id="m-status">
+                    <option value="Kunjungan">Kunjungan</option>
+                    <option value="Pinjam">Pinjam</option>
+                    <option value="Kembali">Kembali</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Nama Lengkap Siswa</label>
+                <input type="text" id="m-nama" placeholder="Contoh: Budi Santoso">
+            </div>
+            <div class="form-group">
+                <label>NIS / ID Siswa</label>
+                <input type="text" id="m-nis" placeholder="Contoh: 12345">
+            </div>
+            <div class="form-group">
+                <label>Kelas</label>
+                <input type="text" id="m-kelas" placeholder="Contoh: 7A / 8B">
+            </div>
+            <button id="btnSimpanManual" class="btn-blue" onclick="simpanManual()">SIMPAN DATA</button>
+        </div>
+    </div>
+
     <div id="page-riwayat" class="page">
         <div class="card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h3 style="margin:0;">LOG AKTIVITAS</h3>
-                <button id="btnDownload" class="btn-pdf" onclick="generatePDF()">📄 DOWNLOAD PDF</button>
+                <button class="btn-pdf" onclick="generatePDF()">📄 PDF</button>
             </div>
             <div class="table-container">
                 <table>
@@ -93,13 +141,100 @@
             } else { alert("PIN SALAH!"); }
         }
 
+        function clearActiveNav() {
+            document.querySelectorAll('.nav-item').forEach(nv => nv.classList.remove('nav-active'));
+            document.querySelectorAll('.page').forEach(pg => pg.style.display = 'none');
+            if(scanner) { scanner.clear(); scanner = null; }
+            if(refreshInterval) clearInterval(refreshInterval);
+        }
+
+        function startMode(mode) {
+            clearActiveNav();
+            currentMode = mode;
+            isProcessing = false;
+            document.getElementById('nav-'+mode).classList.add('nav-active');
+            document.getElementById('page-scan').style.display = 'block';
+            let notif = document.getElementById('notif-atas');
+            notif.style.display = "block";
+            notif.style.background = "#f8fafc";
+            notif.innerHTML = "MODE: " + mode.toUpperCase();
+            scanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
+            scanner.render(onScanSuccess);
+        }
+
+        function showManual() {
+            clearActiveNav();
+            document.getElementById('nav-Manual').classList.add('nav-active');
+            document.getElementById('page-manual').style.display = 'block';
+        }
+
+        function showRiwayat() {
+            clearActiveNav();
+            document.getElementById('nav-Riwayat').classList.add('nav-active');
+            document.getElementById('page-riwayat').style.display = 'block';
+            document.getElementById('live-indicator').style.display = 'inline';
+            loadDataOtomatis();
+            refreshInterval = setInterval(loadDataOtomatis, 5000); 
+        }
+
+        function onScanSuccess(t) {
+            if(isProcessing) return;
+            isProcessing = true;
+            let notif = document.getElementById('notif-atas');
+            notif.innerHTML = "⌛ MENCATAT...";
+            notif.style.background = "#fef9c3";
+            fetch(URL_SCRIPT, { method: "POST", body: JSON.stringify({ id: t, status: currentMode }) })
+            .then(() => { 
+                notif.innerHTML = "✅ BERHASIL!";
+                notif.style.background = "#d1fae5";
+                setTimeout(() => { isProcessing = false; notif.style.background = "#f8fafc"; notif.innerHTML = "MODE: " + currentMode.toUpperCase(); }, 2000);
+            });
+        }
+
+        function simpanManual() {
+            const nama = document.getElementById('m-nama').value;
+            const nis = document.getElementById('m-nis').value;
+            const kelas = document.getElementById('m-kelas').value;
+            const status = document.getElementById('m-status').value;
+
+            if(!nama || !nis) { alert("Nama dan NIS wajib diisi!"); return; }
+
+            const btn = document.getElementById('btnSimpanManual');
+            btn.disabled = true;
+            btn.innerText = "⌛ MENYIMPAN...";
+
+            fetch(URL_SCRIPT, { 
+                method: "POST", 
+                body: JSON.stringify({ 
+                    id: nis, 
+                    status: status,
+                    manualNama: nama,
+                    manualKelas: kelas 
+                }) 
+            })
+            .then(() => {
+                alert("Data Manual Berhasil Disimpan!");
+                document.getElementById('m-nama').value = "";
+                document.getElementById('m-nis').value = "";
+                document.getElementById('m-kelas').value = "";
+                btn.disabled = false;
+                btn.innerText = "SIMPAN DATA";
+                showRiwayat();
+            })
+            .catch(() => {
+                alert("Gagal menyimpan data.");
+                btn.disabled = false;
+                btn.innerText = "SIMPAN DATA";
+            });
+        }
+
         function loadDataOtomatis() {
             fetch(URL_SCRIPT).then(res => res.json()).then(data => {
                 if (JSON.stringify(data) !== JSON.stringify(dataRiwayat)) {
                     dataRiwayat = data;
                     renderTable();
                 }
-            }).catch(e => console.log("Gagal tarik data"));
+            });
         }
 
         function renderTable() {
@@ -119,95 +254,31 @@
             document.getElementById('bodyRiwayat').innerHTML = html;
         }
 
-        function showRiwayat() {
-            if(scanner) { scanner.clear(); scanner = null; }
-            document.getElementById('page-scan').style.display = 'none';
-            document.getElementById('page-riwayat').style.display = 'block';
-            document.querySelectorAll('.nav-item').forEach(nv => nv.classList.remove('nav-active'));
-            document.getElementById('nav-Riwayat').classList.add('nav-active');
-            loadDataOtomatis();
-            if (refreshInterval) clearInterval(refreshInterval);
-            refreshInterval = setInterval(loadDataOtomatis, 5000); 
-        }
-
-        function startMode(mode) {
-            if (refreshInterval) clearInterval(refreshInterval);
-            currentMode = mode;
-            isProcessing = false;
-            document.querySelectorAll('.nav-item').forEach(nv => nv.classList.remove('nav-active'));
-            document.getElementById('nav-'+mode).classList.add('nav-active');
-            document.getElementById('page-riwayat').style.display = 'none';
-            document.getElementById('page-scan').style.display = 'block';
-            let notif = document.getElementById('notif-atas');
-            notif.style.display = "block";
-            notif.style.background = "#f8fafc";
-            notif.innerHTML = "MODE: " + mode.toUpperCase();
-            if(scanner) scanner.clear();
-            scanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
-            scanner.render(onScanSuccess);
-        }
-
-        function onScanSuccess(t) {
-            if(isProcessing) return;
-            isProcessing = true;
-            let notif = document.getElementById('notif-atas');
-            notif.innerHTML = "⌛ MENCATAT...";
-            notif.style.background = "#fef9c3";
-            fetch(URL_SCRIPT, { method: "POST", body: JSON.stringify({ id: t, status: currentMode }) })
-            .then(() => { 
-                notif.innerHTML = "✅ BERHASIL!";
-                notif.style.background = "#d1fae5";
-                setTimeout(() => { isProcessing = false; notif.style.background = "#f8fafc"; notif.innerHTML = "MODE: " + currentMode.toUpperCase(); }, 2000);
-            });
-        }
-
-        // FUNGSI PDF SUPER STABIL
         function generatePDF() {
-            if (dataRiwayat.length === 0) {
-                alert("Data belum dimuat, silakan tunggu sebentar!");
-                return;
-            }
-
+            if (dataRiwayat.length === 0) { alert("Data kosong!"); return; }
+            const { jsPDF } = window.jspdf;
             try {
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF('p', 'mm', 'a4');
-                
+                const doc = new jsPDF();
                 doc.setFontSize(16);
                 doc.text("LAPORAN RIWAYAT PERPUSTAKAAN", 105, 15, { align: "center" });
                 doc.setFontSize(12);
                 doc.text("SMPN 1 CIBINGBIN", 105, 22, { align: "center" });
-                
-                const tableBody = dataRiwayat.map(item => [
-                    item.waktu, 
-                    item.nama, 
-                    item.nis, 
-                    item.kelas, 
-                    item.status
-                ]);
-                
-                doc.autoTable({
+                const body = dataRiwayat.map(item => [item.waktu, item.nama, item.nis, item.kelas, item.status]);
+                window.jspdf.jsPDF.API.autoTable.apply(doc, [{
                     head: [['Waktu', 'Nama Siswa', 'NIS', 'Kelas', 'Status']],
-                    body: tableBody,
+                    body: body,
                     startY: 30,
                     theme: 'grid',
-                    headStyles: { fillColor: [30, 41, 59], halign: 'center' },
-                    styles: { fontSize: 10 }
-                });
-
+                    headStyles: { fillColor: [30, 41, 59] }
+                }]);
                 const finalY = doc.lastAutoTable.finalY + 15;
                 const dateNow = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-                
-                doc.setFontSize(11);
                 doc.text(`Cibingbin, ${dateNow}`, 140, finalY);
                 doc.text("Petugas Perpus,", 140, finalY + 7);
                 doc.setFont(undefined, 'bold');
                 doc.text("Rizki Angriani, S.Pust", 140, finalY + 30);
-                
                 doc.save(`Laporan_Perpus_${dateNow}.pdf`);
-            } catch (err) {
-                console.error(err);
-                alert("Sistem PDF sedang sibuk, silakan coba lagi atau cek koneksi internet Bapak.");
-            }
+            } catch (err) { alert("Gagal membuat PDF."); }
         }
     </script>
 </body>
