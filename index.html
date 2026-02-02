@@ -9,46 +9,44 @@
         :root { --primary: #2c3e50; --success: #27ae60; --warning: #f1c40f; --danger: #e74c3c; --blue: #3498db; }
         body, html { height: 100%; margin: 0; font-family: 'Segoe UI', sans-serif; background: #f4f7f6; }
 
-        /* Navigation */
         .nav-menu { display: none; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
         .nav-container { display: flex; max-width: 1000px; margin: 0 auto; }
-        .nav-item { flex: 1; padding: 15px 5px; text-align: center; font-weight: bold; color: #7f8c8d; cursor: pointer; border-bottom: 4px solid transparent; font-size: 0.7rem; }
+        .nav-item { flex: 1; padding: 15px 5px; text-align: center; font-weight: bold; color: #7f8c8d; cursor: pointer; border-bottom: 4px solid transparent; font-size: 0.75rem; }
         .nav-active { border-bottom: 4px solid var(--blue); color: var(--blue); background: #f9f9f9; }
 
         .page { display: none; padding: 15px; max-width: 950px; margin: 0 auto; }
         
-        /* Kop Surat & Tanda Tangan */
-        .kop-surat { display: none; text-align: center; margin-bottom: 20px; }
-        .kop-surat img { width: 100%; max-width: 900px; height: auto; }
-        .ttd-container { display: none; margin-top: 30px; text-align: right; padding-right: 50px; }
+        /* KOP SURAT SESUAI GAMBAR */
+        .kop-surat { display: none; border-bottom: 3px solid #003399; padding: 10px 0; margin-bottom: 20px; align-items: center; background: white; }
+        .kop-left, .kop-right { width: 60px; flex-shrink: 0; text-align: center; }
+        .kop-left img, .kop-right img { width: 100%; height: auto; }
+        .kop-center { flex: 1; text-align: center; padding: 0 10px; }
+        .kop-center h2 { margin: 0; font-size: 1.2rem; color: #000; font-weight: bold; }
+        .kop-center p { margin: 2px 0; font-size: 0.7rem; color: #000; }
 
-        /* Welcome Card */
-        .welcome-card { background: white; padding: 30px; border-radius: 20px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-        .menu-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 20px; }
-        .menu-btn { padding: 18px; border-radius: 15px; border: none; color: white; font-weight: bold; font-size: 1rem; cursor: pointer; }
+        .ttd-container { display: none; margin-top: 30px; text-align: right; padding-right: 50px; font-size: 0.9rem; }
 
-        /* Scanner */
         #reader { width: 100%; border-radius: 15px; overflow: hidden; border: 2px solid var(--primary); background: #000; }
         .btn-group { margin: 15px 0; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-        .mode-btn { padding: 15px 5px; font-size: 0.7rem; cursor: pointer; border: none; border-radius: 10px; color: white; font-weight: bold; opacity: 0.4; }
-        .active-mode { opacity: 1 !important; border: 2px solid #000; }
-        #status-bar { padding: 15px; border-radius: 12px; font-weight: bold; background: #fff; border: 2px solid #ddd; text-align: center; }
+        .mode-btn { padding: 15px 5px; font-size: 0.75rem; cursor: pointer; border: none; border-radius: 10px; color: white; font-weight: bold; opacity: 0.4; text-transform: uppercase; }
+        .active-mode { opacity: 1 !important; border: 2px solid #000; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        #status-bar { padding: 15px; border-radius: 12px; font-weight: bold; background: #fff; border: 2px solid #ddd; text-align: center; margin-bottom: 10px; }
 
-        /* Tables */
+        #login-container { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('sekolah.jpg'); background-size: cover; background-position: center; height: 100vh; display: flex; justify-content: center; align-items: center; }
+        #login-box { padding: 35px; background: rgba(255,255,255,0.95); border-radius: 20px; width: 85%; max-width: 320px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
+
         .table-container { background: white; border-radius: 15px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 600px; margin-top: 10px; }
-        th, td { padding: 10px; border: 1px solid #000; text-align: left; font-size: 0.8rem; }
-        th { background: #f2f2f2 !important; }
-
-        #login-container { background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('sekolah.jpg'); background-size: cover; height: 100vh; display: flex; justify-content: center; align-items: center; }
-        #login-box { padding: 40px; background: white; border-radius: 25px; width: 80%; max-width: 300px; text-align: center; }
+        table { width: 100%; border-collapse: collapse; min-width: 500px; }
+        th, td { padding: 10px; border: 1px solid #ccc; text-align: left; font-size: 0.8rem; }
+        th { background: #f8f9fa !important; font-weight: bold; }
 
         @media print {
-            .nav-menu, button, .btn-group, #reader, input, #status-bar { display: none !important; }
+            .nav-menu, button, .btn-group, #reader, input, #status-bar, .no-print, #scan-btn-container { display: none !important; }
             .page { display: block !important; padding: 0; }
-            .kop-surat, .ttd-container { display: block !important; }
+            .kop-surat { display: flex !important; }
+            .ttd-container { display: block !important; }
             body { background: white; }
-            .table-container { box-shadow: none; }
+            .table-container { box-shadow: none; border: none; padding: 0; }
         }
     </style>
 </head>
@@ -56,10 +54,11 @@
 
     <div id="login-container">
         <div id="login-box">
-            <h2 style="color: var(--primary); margin:0;">E-PERPUS</h2>
-            <p style="font-size:12px; margin-bottom:20px;">SMPN 1 CIBINGBIN</p>
-            <input type="password" id="passInput" style="padding:12px; width:90%; border-radius:10px; border:1px solid #ccc; text-align:center" placeholder="PIN PETUGAS">
-            <button onclick="checkLogin()" style="width:100%; margin-top:15px; padding:12px; background:var(--primary); color:white; border:none; border-radius:10px; font-weight:bold;">MASUK</button>
+            <img src="logo-smp.png" style="width:70px; margin-bottom:10px;">
+            <h2 style="color: var(--primary); margin:0; font-size: 1.4rem;">E-PERPUS</h2>
+            <p style="font-size:11px; margin-bottom:25px; color: #666;">SMPN 1 CIBINGBIN</p>
+            <input type="password" id="passInput" style="padding:14px; width:90%; border-radius:10px; border:1px solid #ddd; text-align:center; font-size:1rem;" placeholder="MASUKKAN PIN">
+            <button onclick="checkLogin()" style="width:100%; margin-top:15px; padding:14px; background:var(--primary); color:white; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">MASUK SISTEM</button>
         </div>
     </div>
 
@@ -73,39 +72,58 @@
     </div>
 
     <div id="page-welcome" class="page">
-        <div class="welcome-card">
-            <img src="logo-smp.png" style="width:100%; max-width:450px; margin-bottom:15px;">
-            <h3>Selamat Datang, Petugas!</h3>
-            <div class="menu-grid">
-                <button class="menu-btn" style="background:var(--blue)" onclick="switchPage('scan')">📸 MULAI SCAN</button>
-                <button class="menu-btn" style="background:var(--success)" onclick="switchPage('dash')">📊 LAPORAN</button>
-                <button class="menu-btn" style="background:var(--warning); color:black;" onclick="switchPage('pinjam')">📖 PINJAMAN</button>
+        <div style="background:white; padding:30px; border-radius:20px; text-align:center; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+            <h3 style="margin-top:0;">Halo, Selamat Bertugas!</h3>
+            <p style="color:#7f8c8d; font-size:0.9rem;">Kelola data perpustakaan dengan mudah di sini.</p>
+            <div style="display:grid; gap:10px; margin-top:20px;">
+                <button onclick="switchPage('scan')" style="padding:18px; border-radius:12px; border:none; background:var(--blue); color:white; font-weight:bold; cursor:pointer;">📸 SCAN KARTU</button>
+                <button onclick="switchPage('dash')" style="padding:18px; border-radius:12px; border:none; background:var(--success); color:white; font-weight:bold; cursor:pointer;">📊 LIHAT LAPORAN</button>
             </div>
-            <button onclick="location.reload()" style="margin-top:20px; color:var(--danger); border:none; background:none; font-weight:bold; cursor:pointer;">🚪 KELUAR</button>
         </div>
     </div>
 
     <div id="page-scan" class="page">
-        <div id="reader"></div>
-        <div class="btn-group">
-            <button class="mode-btn" style="background:var(--success)" onclick="setMode('Kunjungan', this)">KUNJUNGAN</button>
-            <button class="mode-btn" style="background:var(--warning); color:black;" onclick="setMode('Pinjam', this)">PINJAM</button>
-            <button class="mode-btn" style="background:var(--danger)" onclick="setMode('dikembalikan', this)">KEMBALI</button>
+        <div id="status-bar">SILAKAN PILIH MODE</div>
+        
+        <div id="scan-btn-container" style="text-align:center; margin-bottom:15px;">
+            <button id="start-btn" onclick="initScanner()" style="width:100%; padding:20px; background:var(--blue); color:white; border:none; border-radius:12px; font-weight:bold; font-size:1.1rem; cursor:pointer;">📷 AKTIFKAN KAMERA</button>
         </div>
-        <div id="status-bar">PILIH MODE</div>
-        <input type="text" id="manualInput" style="width:94%; padding:12px; margin-top:10px; border-radius:8px; border:1px solid #ccc;" placeholder="Manual NIS...">
-        <button onclick="kirimManual()" style="width:100%; margin-top:10px; padding:12px; background:var(--primary); color:white; border:none; border-radius:8px;">KIRIM</button>
+
+        <div id="reader"></div>
+        
+        <div class="btn-group">
+            <button id="btn-Kunjungan" class="mode-btn" style="background:var(--success)" onclick="setMode('Kunjungan')">KUNJUNGAN</button>
+            <button id="btn-Pinjam" class="mode-btn" style="background:var(--warning); color:black;" onclick="setMode('Pinjam')">PINJAM</button>
+            <button id="btn-Kembali" class="mode-btn" style="background:var(--danger)" onclick="setMode('dikembalikan')">KEMBALI</button>
+        </div>
+
+        <div style="margin-top:15px; display:flex; gap:8px;">
+            <input type="text" id="manualInput" style="flex:1; padding:12px; border-radius:8px; border:1px solid #ccc;" placeholder="Atau ketik NIS manual...">
+            <button onclick="kirimManual()" style="padding:10px 20px; background:var(--primary); color:white; border:none; border-radius:8px; font-weight:bold;">KIRIM</button>
+        </div>
     </div>
 
     <div id="page-dash" class="page">
-        <div class="kop-surat"><img src="logo-smp.png"></div>
-        <button onclick="window.print()" style="width:100%; padding:15px; background:var(--success); color:white; border:none; border-radius:10px; margin-bottom:15px; font-weight:bold;">📥 DOWNLOAD LAPORAN (PDF)</button>
+        <div class="kop-surat">
+            <div class="kop-left"><img src="logo-smp.png"></div>
+            <div class="kop-center">
+                <h2>SMP NEGERI 1 CIBINGBIN</h2>
+                <p style="font-weight:bold;">TERAKREDITASI 'A'</p>
+                <p>Jl. Raya Pasar Cibingbin No. 250 Cibingbin - Kuningan Jawa Barat</p>
+            </div>
+            <div class="kop-right"><img src="https://cdn-icons-png.flaticon.com/512/3389/3389081.png"></div>
+        </div>
+
+        <button class="no-print" onclick="window.print()" style="width:100%; padding:15px; background:var(--success); color:white; border:none; border-radius:10px; margin-bottom:20px; font-weight:bold; cursor:pointer;">📥 CETAK / DOWNLOAD PDF</button>
+        
         <div class="table-container">
+            <h3 style="text-align:center; margin-top:0; font-size:1rem;">LAPORAN AKTIVITAS PERPUSTAKAAN</h3>
             <table>
                 <thead><tr><th>Waktu</th><th>Nama</th><th>NIS</th><th>Kelas</th><th>Status</th></tr></thead>
                 <tbody id="bodyDash"></tbody>
             </table>
         </div>
+
         <div class="ttd-container">
             <p>Cibingbin, <span id="tgl-ttd"></span></p>
             <p style="margin-bottom:60px;">Petugas Perpustakaan,</p>
@@ -114,9 +132,8 @@
     </div>
 
     <div id="page-pinjam" class="page">
-        <div class="kop-surat"><img src="logo-smp.png"></div>
         <div class="table-container">
-            <h3 style="text-align:center;">DAFTAR PINJAMAN AKTIF</h3>
+            <h3 style="text-align:center; margin-top:0;">📖 DAFTAR PINJAMAN AKTIF</h3>
             <table>
                 <thead><tr><th>Nama Siswa</th><th>Kelas</th><th>Status</th></tr></thead>
                 <tbody id="bodyPinjam"></tbody>
@@ -134,10 +151,9 @@
             if(document.getElementById('passInput').value === "1234") {
                 document.getElementById('login-container').style.display="none";
                 document.getElementById('main-nav').style.display="block";
-                switchPage('welcome'); loadData();
-                updateTgl();
-                setInterval(loadData, 10000); 
-            } else { alert("PIN Salah!"); }
+                switchPage('welcome'); loadData(); updateTgl();
+                setInterval(loadData, 15000); 
+            } else { alert("PIN SALAH!"); }
         }
 
         function updateTgl() {
@@ -147,45 +163,67 @@
         }
 
         function switchPage(p) {
+            stopScanner();
             document.querySelectorAll('.page').forEach(pg => pg.style.display='none');
             document.querySelectorAll('.nav-item').forEach(nv => nv.classList.remove('nav-active'));
             document.getElementById('page-'+p).style.display='block';
             if(document.getElementById('nav-'+p)) document.getElementById('nav-'+p).classList.add('nav-active');
-            if (p === 'scan') { startScanner(); } else { stopScanner(); }
+            if(p === 'scan') document.getElementById('start-btn').style.display = 'block';
         }
 
-        function startScanner() {
-            if (!html5QrCode) { html5QrCode = new Html5Qrcode("reader"); }
-            html5QrCode.start({ facingMode: "environment" }, { fps: 5, qrbox: 250 }, kirimData);
+        function initScanner() {
+            if (!currentMode) { alert("Pilih Mode (Kunjungan/Pinjam/Kembali) dulu!"); return; }
+            document.getElementById('start-btn').style.display = 'none';
+            html5QrCode = new Html5Qrcode("reader");
+            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+            
+            html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess)
+            .catch(err => {
+                alert("Gagal Akses Kamera: Pastikan HP Anda mengizinkan kamera dan menggunakan link HTTPS.");
+                document.getElementById('start-btn').style.display = 'block';
+            });
         }
 
         function stopScanner() {
-            if (html5QrCode && html5QrCode.isScanning) { html5QrCode.stop(); }
+            if (html5QrCode && html5QrCode.isScanning) {
+                html5QrCode.stop().then(() => { document.getElementById('reader').innerHTML = ""; });
+            }
         }
 
-        function setMode(m, b) {
+        function setMode(m) {
             currentMode = m;
             document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active-mode'));
-            b.classList.add('active-mode');
+            const btnId = m === 'dikembalikan' ? 'btn-Kembali' : 'btn-' + m;
+            document.getElementById(btnId).classList.add('active-mode');
             document.getElementById('status-bar').innerHTML = "MODE: " + m.toUpperCase();
+            document.getElementById('status-bar').style.background = "#fff";
+        }
+
+        function onScanSuccess(decodedText) {
+            if(isProcessing) return;
+            kirimData(decodedText);
         }
 
         function kirimData(nis) {
-            if(!currentMode || isProcessing) return;
             isProcessing = true;
             let bar = document.getElementById('status-bar');
-            bar.innerHTML = "⌛ Mencatat..."; bar.style.background = "#f1c40f";
+            bar.innerHTML = "⌛ SEDANG MENCATAT..."; bar.style.background = "#f1c40f";
 
             fetch(URL_SCRIPT, { method: "POST", mode: 'no-cors', body: JSON.stringify({ id: nis, status: currentMode }) })
             .then(() => { 
-                bar.innerHTML = "✅ BERHASIL"; bar.style.background = "#27ae60"; bar.style.color = "white";
+                bar.innerHTML = "✅ BERHASIL DICATAT!"; bar.style.background = "#27ae60"; bar.style.color = "white";
                 loadData();
-                setTimeout(() => { isProcessing = false; bar.innerHTML = "MODE: " + currentMode; bar.style.background = "#fff"; bar.style.color = "black"; }, 2500);
-            });
+                setTimeout(() => { 
+                    isProcessing = false; 
+                    bar.innerHTML = "MODE: " + currentMode.toUpperCase(); 
+                    bar.style.background = "#fff"; bar.style.color = "black";
+                }, 3000);
+            }).catch(() => { isProcessing = false; alert("Gagal koneksi ke server!"); });
         }
 
         function kirimManual() {
             let val = document.getElementById('manualInput').value;
+            if(!currentMode) { alert("Pilih Mode dulu!"); return; }
             if(val) { kirimData(val); document.getElementById('manualInput').value = ""; }
         }
 
@@ -199,7 +237,7 @@
                 });
                 document.getElementById('bodyDash').innerHTML = dash;
                 Object.values(aktif).forEach(s => {
-                    pinjamTab += `<tr><td>${s.nama}</td><td>${s.kelas}</td><td><b>Pinjam</b></td></tr>`;
+                    pinjamTab += `<tr><td>${s.nama}</td><td>${s.kelas}</td><td><b style="color:var(--warning)">Dipinjam</b></td></tr>`;
                 });
                 document.getElementById('bodyPinjam').innerHTML = pinjamTab;
             });
