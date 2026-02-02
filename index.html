@@ -9,6 +9,7 @@
         :root { --primary: #2c3e50; --success: #27ae60; --warning: #f1c40f; --danger: #e74c3c; --blue: #3498db; }
         body, html { height: 100%; margin: 0; font-family: 'Segoe UI', sans-serif; background: #f4f7f6; }
 
+        /* Navigasi */
         .nav-menu { display: none; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
         .nav-container { display: flex; max-width: 1000px; margin: 0 auto; }
         .nav-item { flex: 1; padding: 15px 5px; text-align: center; font-weight: bold; color: #7f8c8d; cursor: pointer; border-bottom: 4px solid transparent; font-size: 0.75rem; }
@@ -16,29 +17,59 @@
 
         .page { display: none; padding: 15px; max-width: 950px; margin: 0 auto; }
         
-        /* KOP SURAT SESUAI GAMBAR */
-        .kop-surat { display: none; border-bottom: 3px solid #003399; padding: 10px 0; margin-bottom: 20px; align-items: center; background: white; }
-        .kop-left, .kop-right { width: 60px; flex-shrink: 0; text-align: center; }
+        /* KOP SURAT RESMI */
+        .kop-surat { display: none; border-bottom: 3px solid #000; padding: 10px 0; margin-bottom: 20px; align-items: center; background: white; }
+        .kop-left, .kop-right { width: 65px; flex-shrink: 0; text-align: center; }
         .kop-left img, .kop-right img { width: 100%; height: auto; }
         .kop-center { flex: 1; text-align: center; padding: 0 10px; }
         .kop-center h2 { margin: 0; font-size: 1.2rem; color: #000; font-weight: bold; }
+        .kop-center h4 { margin: 2px 0; font-size: 0.9rem; color: #000; }
         .kop-center p { margin: 2px 0; font-size: 0.7rem; color: #000; }
 
-        .ttd-container { display: none; margin-top: 30px; text-align: right; padding-right: 50px; font-size: 0.9rem; }
+        .ttd-container { display: none; margin-top: 30px; text-align: right; padding-right: 50px; }
+
+        /* Background Login Baru (Tema Perpus) */
+        #login-container { 
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
+            url('https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1500&q=80'); 
+            background-size: cover; 
+            background-position: center; 
+            height: 100vh; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+        }
+        #login-box { 
+            padding: 35px; 
+            background: rgba(255,255,255,0.95); 
+            border-radius: 25px; 
+            width: 85%; 
+            max-width: 320px; 
+            text-align: center; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            backdrop-filter: blur(5px);
+        }
+
+        /* Card Home */
+        .welcome-card { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 20px; 
+            text-align: center; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            background-image: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.9)), url('https://www.transparenttextures.com/patterns/cubes.png');
+        }
 
         #reader { width: 100%; border-radius: 15px; overflow: hidden; border: 2px solid var(--primary); background: #000; }
         .btn-group { margin: 15px 0; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-        .mode-btn { padding: 15px 5px; font-size: 0.75rem; cursor: pointer; border: none; border-radius: 10px; color: white; font-weight: bold; opacity: 0.4; text-transform: uppercase; }
-        .active-mode { opacity: 1 !important; border: 2px solid #000; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        .mode-btn { padding: 15px 5px; font-size: 0.75rem; cursor: pointer; border: none; border-radius: 10px; color: white; font-weight: bold; opacity: 0.4; }
+        .active-mode { opacity: 1 !important; border: 2px solid #000; }
         #status-bar { padding: 15px; border-radius: 12px; font-weight: bold; background: #fff; border: 2px solid #ddd; text-align: center; margin-bottom: 10px; }
-
-        #login-container { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('sekolah.jpg'); background-size: cover; background-position: center; height: 100vh; display: flex; justify-content: center; align-items: center; }
-        #login-box { padding: 35px; background: rgba(255,255,255,0.95); border-radius: 20px; width: 85%; max-width: 320px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
 
         .table-container { background: white; border-radius: 15px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; min-width: 500px; }
-        th, td { padding: 10px; border: 1px solid #ccc; text-align: left; font-size: 0.8rem; }
-        th { background: #f8f9fa !important; font-weight: bold; }
+        th, td { padding: 10px; border: 1px solid #000; text-align: left; font-size: 0.8rem; }
+        th { background: #f2f2f2 !important; }
 
         @media print {
             .nav-menu, button, .btn-group, #reader, input, #status-bar, .no-print, #scan-btn-container { display: none !important; }
@@ -55,10 +86,10 @@
     <div id="login-container">
         <div id="login-box">
             <img src="logo-smp.png" style="width:70px; margin-bottom:10px;">
-            <h2 style="color: var(--primary); margin:0; font-size: 1.4rem;">E-PERPUS</h2>
-            <p style="font-size:11px; margin-bottom:25px; color: #666;">SMPN 1 CIBINGBIN</p>
-            <input type="password" id="passInput" style="padding:14px; width:90%; border-radius:10px; border:1px solid #ddd; text-align:center; font-size:1rem;" placeholder="MASUKKAN PIN">
-            <button onclick="checkLogin()" style="width:100%; margin-top:15px; padding:14px; background:var(--primary); color:white; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">MASUK SISTEM</button>
+            <h2 style="color: var(--primary); margin:0;">E-PERPUS</h2>
+            <p style="font-size:12px; margin-bottom:20px; color: #666;">SMPN 1 CIBINGBIN</p>
+            <input type="password" id="passInput" style="padding:14px; width:90%; border-radius:10px; border:1px solid #ccc; text-align:center;" placeholder="PIN PETUGAS">
+            <button onclick="checkLogin()" style="width:100%; margin-top:15px; padding:14px; background:var(--primary); color:white; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">MASUK</button>
         </div>
     </div>
 
@@ -72,18 +103,19 @@
     </div>
 
     <div id="page-welcome" class="page">
-        <div style="background:white; padding:30px; border-radius:20px; text-align:center; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
-            <h3 style="margin-top:0;">Halo, Selamat Bertugas!</h3>
-            <p style="color:#7f8c8d; font-size:0.9rem;">Kelola data perpustakaan dengan mudah di sini.</p>
-            <div style="display:grid; gap:10px; margin-top:20px;">
-                <button onclick="switchPage('scan')" style="padding:18px; border-radius:12px; border:none; background:var(--blue); color:white; font-weight:bold; cursor:pointer;">📸 SCAN KARTU</button>
-                <button onclick="switchPage('dash')" style="padding:18px; border-radius:12px; border:none; background:var(--success); color:white; font-weight:bold; cursor:pointer;">📊 LIHAT LAPORAN</button>
+        <div class="welcome-card">
+            <h3>Halo, Petugas!</h3>
+            <p style="color:#7f8c8d;">Silakan pilih menu di bawah ini untuk memulai.</p>
+            <div style="display:grid; gap:12px; margin-top:20px;">
+                <button class="mode-btn" style="background:var(--blue); opacity:1; padding:20px; border-radius:15px;" onclick="switchPage('scan')">📸 MENU SCANNER</button>
+                <button class="mode-btn" style="background:var(--success); opacity:1; padding:20px; border-radius:15px;" onclick="switchPage('dash')">📊 LIHAT LAPORAN</button>
             </div>
+            <button onclick="location.reload()" style="margin-top:25px; color:var(--danger); border:none; background:none; font-weight:bold; cursor:pointer;">🚪 KELUAR</button>
         </div>
     </div>
 
     <div id="page-scan" class="page">
-        <div id="status-bar">SILAKAN PILIH MODE</div>
+        <div id="status-bar">PILIH MODE DAHULU</div>
         
         <div id="scan-btn-container" style="text-align:center; margin-bottom:15px;">
             <button id="start-btn" onclick="initScanner()" style="width:100%; padding:20px; background:var(--blue); color:white; border:none; border-radius:12px; font-weight:bold; font-size:1.1rem; cursor:pointer;">📷 AKTIFKAN KAMERA</button>
@@ -97,8 +129,8 @@
             <button id="btn-Kembali" class="mode-btn" style="background:var(--danger)" onclick="setMode('dikembalikan')">KEMBALI</button>
         </div>
 
-        <div style="margin-top:15px; display:flex; gap:8px;">
-            <input type="text" id="manualInput" style="flex:1; padding:12px; border-radius:8px; border:1px solid #ccc;" placeholder="Atau ketik NIS manual...">
+        <div style="margin-top:15px; display:flex; gap:10px;">
+            <input type="text" id="manualInput" style="flex:1; padding:12px; border-radius:8px; border:1px solid #ccc;" placeholder="Atau NIS Manual...">
             <button onclick="kirimManual()" style="padding:10px 20px; background:var(--primary); color:white; border:none; border-radius:8px; font-weight:bold;">KIRIM</button>
         </div>
     </div>
@@ -107,17 +139,18 @@
         <div class="kop-surat">
             <div class="kop-left"><img src="logo-smp.png"></div>
             <div class="kop-center">
+                <h4>PEMERINTAH KABUPATEN KUNINGAN</h4>
                 <h2>SMP NEGERI 1 CIBINGBIN</h2>
                 <p style="font-weight:bold;">TERAKREDITASI 'A'</p>
-                <p>Jl. Raya Pasar Cibingbin No. 250 Cibingbin - Kuningan Jawa Barat</p>
+                <p>Jl. Raya Pasar Cibingbin No. 250 Cibingbin - Kuningan 45587</p>
             </div>
             <div class="kop-right"><img src="https://cdn-icons-png.flaticon.com/512/3389/3389081.png"></div>
         </div>
 
-        <button class="no-print" onclick="window.print()" style="width:100%; padding:15px; background:var(--success); color:white; border:none; border-radius:10px; margin-bottom:20px; font-weight:bold; cursor:pointer;">📥 CETAK / DOWNLOAD PDF</button>
+        <button class="no-print" onclick="window.print()" style="width:100%; padding:15px; background:var(--success); color:white; border:none; border-radius:10px; margin-bottom:20px; font-weight:bold; cursor:pointer;">📥 DOWNLOAD LAPORAN (PDF)</button>
         
         <div class="table-container">
-            <h3 style="text-align:center; margin-top:0; font-size:1rem;">LAPORAN AKTIVITAS PERPUSTAKAAN</h3>
+            <h3 style="text-align: center; margin-top: 0;">REKAPITULASI AKTIVITAS PERPUSTAKAAN</h3>
             <table>
                 <thead><tr><th>Waktu</th><th>Nama</th><th>NIS</th><th>Kelas</th><th>Status</th></tr></thead>
                 <tbody id="bodyDash"></tbody>
@@ -133,7 +166,7 @@
 
     <div id="page-pinjam" class="page">
         <div class="table-container">
-            <h3 style="text-align:center; margin-top:0;">📖 DAFTAR PINJAMAN AKTIF</h3>
+            <h3 style="text-align:center; margin-top:0;">DAFTAR PINJAMAN AKTIF</h3>
             <table>
                 <thead><tr><th>Nama Siswa</th><th>Kelas</th><th>Status</th></tr></thead>
                 <tbody id="bodyPinjam"></tbody>
@@ -172,14 +205,12 @@
         }
 
         function initScanner() {
-            if (!currentMode) { alert("Pilih Mode (Kunjungan/Pinjam/Kembali) dulu!"); return; }
+            if (!currentMode) { alert("Pilih Mode Scan dulu!"); return; }
             document.getElementById('start-btn').style.display = 'none';
             html5QrCode = new Html5Qrcode("reader");
-            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
-            
-            html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess)
+            html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, onScanSuccess)
             .catch(err => {
-                alert("Gagal Akses Kamera: Pastikan HP Anda mengizinkan kamera dan menggunakan link HTTPS.");
+                alert("Kamera tidak ditemukan. Pastikan izin diberikan.");
                 document.getElementById('start-btn').style.display = 'block';
             });
         }
@@ -193,10 +224,9 @@
         function setMode(m) {
             currentMode = m;
             document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active-mode'));
-            const btnId = m === 'dikembalikan' ? 'btn-Kembali' : 'btn-' + m;
-            document.getElementById(btnId).classList.add('active-mode');
+            const idBtn = (m === 'dikembalikan') ? 'btn-Kembali' : 'btn-' + m;
+            if(document.getElementById(idBtn)) document.getElementById(idBtn).classList.add('active-mode');
             document.getElementById('status-bar').innerHTML = "MODE: " + m.toUpperCase();
-            document.getElementById('status-bar').style.background = "#fff";
         }
 
         function onScanSuccess(decodedText) {
@@ -211,14 +241,14 @@
 
             fetch(URL_SCRIPT, { method: "POST", mode: 'no-cors', body: JSON.stringify({ id: nis, status: currentMode }) })
             .then(() => { 
-                bar.innerHTML = "✅ BERHASIL DICATAT!"; bar.style.background = "#27ae60"; bar.style.color = "white";
+                bar.innerHTML = "✅ BERHASIL!"; bar.style.background = "#27ae60"; bar.style.color = "white";
                 loadData();
                 setTimeout(() => { 
                     isProcessing = false; 
                     bar.innerHTML = "MODE: " + currentMode.toUpperCase(); 
                     bar.style.background = "#fff"; bar.style.color = "black";
                 }, 3000);
-            }).catch(() => { isProcessing = false; alert("Gagal koneksi ke server!"); });
+            });
         }
 
         function kirimManual() {
@@ -237,7 +267,7 @@
                 });
                 document.getElementById('bodyDash').innerHTML = dash;
                 Object.values(aktif).forEach(s => {
-                    pinjamTab += `<tr><td>${s.nama}</td><td>${s.kelas}</td><td><b style="color:var(--warning)">Dipinjam</b></td></tr>`;
+                    pinjamTab += `<tr><td>${s.nama}</td><td>${s.kelas}</td><td><b>Pinjam</b></td></tr>`;
                 });
                 document.getElementById('bodyPinjam').innerHTML = pinjamTab;
             });
