@@ -9,7 +9,7 @@
         :root { --primary: #2c3e50; --success: #27ae60; --warning: #f1c40f; --danger: #e74c3c; --blue: #3498db; }
         body, html { height: 100%; margin: 0; font-family: 'Segoe UI', sans-serif; background: #f4f7f6; }
 
-        /* Login & Nav */
+        /* Login & UI Style */
         #login-container { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1350&q=80'); background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; height: 100vh; }
         #login-box { padding: 40px; background: rgba(255, 255, 255, 0.95); border-radius: 25px; width: 85%; max-width: 320px; text-align: center; }
         .nav-menu { display: none; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
@@ -17,37 +17,26 @@
         .nav-item { flex: 1; padding: 15px 5px; text-align: center; font-weight: bold; color: #7f8c8d; cursor: pointer; border-bottom: 4px solid transparent; font-size: 0.75rem; }
         .nav-active { border-bottom: 4px solid var(--blue); color: var(--blue); background: #f9f9f9; }
 
-        /* Page Layout */
         .page { display: none; padding: 15px; max-width: 950px; margin: 0 auto; }
         .header-title { background: var(--primary); color: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; text-align: center; }
         #reader { width: 100%; border: 4px solid var(--primary); border-radius: 15px; overflow: hidden; background: white; min-height: 250px; }
         
-        /* Manual Input Box */
-        .manual-input-container { margin-top: 15px; background: white; padding: 10px; border-radius: 10px; border: 1px solid #ddd; }
-        #manualNIS { width: 70%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
-        .btn-manual { width: 25%; padding: 10px; background: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        /* Manual Input Styling */
+        .manual-box { background: white; padding: 15px; border-radius: 12px; border: 2px solid #ddd; margin: 15px 0; display: flex; gap: 10px; }
+        .manual-box input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; }
+        .btn-input { padding: 0 20px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
 
         .btn-group { margin: 15px 0; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
         .mode-btn { padding: 15px 5px; font-size: 0.7rem; cursor: pointer; border: none; border-radius: 10px; color: white; font-weight: bold; opacity: 0.4; }
         .active-mode { opacity: 1 !important; border: 2px solid #000; }
-        #status-bar { margin: 10px 0; padding: 15px; border-radius: 12px; font-weight: bold; background: #fff; border: 2px solid #ddd; text-align: center; transition: 0.3s; }
+        
+        #status-bar { padding: 15px; border-radius: 12px; font-weight: bold; background: #fff; border: 2px solid #ddd; text-align: center; transition: all 0.3s ease; }
 
-        /* Tables */
         .table-container { background: white; border-radius: 15px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        table { width: 100%; border-collapse: collapse; min-width: 700px; }
         th, td { padding: 12px; border: 1px solid #eee; text-align: left; font-size: 0.8rem; }
         th { background: #f8f9fa; }
         .status-badge { padding: 4px 8px; border-radius: 4px; color: white; font-size: 0.7rem; font-weight: bold; }
-        .badge-denda { background: var(--danger); color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; }
-
-        @media print {
-            .nav-menu, button, #reader, .btn-group, #status-bar, .header-title, #page-pinjam, .manual-input-container { display: none !important; }
-            #page-dash { display: block !important; width: 100% !important; padding: 0 !important; }
-            #print-header, #print-footer { display: block !important; }
-            table { min-width: 100% !important; border: 1px solid black; }
-            th, td { border: 1px solid black !important; padding: 8px; }
-            body { background: white; }
-        }
     </style>
 </head>
 <body>
@@ -57,26 +46,26 @@
             <h2 style="color: var(--primary); margin:0;">E-PERPUS</h2>
             <p style="font-size: 12px; color: #666; margin-bottom:20px;">SMPN 1 CIBINGBIN</p>
             <input type="password" id="passInput" style="padding:15px; width:90%; border:2px solid #ddd; border-radius:12px; text-align:center;" placeholder="PIN">
-            <button style="background: var(--primary); margin-top: 15px; width: 100%; padding: 15px; color: white; border: none; border-radius: 12px; font-weight: bold; cursor:pointer;" onclick="checkLogin()">MASUK</button>
+            <button style="background: var(--primary); margin-top: 15px; width: 100%; padding: 15px; color: white; border: none; border-radius: 12px; font-weight: bold;" onclick="checkLogin()">MASUK</button>
         </div>
     </div>
 
     <div id="main-nav" class="nav-menu">
         <div class="nav-container">
-            <div id="nav-scan" class="nav-item nav-active" onclick="switchPage('scan')">1. SCAN QR</div>
+            <div id="nav-scan" class="nav-item nav-active" onclick="switchPage('scan')">1. SCAN / INPUT</div>
             <div id="nav-dash" class="nav-item" onclick="switchPage('dash')">2. DASHBOARD</div>
             <div id="nav-pinjam" class="nav-item" onclick="switchPage('pinjam')">3. STATUS PINJAMAN</div>
-            <button onclick="location.reload()" style="background:none; border:none; color:red; font-weight:bold; cursor:pointer; font-size: 0.7rem;">LOGOUT</button>
+            <button onclick="location.reload()" style="background:none; border:none; color:red; font-weight:bold; cursor:pointer;">LOGOUT</button>
         </div>
     </div>
 
     <div id="page-scan" class="page">
-        <div class="header-title"><h3>MENU SCANNER</h3></div>
+        <div class="header-title"><h3>SCAN KARTU ATAU KETIK NIS</h3></div>
         <div id="reader"></div>
         
-        <div class="manual-input-container">
-            <input type="text" id="manualNIS" placeholder="Ketik NIS Manual...">
-            <button class="btn-manual" onclick="processManual()">INPUT</button>
+        <div class="manual-box">
+            <input type="text" id="manualInput" placeholder="Ketik NIS siswa...">
+            <button class="btn-input" onclick="kirimManual()">KIRIM</button>
         </div>
 
         <div class="btn-group">
@@ -88,42 +77,38 @@
     </div>
 
     <div id="page-dash" class="page">
-        <div id="print-header">
-            <h2 align="center">SMP NEGERI 1 CIBINGBIN</h2>
-            <h3 align="center">LAPORAN AKTIVITAS PERPUSTAKAAN</h3>
-        </div>
-
-        <div class="header-title"><h3>RIWAYAT AKTIVITAS</h3></div>
-        <button onclick="window.print()" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; border-radius:10px; margin-bottom:15px; font-weight:bold; cursor:pointer;">📥 DOWNLOAD LAPORAN (PDF)</button>
-        
+        <div class="header-title"><h3>RIWAYAT LOG AKTIVITAS</h3></div>
         <div class="table-container">
             <table>
-                <thead><tr><th>TANGGAL</th><th>NAMA SISWA</th><th>KEGIATAN</th></tr></thead>
+                <thead><tr><th>WAKTU</th><th>NAMA SISWA</th><th>NIS</th><th>KELAS</th><th>STATUS</th></tr></thead>
                 <tbody id="bodyDash"></tbody>
             </table>
         </div>
     </div>
 
     <div id="page-pinjam" class="page">
-        <div class="header-title" style="background:var(--blue)"><h3>BUKU BELUM KEMBALI</h3></div>
+        <div class="header-title" style="background:var(--blue)"><h3>DAFTAR PINJAMAN AKTIF</h3></div>
         <div class="table-container">
             <table>
-                <thead><tr><th>NAMA SISWA</th><th>TGL PINJAM</th><th>BATAS KEMBALI</th><th>INFO DENDA</th></tr></thead>
+                <thead><tr><th>NAMA SISWA</th><th>KELAS</th><th>STATUS</th></tr></thead>
                 <tbody id="bodyPinjam"></tbody>
             </table>
         </div>
     </div>
 
     <script>
+        // URL WEB APP ANDA SUDAH DIPASANG DI SINI
         const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbwygpq5H26qWHJFx74nHrrZVulQINLfO2HMmoDSq0tZdSL_cwZO71NXPz1yt7wI5KNWbA/exec";
+        
         let currentMode = "";
         let isProcessing = false;
+        let localDatabase = [];
 
         function checkLogin() {
             if(document.getElementById('passInput').value === "1234") {
                 document.getElementById('login-container').style.display="none";
                 document.getElementById('main-nav').style.display="block";
-                switchPage('scan'); initScanner(); loadData(); setInterval(loadData, 15000);
+                switchPage('scan'); initScanner(); loadData();
             } else { alert("PIN Salah!"); }
         }
 
@@ -141,57 +126,62 @@
             document.getElementById('status-bar').innerHTML = "MODE: " + m.toUpperCase();
         }
 
-        // Fungsi utama scan dengan notifikasi tahan sinyal
-        function onScanSuccess(t) {
-            if(!currentMode || isProcessing) return;
+        function kirimData(nis) {
+            if(!currentMode || isProcessing) {
+                alert("Pilih Mode dahulu!"); return;
+            }
             isProcessing = true;
             let bar = document.getElementById('status-bar');
-            
-            bar.innerHTML = "⌛ MENGIRIM DATA..."; 
-            bar.style.background = "#f1c40f"; bar.style.color = "black";
-            
-            fetch(URL_SCRIPT, { method: "POST", mode: 'no-cors', body: JSON.stringify({ id: t, status: currentMode }) })
+            bar.innerHTML = "⌛ SEDANG MEMPROSES NIS: " + nis;
+            bar.style.background = "#f1c40f";
+
+            fetch(URL_SCRIPT, { method: "POST", mode: 'no-cors', body: JSON.stringify({ id: nis, status: currentMode }) })
             .then(() => { 
-                bar.innerHTML = "✅ BERHASIL!"; bar.style.background = "#27ae60"; bar.style.color = "white";
+                bar.innerHTML = "✅ BERHASIL DICATAT!"; 
+                bar.style.background = "#27ae60"; bar.style.color = "white";
                 setTimeout(() => { 
                     isProcessing = false; 
                     bar.innerHTML = "MODE: " + currentMode.toUpperCase(); 
                     bar.style.background = "#fff"; bar.style.color = "black";
-                }, 4000);
+                }, 3000);
                 loadData(); 
-            }).catch(() => {
-                bar.innerHTML = "✅ DATA TERKIRIM (CEK SINYAL)";
-                bar.style.background = "#27ae60"; bar.style.color = "white";
-                isProcessing = false;
             });
         }
 
-        function processManual() {
-            let val = document.getElementById('manualNIS').value;
-            if(val) { onScanSuccess(val); document.getElementById('manualNIS').value = ""; }
-            else { alert("Isi NIS dahulu!"); }
+        function kirimManual() {
+            let val = document.getElementById('manualInput').value;
+            if(val) { kirimData(val); document.getElementById('manualInput').value = ""; }
         }
 
+        function onScanSuccess(t) { kirimData(t); }
+
         function initScanner() { 
-            const scanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
-            scanner.render(onScanSuccess); 
+            new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 }).render(onScanSuccess); 
         }
 
         function loadData() {
             fetch(URL_SCRIPT + "?action=read").then(res => res.json()).then(data => {
                 let dash = ""; let pinjamTab = "";
                 let statusAktif = {};
-                data.forEach(item => {
-                    if (item.status === "Pinjam") { statusAktif[item.nama] = item; }
-                    else if (item.status === "dikembalikan") { delete statusAktif[item.nama]; }
-                });
-                [...data].reverse().slice(0, 20).forEach(item => {
+
+                [...data].reverse().forEach(item => {
                     let warna = item.status === 'Pinjam' ? '#f39c12' : (item.status === 'dikembalikan' ? '#e74c3c' : '#27ae60');
-                    dash += `<tr><td>${new Date().toLocaleDateString('id-ID')}</td><td>${item.nama}</td><td><span class="status-badge" style="background:${warna}">${item.status}</span></td></tr>`;
+                    dash += `<tr>
+                        <td>${item.waktu}</td>
+                        <td>${item.nama}</td>
+                        <td>${item.nis}</td>
+                        <td>${item.kelas}</td>
+                        <td><span class="status-badge" style="background:${warna}">${item.status}</span></td>
+                    </tr>`;
+
+                    if (item.status === "Pinjam") { statusAktif[item.nis] = item; }
+                    else if (item.status === "dikembalikan") { delete statusAktif[item.nis]; }
                 });
+
                 Object.values(statusAktif).forEach(item => {
-                    pinjamTab += `<tr><td>${item.nama}</td><td>Baru Saja</td><td>+7 Hari</td><td><span class="badge-denda">Aktif</span></td></tr>`;
+                    pinjamTab += `<tr><td>${item.nama}</td><td>${item.kelas}</td><td><span class="status-badge" style="background:#f39c12">MEMBAWA BUKU</span></td></tr>`;
                 });
+
                 document.getElementById('bodyDash').innerHTML = dash;
                 document.getElementById('bodyPinjam').innerHTML = pinjamTab;
             });
