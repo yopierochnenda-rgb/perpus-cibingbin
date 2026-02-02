@@ -4,30 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-PERPUS SMPN 1 CIBINGBIN</title>
-    <script src="https://unpkg.com/html5-qrcode"></script>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.autotable.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
     
     <style>
         :root { --primary: #1e293b; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --blue: #3b82f6; }
         body, html { height: 100%; margin: 0; font-family: 'Segoe UI', sans-serif; background: #f1f5f9; }
+        
+        /* Login */
         #login-container { background: var(--primary); display: flex; justify-content: center; align-items: center; height: 100vh; }
         #login-box { padding: 35px; background: white; border-radius: 20px; width: 300px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        
+        /* Navigasi */
         .nav-menu { display: none; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
         .nav-container { display: flex; max-width: 1200px; margin: 0 auto; overflow-x: auto; scrollbar-width: none; }
         .nav-item { flex: none; padding: 16px 20px; font-weight: bold; color: #64748b; cursor: pointer; border-bottom: 4px solid transparent; white-space: nowrap; font-size: 13px; }
         .nav-active { border-bottom: 4px solid var(--blue); color: var(--blue); background: #f8fafc; }
+
+        /* Content */
         .page { display: none; padding: 20px; max-width: 900px; margin: 0 auto; }
-        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        #notif-atas { display: none; padding: 15px; border-radius: 10px; text-align: center; font-weight: bold; margin-bottom: 15px; font-size: 16px; border: 2px solid transparent; }
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        #notif-atas { display: none; padding: 15px; border-radius: 10px; text-align: center; font-weight: bold; margin-bottom: 15px; font-size: 16px; border: 2px solid #e2e8f0; }
+        
+        /* Scanner */
         #reader { width: 100%; border-radius: 12px; overflow: hidden; border: 3px solid #e2e8f0; }
+        
+        /* Table */
         .table-container { overflow-x: auto; margin-top: 15px; }
         table { width: 100%; border-collapse: collapse; min-width: 600px; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; font-size: 13px; }
         th { background: #f8fafc; color: #475569; }
         .unread { background-color: #fef9c3 !important; font-weight: bold; border-left: 5px solid var(--warning); }
         .status-badge { padding: 5px 10px; border-radius: 6px; color: white; font-size: 11px; font-weight: bold; text-transform: uppercase; }
-        .btn-pdf { background: #e11d48; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+
+        /* Tombol Download */
+        .btn-pdf { background: #e11d48; color: white; border: none; padding: 12px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-pdf:hover { background: #be123c; transform: scale(1.05); }
+        #live-indicator { font-size: 10px; color: var(--success); font-weight: normal; margin-left: 5px; }
     </style>
 </head>
 <body>
@@ -36,7 +51,7 @@
         <div id="login-box">
             <h2 style="margin:0; color: var(--primary);">E-PERPUS</h2>
             <p style="font-size: 12px; color: #64748b; margin-bottom: 25px;">SMPN 1 CIBINGBIN</p>
-            <input type="password" id="passInput" style="width: 85%; padding: 15px; border: 2px solid #ddd; border-radius: 12px; text-align: center; font-size: 18px;" placeholder="PIN">
+            <input type="password" id="passInput" style="width: 85%; padding: 15px; border: 2px solid #ddd; border-radius: 12px; text-align: center;" placeholder="PIN">
             <button style="width: 100%; margin-top: 20px; padding: 15px; background: var(--blue); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer;" onclick="checkLogin()">MASUK</button>
         </div>
     </div>
@@ -46,7 +61,7 @@
             <div id="nav-Kunjungan" class="nav-item" onclick="startMode('Kunjungan')">KUNJUNGAN</div>
             <div id="nav-Pinjam" class="nav-item" onclick="startMode('Pinjam')">PINJAM</div>
             <div id="nav-Kembali" class="nav-item" onclick="startMode('Kembali')">KEMBALI</div>
-            <div id="nav-Riwayat" class="nav-item" onclick="showRiwayat()">RIWAYAT</div>
+            <div id="nav-Riwayat" class="nav-item" onclick="showRiwayat()">RIWAYAT <span id="live-indicator">● LIVE</span></div>
             <div class="nav-item" style="color:var(--danger)" onclick="location.reload()">LOGOUT</div>
         </div>
     </div>
@@ -60,19 +75,18 @@
 
     <div id="page-riwayat" class="page">
         <div class="card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h3 style="margin:0;">LOG AKTIVITAS</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="margin:0; color: var(--primary);">LOG AKTIVITAS</h3>
                 <button class="btn-pdf" onclick="generatePDF()">📄 DOWNLOAD PDF</button>
             </div>
             <div class="table-container">
-                <table id="tabelRiwayat">
+                <table>
                     <thead>
                         <tr><th>WAKTU</th><th>NAMA SISWA</th><th>NIS</th><th>KELAS</th><th>STATUS</th></tr>
                     </thead>
                     <tbody id="bodyRiwayat"></tbody>
                 </table>
             </div>
-            <button onclick="startMode(currentMode || 'Kunjungan')" style="width:100%; margin-top:15px; padding:12px; background:var(--blue); color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">KEMBALI SCAN</button>
         </div>
     </div>
 
@@ -82,27 +96,68 @@
         let isProcessing = false;
         let scanner = null;
         let dataRiwayat = [];
+        let refreshInterval = null;
 
         function checkLogin() {
             if(document.getElementById('passInput').value === "1234") {
                 document.getElementById('login-container').style.display="none";
                 document.getElementById('main-nav').style.display="block";
-                startMode('Kunjungan');
+                showRiwayat(); 
             } else { alert("PIN SALAH!"); }
         }
 
+        function loadDataOtomatis() {
+            fetch(URL_SCRIPT).then(res => res.json()).then(data => {
+                if (JSON.stringify(data) !== JSON.stringify(dataRiwayat)) {
+                    dataRiwayat = data;
+                    renderTable();
+                }
+            }).catch(e => console.log("Gagal ambil data"));
+        }
+
+        function renderTable() {
+            let html = "";
+            let sortedData = [...dataRiwayat].reverse();
+            sortedData.forEach((item, index) => {
+                let warna = item.status === 'Pinjam' ? 'var(--warning)' : (item.status === 'Kembali' ? 'var(--danger)' : 'var(--success)');
+                let barisBaru = (index === 0) ? "class='unread'" : "";
+                html += `<tr ${barisBaru}>
+                    <td>${item.waktu}</td>
+                    <td>${item.nama}</td>
+                    <td>${item.nis}</td>
+                    <td>${item.kelas || '-'}</td>
+                    <td><span class="status-badge" style="background:${warna}">${item.status}</span></td>
+                </tr>`;
+            });
+            document.getElementById('bodyRiwayat').innerHTML = html;
+        }
+
+        function showRiwayat() {
+            if(scanner) { scanner.clear(); scanner = null; }
+            document.getElementById('page-scan').style.display = 'none';
+            document.getElementById('page-riwayat').style.display = 'block';
+            document.querySelectorAll('.nav-item').forEach(nv => nv.classList.remove('nav-active'));
+            document.getElementById('nav-Riwayat').classList.add('nav-active');
+            
+            loadDataOtomatis();
+            if (refreshInterval) clearInterval(refreshInterval);
+            refreshInterval = setInterval(loadDataOtomatis, 5000); 
+        }
+
         function startMode(mode) {
+            if (refreshInterval) clearInterval(refreshInterval);
             currentMode = mode;
             isProcessing = false;
             document.querySelectorAll('.nav-item').forEach(nv => nv.classList.remove('nav-active'));
             document.getElementById('nav-'+mode).classList.add('nav-active');
             document.getElementById('page-riwayat').style.display = 'none';
             document.getElementById('page-scan').style.display = 'block';
+            
             let notif = document.getElementById('notif-atas');
             notif.style.display = "block";
             notif.style.background = "#f8fafc";
-            notif.style.color = "#1e293b";
-            notif.innerHTML = "MODE: " + mode.toUpperCase();
+            notif.innerHTML = "MODE: " + mode.toUpperCase() + "<br><span style='font-size:12px; font-weight:normal;'>Silakan Scan Kartu...</span>";
+
             if(scanner) scanner.clear();
             scanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
             scanner.render(onScanSuccess);
@@ -114,74 +169,55 @@
             let notif = document.getElementById('notif-atas');
             notif.innerHTML = "⌛ MENCATAT DATA...";
             notif.style.background = "#fef9c3";
+
             fetch(URL_SCRIPT, { method: "POST", body: JSON.stringify({ id: t, status: currentMode }) })
             .then(() => { 
-                notif.innerHTML = "✅ BERHASIL! MEMBUKA RIWAYAT...";
+                notif.innerHTML = "✅ BERHASIL DICATAT!";
                 notif.style.background = "#d1fae5";
-                setTimeout(() => { showRiwayat(); }, 1500);
+                setTimeout(() => { 
+                    isProcessing = false; 
+                    notif.style.background = "#f8fafc";
+                    notif.innerHTML = "MODE: " + currentMode.toUpperCase();
+                }, 2000);
             });
         }
 
-        function showRiwayat() {
-            if(scanner) { scanner.clear(); scanner = null; }
-            document.getElementById('page-scan').style.display = 'none';
-            document.getElementById('page-riwayat').style.display = 'block';
-            document.querySelectorAll('.nav-item').forEach(nv => nv.classList.remove('nav-active'));
-            document.getElementById('nav-Riwayat').classList.add('nav-active');
-            
-            fetch(URL_SCRIPT).then(res => res.json()).then(data => {
-                dataRiwayat = data;
-                let html = "";
-                let sortedData = [...data].reverse();
-                sortedData.forEach((item, index) => {
-                    let warna = item.status === 'Pinjam' ? 'var(--warning)' : (item.status === 'Kembali' ? 'var(--danger)' : 'var(--success)');
-                    let barisBaru = (index === 0) ? "class='unread'" : "";
-                    html += `<tr ${barisBaru}>
-                        <td>${item.waktu}</td>
-                        <td>${item.nama}</td>
-                        <td>${item.nis}</td>
-                        <td>${item.kelas || '-'}</td>
-                        <td><span class="status-badge" style="background:${warna}">${item.status}</span></td>
-                    </tr>`;
-                });
-                document.getElementById('bodyRiwayat').innerHTML = html;
-            });
-        }
-
+        // FUNGSI DOWNLOAD PDF (DIPERBAIKI)
         function generatePDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            
-            // Judul PDF
-            doc.setFontSize(16);
-            doc.text("LAPORAN RIWAYAT PERPUSTAKAAN", 105, 15, { align: "center" });
-            doc.setFontSize(12);
-            doc.text("SMPN 1 CIBINGBIN", 105, 22, { align: "center" });
-            
-            // Buat Tabel
-            const rows = [];
-            dataRiwayat.forEach(item => {
-                rows.push([item.waktu, item.nama, item.nis, item.kelas, item.status]);
-            });
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                // Header
+                doc.setFontSize(16);
+                doc.text("LAPORAN RIWAYAT PERPUSTAKAAN", 105, 15, { align: "center" });
+                doc.setFontSize(12);
+                doc.text("SMPN 1 CIBINGBIN", 105, 22, { align: "center" });
+                
+                // Tabel
+                const tableData = dataRiwayat.map(item => [item.waktu, item.nama, item.nis, item.kelas, item.status]);
+                
+                doc.autoTable({
+                    head: [['Waktu', 'Nama Siswa', 'NIS', 'Kelas', 'Status']],
+                    body: tableData,
+                    startY: 30,
+                    theme: 'grid',
+                    headStyles: { fillColor: [30, 41, 59] }
+                });
 
-            doc.autoTable({
-                head: [['Waktu', 'Nama Siswa', 'NIS', 'Kelas', 'Status']],
-                body: rows,
-                startY: 30,
-                theme: 'grid'
-            });
-
-            // Tanda Tangan
-            const finalY = doc.lastAutoTable.finalY + 20;
-            const today = new Date();
-            const dateStr = today.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-            
-            doc.text(`Cibingbin, ${dateStr}`, 140, finalY);
-            doc.text("Petugas Perpus,", 140, finalY + 7);
-            doc.setFont(undefined, 'bold');
-            doc.text("Rizki Angriani, S.Pust", 140, finalY + 30);
-            
-            doc.save(`Riwayat_Perpus_${dateStr}.pdf`);
+                // Tanda Tangan
+                const finalY = doc.lastAutoTable.finalY + 20;
+                const dateNow = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+                
+                doc.text(`Cibingbin, ${dateNow}`, 140, finalY);
+                doc.text("Petugas Perpus,", 140, finalY + 7);
+                doc.setFont(undefined, 'bold');
+                doc.text("Rizki Angriani, S.Pust", 140, finalY + 30);
+                
+                doc.save(`Riwayat_Perpus_${dateNow}.pdf`);
+            } catch (err) {
+                alert("Gagal membuat PDF: " + err);
+            }
         }
     </script>
 </body>
