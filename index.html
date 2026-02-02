@@ -6,40 +6,34 @@
     <title>E-PERPUS SMPN 1 CIBINGBIN</title>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
-        :root { --primary: #2c3e50; --success: #27ae60; --warning: #f1c40f; --danger: #e74c3c; --blue: #3498db; }
+        :root { --primary: #2c3e50; --success: #27ae60; --warning: #f39c12; --danger: #e74c3c; --blue: #3498db; }
         body, html { height: 100%; margin: 0; font-family: 'Segoe UI', sans-serif; background: #f4f7f6; }
 
-        /* Login & UI Style */
+        /* Login */
         #login-container { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1350&q=80'); background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        #login-box { padding: 40px; background: rgba(255, 255, 255, 0.95); border-radius: 25px; width: 85%; max-width: 320px; text-align: center; }
+        #login-box { padding: 40px; background: rgba(255, 255, 255, 0.95); border-radius: 20px; width: 85%; max-width: 300px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        
+        /* Navigasi Menu */
         .nav-menu { display: none; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
-        .nav-container { display: flex; max-width: 1000px; margin: 0 auto; }
-        .nav-item { flex: 1; padding: 15px 5px; text-align: center; font-weight: bold; color: #7f8c8d; cursor: pointer; border-bottom: 4px solid transparent; font-size: 0.75rem; }
-        .nav-active { border-bottom: 4px solid var(--blue); color: var(--blue); background: #f9f9f9; }
+        .nav-container { display: flex; max-width: 1200px; margin: 0 auto; overflow-x: auto; scrollbar-width: none; }
+        .nav-item { flex: none; padding: 15px 18px; text-align: center; font-weight: bold; color: #7f8c8d; cursor: pointer; border-bottom: 4px solid transparent; white-space: nowrap; font-size: 13px; }
+        .nav-active { border-bottom: 4px solid var(--primary); color: var(--primary); background: #f9f9f9; }
 
-        .page { display: none; padding: 15px; max-width: 950px; margin: 0 auto; }
-        .header-title { background: var(--primary); color: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; text-align: center; }
-        #reader { width: 100%; border: 4px solid var(--primary); border-radius: 15px; overflow: hidden; background: white; min-height: 250px; }
+        /* Halaman */
+        .page { display: none; padding: 20px; max-width: 800px; margin: 0 auto; }
+        .header-title { color: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; text-align: center; font-weight: bold; }
         
-        /* Manual Input Styling */
-        .manual-box { background: white; padding: 15px; border-radius: 12px; border: 2px solid #ddd; margin: 15px 0; display: flex; gap: 10px; }
-        .manual-box input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; }
-        .btn-input { padding: 0 20px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        /* Scanner Area */
+        #reader { width: 100%; border-radius: 15px; overflow: hidden; background: white; border: 3px solid #ddd; }
+        #status-bar { padding: 15px; border-radius: 12px; font-weight: bold; background: #fff; border: 2px solid #ddd; text-align: center; margin-top: 15px; }
 
-        .btn-group { margin: 15px 0; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-        .mode-btn { padding: 15px 5px; font-size: 0.7rem; cursor: pointer; border: none; border-radius: 10px; color: white; font-weight: bold; opacity: 0.4; }
-        .active-mode { opacity: 1 !important; border: 2px solid #000; }
-        
-        #status-bar { padding: 15px; border-radius: 12px; font-weight: bold; background: #fff; border: 2px solid #ddd; text-align: center; transition: all 0.3s ease; }
-
+        /* Tabel */
         .table-container { background: white; border-radius: 15px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 700px; }
-        th, td { padding: 12px; border: 1px solid #eee; text-align: left; font-size: 0.8rem; }
-        th { background: #f8f9fa; }
-        .status-badge { padding: 4px 8px; border-radius: 4px; color: white; font-size: 0.7rem; font-weight: bold; }
-        
-        /* Class unread untuk baris terbaru berwarna kuning */
+        table { width: 100%; border-collapse: collapse; min-width: 500px; }
+        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; font-size: 14px; }
+        th { background: #f8f9fa; color: #666; }
         .unread { background-color: #fff9c4 !important; font-weight: bold; }
+        .status-badge { padding: 4px 8px; border-radius: 5px; color: white; font-size: 11px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -47,163 +41,115 @@
     <div id="login-container">
         <div id="login-box">
             <h2 style="color: var(--primary); margin:0;">E-PERPUS</h2>
-            <p style="font-size: 12px; color: #666; margin-bottom:20px;">SMPN 1 CIBINGBIN</p>
-            <input type="password" id="passInput" style="padding:15px; width:90%; border:2px solid #ddd; border-radius:12px; text-align:center;" placeholder="PIN">
-            <button style="background: var(--primary); margin-top: 15px; width: 100%; padding: 15px; color: white; border: none; border-radius: 12px; font-weight: bold;" onclick="checkLogin()">MASUK</button>
+            <p style="font-size: 11px; color: #666; margin-bottom:20px;">SMPN 1 CIBINGBIN</p>
+            <input type="password" id="passInput" style="padding:15px; width:80%; border:2px solid #ddd; border-radius:10px; text-align:center;" placeholder="PIN">
+            <button style="background: var(--primary); margin-top: 15px; width: 100%; padding: 15px; color: white; border: none; border-radius: 10px; font-weight: bold; cursor:pointer;" onclick="checkLogin()">MASUK</button>
         </div>
     </div>
 
     <div id="main-nav" class="nav-menu">
         <div class="nav-container">
-            <div id="nav-scan" class="nav-item nav-active" onclick="switchPage('scan')">1. SCAN / INPUT</div>
-            <div id="nav-dash" class="nav-item" onclick="switchPage('dash')">2. DASHBOARD</div>
-            <div id="nav-pinjam" class="nav-item" onclick="switchPage('pinjam')">3. STATUS PINJAMAN</div>
-            <button onclick="location.reload()" style="background:none; border:none; color:red; font-weight:bold; cursor:pointer;">LOGOUT</button>
+            <div id="nav-Kunjungan" class="nav-item" onclick="startScan('Kunjungan')">KUNJUNGAN</div>
+            <div id="nav-Pinjam" class="nav-item" onclick="startScan('Pinjam')">PINJAM</div>
+            <div id="nav-Kembali" class="nav-item" onclick="startScan('Kembali')">KEMBALI</div>
+            <div id="nav-Dash" class="nav-item" onclick="showDash()">RIWAYAT</div>
+            <div class="nav-item" style="color:var(--blue)" onclick="window.open('https://docs.google.com/spreadsheets/d/1Bf2R7xndXp1v_fU_P2B7uK677tWJ7h8-8Xw1-vE8FkM/edit', '_blank')">DOWNLOAD</div>
+            <div class="nav-item" style="color:var(--danger)" onclick="location.reload()">LOGOUT</div>
         </div>
     </div>
 
     <div id="page-scan" class="page">
-        <div class="header-title"><h3>SCAN KARTU ATAU KETIK NIS</h3></div>
+        <div id="header-color" class="header-title">HALAMAN SCAN</div>
         <div id="reader"></div>
-        
-        <div class="manual-box">
-            <input type="text" id="manualInput" placeholder="Ketik NIS siswa...">
-            <button class="btn-input" onclick="kirimManual()">KIRIM</button>
-        </div>
-
-        <div class="btn-group">
-            <button class="mode-btn" style="background:var(--success)" onclick="setMode('Kunjungan', this)">KUNJUNGAN</button>
-            <button class="mode-btn" style="background:var(--warning); color:black;" onclick="setMode('Pinjam', this)">PINJAM</button>
-            <button class="mode-btn" style="background:var(--danger)" onclick="setMode('Kembali', this)">KEMBALI</button>
-        </div>
-        <div id="status-bar">PILIH MODE DAHULU</div>
+        <div id="status-bar">SIAP SCAN...</div>
     </div>
 
     <div id="page-dash" class="page">
-        <div class="header-title"><h3>RIWAYAT LOG AKTIVITAS</h3></div>
+        <div class="header-title" style="background:var(--primary)">RIWAYAT AKTIVITAS SISWA</div>
         <div class="table-container">
             <table>
-                <thead><tr><th>WAKTU</th><th>NAMA SISWA</th><th>NIS</th><th>KELAS</th><th>STATUS</th></tr></thead>
+                <thead><tr><th>WAKTU</th><th>NAMA</th><th>KELAS</th><th>STATUS</th></tr></thead>
                 <tbody id="bodyDash"></tbody>
             </table>
         </div>
     </div>
 
-    <div id="page-pinjam" class="page">
-        <div class="header-title" style="background:var(--blue)"><h3>DAFTAR PINJAMAN AKTIF</h3></div>
-        <div class="table-container">
-            <table>
-                <thead><tr><th>NAMA SISWA</th><th>KELAS</th><th>STATUS</th></tr></thead>
-                <tbody id="bodyPinjam"></tbody>
-            </table>
-        </div>
-    </div>
-
     <script>
-        // URL WEB APP BARU BAPAK SUDAH DIPASANG DI SINI
         const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbxa5zUTzwU0Mqsp2ilCJzI0__gLgrGVkSJd5xdzTr1_iKLOOjBPpLEHzMPsPkD3VfBO/exec";
-        
         let currentMode = "";
         let isProcessing = false;
+        let scanner = null;
 
         function checkLogin() {
             if(document.getElementById('passInput').value === "1234") {
                 document.getElementById('login-container').style.display="none";
                 document.getElementById('main-nav').style.display="block";
-                switchPage('scan'); initScanner(); loadData();
+                startScan('Kunjungan'); // Default awal
             } else { alert("PIN Salah!"); }
         }
 
-        function switchPage(p) {
-            document.querySelectorAll('.page').forEach(pg => pg.style.display='none');
+        // Fungsi Memulai Scan Berdasarkan Menu yang Dipilih
+        function startScan(mode) {
+            currentMode = mode;
+            // Update UI Navigasi
             document.querySelectorAll('.nav-item').forEach(nv => nv.classList.remove('nav-active'));
-            document.getElementById('page-'+p).style.display='block';
-            document.getElementById('nav-'+p).classList.add('nav-active');
-            if(p === 'dash' || p === 'pinjam') loadData();
+            document.getElementById('nav-'+mode).classList.add('nav-active');
+            
+            // Tampilkan Halaman Scan
+            document.getElementById('page-dash').style.display = 'none';
+            document.getElementById('page-scan').style.display = 'block';
+            
+            // Set Warna Header sesuai Mode
+            let h = document.getElementById('header-color');
+            let bar = document.getElementById('status-bar');
+            if(mode === 'Kunjungan') { h.style.background = 'var(--success)'; h.innerText = "MODE: KUNJUNGAN"; }
+            if(mode === 'Pinjam') { h.style.background = 'var(--warning)'; h.innerText = "MODE: PINJAM BUKU"; }
+            if(mode === 'Kembali') { h.style.background = 'var(--danger)'; h.innerText = "MODE: KEMBALI BUKU"; }
+            
+            bar.innerText = "SILAKAN SCAN KARTU...";
+            bar.style.background = "#fff";
+
+            // Jalankan Kamera
+            if(scanner) scanner.clear();
+            scanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
+            scanner.render(t => { if(!isProcessing) kirimData(t); });
         }
 
-        function setMode(m, b) {
-            currentMode = m;
-            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active-mode'));
-            b.classList.add('active-mode');
-            document.getElementById('status-bar').innerHTML = "MODE: " + m.toUpperCase();
+        function showDash() {
+            if(scanner) { scanner.clear(); scanner = null; }
+            document.getElementById('page-scan').style.display = 'none';
+            document.getElementById('page-dash').style.display = 'block';
+            document.querySelectorAll('.nav-item').forEach(nv => nv.classList.remove('nav-active'));
+            document.getElementById('nav-Dash').classList.add('nav-active');
+            loadData();
         }
 
         function kirimData(nis) {
-            if(!currentMode || isProcessing) {
-                alert("Pilih Mode dahulu!"); return;
-            }
             isProcessing = true;
             let bar = document.getElementById('status-bar');
-            bar.innerHTML = "⌛ SEDANG MEMPROSES NIS: " + nis;
-            bar.style.background = "#f1c40f";
-
-            fetch(URL_SCRIPT, { 
-                method: "POST", 
-                body: JSON.stringify({ id: nis, status: currentMode, buku: "-" }) 
-            })
-            .then(res => res.text())
+            bar.innerHTML = "⌛ MENCATAT: " + nis;
+            
+            fetch(URL_SCRIPT, { method: "POST", body: JSON.stringify({ id: nis, status: currentMode }) })
             .then(() => { 
-                bar.innerHTML = "✅ BERHASIL DICATAT!"; 
-                bar.style.background = "#27ae60"; bar.style.color = "white";
+                bar.innerHTML = "✅ BERHASIL DICATAT!";
+                bar.style.background = "#d4edda";
                 setTimeout(() => { 
                     isProcessing = false; 
-                    bar.innerHTML = "MODE: " + currentMode.toUpperCase(); 
-                    bar.style.background = "#fff"; bar.style.color = "black";
+                    bar.innerHTML = "SIAP SCAN BERIKUTNYA..."; 
+                    bar.style.background = "#fff";
                 }, 2000);
-                loadData(); 
-            })
-            .catch(err => {
-                alert("Gagal kirim: " + err);
-                isProcessing = false;
             });
-        }
-
-        function kirimManual() {
-            let val = document.getElementById('manualInput').value;
-            if(val) { kirimData(val); document.getElementById('manualInput').value = ""; }
-        }
-
-        function onScanSuccess(t) { 
-            if(!isProcessing) kirimData(t); 
-        }
-
-        function initScanner() { 
-            let html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
-            html5QrcodeScanner.render(onScanSuccess); 
         }
 
         function loadData() {
             fetch(URL_SCRIPT).then(res => res.json()).then(data => {
-                let dash = ""; let pinjamTab = "";
-                let statusAktif = {};
-
-                // Balik data agar yang terbaru di atas
-                let sortedData = [...data].reverse();
-
-                sortedData.forEach((item, index) => {
-                    let warna = item.status === 'Pinjam' ? '#f39c12' : (item.status === 'Kembali' ? '#e74c3c' : '#27ae60');
-                    // Tambahkan class unread pada baris pertama (terbaru)
+                let dash = "";
+                [...data].reverse().forEach((item, index) => {
+                    let warna = item.status === 'Pinjam' ? 'var(--warning)' : (item.status === 'Kembali' ? 'var(--danger)' : 'var(--success)');
                     let barisBaru = (index === 0) ? "class='unread'" : "";
-
-                    dash += `<tr ${barisBaru}>
-                        <td>${item.waktu}</td>
-                        <td>${item.nama}</td>
-                        <td>${item.nis}</td>
-                        <td>${item.kelas}</td>
-                        <td><span class="status-badge" style="background:${warna}">${item.status}</span></td>
-                    </tr>`;
-
-                    if (item.status === "Pinjam") { statusAktif[item.nis] = item; }
-                    else if (item.status === "Kembali") { delete statusAktif[item.nis]; }
+                    dash += `<tr ${barisBaru}><td>${item.waktu}</td><td>${item.nama}</td><td>${item.kelas || '-'}</td><td><span class="status-badge" style="background:${warna}">${item.status}</span></td></tr>`;
                 });
-
-                Object.values(statusAktif).forEach(item => {
-                    pinjamTab += `<tr><td>${item.nama}</td><td>${item.kelas}</td><td><span class="status-badge" style="background:#f39c12">MEMBAWA BUKU</span></td></tr>`;
-                });
-
                 document.getElementById('bodyDash').innerHTML = dash;
-                document.getElementById('bodyPinjam').innerHTML = pinjamTab;
             });
         }
     </script>
