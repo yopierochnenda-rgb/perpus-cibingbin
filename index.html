@@ -3,27 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Perpus SMPN 1 Cibingbin</title>
+    <title>E-Perpus Digital SMPN 1 Cibingbin</title>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
-        body { font-family: sans-serif; text-align: center; margin: 20px; background-color: #f4f4f4; }
-        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        #reader { width: 100%; border-radius: 10px; }
-        select, input, button { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #ccc; font-size: 16px; }
-        button { background-color: #28a745; color: white; border: none; cursor: pointer; font-weight: bold; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; background-color: #eef2f7; margin: 0; padding: 20px; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h2 { color: #333; margin-bottom: 20px; }
+        #reader { width: 100%; border-radius: 10px; overflow: hidden; border: 2px solid #ddd; }
+        input, select, button { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; box-sizing: border-box; }
+        button { background-color: #28a745; color: white; border: none; cursor: pointer; font-weight: bold; transition: 0.3s; }
         button:hover { background-color: #218838; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 12px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        
+        h3 { margin-top: 30px; color: #555; font-size: 18px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; background: white; border-radius: 8px; overflow: hidden; font-size: 13px; }
+        th, td { border: 1px solid #dee2e6; padding: 12px; text-align: left; }
         th { background-color: #007bff; color: white; }
-        tr:nth-child(even) { background-color: #f9f9f9; }
-        .unread { background-color: #fff3cd !important; font-weight: bold; } /* Menambahkan class unread */
+        
+        /* Memberikan warna kuning pada baris terbaru sesuai permintaan */
+        .unread { background-color: #fff9c4 !important; font-weight: bold; color: #856404; }
+        
+        .loading { color: #888; font-style: italic; margin-top: 10px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h2>E-Perpus Digital</h2>
-    <p>Silakan Scan Kartu Pelajar</p>
+    <p style="color: #666;">Scan Kartu atau Masukkan NIS</p>
     
     <div id="reader"></div>
 
@@ -36,9 +42,9 @@
             <option value="Kembali">Kembali Buku</option>
         </select>
 
-        <input type="text" id="bukuInput" placeholder="Nama Buku (Jika Pinjam/Kembali)">
+        <input type="text" id="bukuInput" placeholder="Judul Buku (Opsional)">
         
-        <button type="button" onclick="kirimData()">KIRIM DATA</button>
+        <button type="button" id="btnKirim" onclick="kirimData()">SIMPAN DATA SCAN</button>
     </form>
 
     <h3>Laporan Aktivitas Terbaru</h3>
@@ -52,22 +58,22 @@
             </tr>
         </thead>
         <tbody>
-            <tr><td colspan="4">Memuat data...</td></tr>
+            <tr><td colspan="4" class="loading">Memuat data terbaru...</td></tr>
         </tbody>
     </table>
 </div>
 
 <script>
-    // --- GANTI URL DI BAWAH INI DENGAN URL SCRIPT BAPAK ---
-    const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbW43Yyk45Rn5YB83qOxjuBtKyxVjMLvpceMm_3dKV204ernLu01niAz8xqu8K1qrhpMQ/exec";
+    // URL SCRIPT BARU BAPAK
+    const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbxa5zUTzwU0Mqsp2ilCJzI0__gLgrGVkSJd5xdzTr1_iKLOOjBPpLEHzMPsPkD3VfBO/exec";
 
-    // 1. Inisialisasi Scanner
+    // 1. Inisialisasi Kamera Scanner
     function onScanSuccess(decodedText) {
         document.getElementById('nisInput').value = decodedText;
-        // Opsional: Bunyi beep atau alert
+        // Memberi efek getar/suara sederhana jika diinginkan bisa ditambah di sini
     }
 
-    let html5QrcodeScanner = new html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
+    let html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
     html5QrcodeScanner.render(onScanSuccess);
 
     // 2. Fungsi Kirim Data ke Google Sheets
@@ -75,11 +81,15 @@
         const id = document.getElementById('nisInput').value;
         const status = document.getElementById('statusSelect').value;
         const buku = document.getElementById('bukuInput').value;
+        const btn = document.getElementById('btnKirim');
 
         if (!id) {
-            alert("Scan kartu dulu Pak!");
+            alert("Silakan scan kartu siswa terlebih dahulu!");
             return;
         }
+
+        btn.disabled = true;
+        btn.innerHTML = "Mengirim...";
 
         fetch(URL_SCRIPT, {
             method: "POST",
@@ -87,14 +97,21 @@
         })
         .then(res => res.text())
         .then(data => {
-            alert("Data Berhasil Dicatat!");
-            document.getElementById('scanForm').reset();
-            muatData(); // Refresh tabel setelah kirim
+            alert("Data Berhasil Disimpan!");
+            document.getElementById('nisInput').value = "";
+            document.getElementById('bukuInput').value = "";
+            btn.disabled = false;
+            btn.innerHTML = "SIMPAN DATA SCAN";
+            muatData(); // Refresh tabel
         })
-        .catch(err => alert("Gagal kirim data: " + err));
+        .catch(err => {
+            alert("Terjadi kesalahan: " + err);
+            btn.disabled = false;
+            btn.innerHTML = "SIMPAN DATA SCAN";
+        });
     }
 
-    // 3. Fungsi Ambil Data dari Google Sheets (doGet)
+    // 3. Fungsi Ambil Data untuk Tabel
     function muatData() {
         fetch(URL_SCRIPT)
         .then(res => res.json())
@@ -102,13 +119,14 @@
             const tbody = document.querySelector("#logTable tbody");
             tbody.innerHTML = "";
             
-            // Tampilkan 10 data terbaru (dibalik)
-            data.reverse().slice(0, 10).forEach(row => {
+            // Urutan data dibalik agar yang terbaru di atas
+            data.reverse().forEach((row, index) => {
                 const tr = document.createElement("tr");
                 
-                // Jika statusnya belum kembali atau perlu perhatian, bisa tambah class unread
-                // Di sini saya contohkan semua data baru dianggap "unread" secara visual
-                tr.classList.add("unread"); 
+                // Baris pertama (data terbaru) diberi class 'unread' (warna kuning)
+                if (index === 0) {
+                    tr.classList.add("unread");
+                }
 
                 tr.innerHTML = `
                     <td>${row.waktu}</td>
@@ -124,7 +142,7 @@
         });
     }
 
-    // Muat data saat pertama kali buka halaman
+    // Jalankan muat data saat halaman dibuka
     muatData();
 </script>
 
