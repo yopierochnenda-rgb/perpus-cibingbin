@@ -21,24 +21,20 @@
         }
         #login-box { padding: 40px; background: rgba(255, 255, 255, 0.95); border-radius: 24px; width: 320px; text-align: center; box-shadow: 0 20px 25px rgba(0,0,0,0.2); backdrop-filter: blur(5px); }
         
-        /* Navigasi */
         .nav-menu { display: none; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
         .nav-container { display: flex; max-width: 1200px; margin: 0 auto; overflow-x: auto; scrollbar-width: none; }
         .nav-item { flex: none; padding: 16px 20px; font-weight: bold; color: #64748b; cursor: pointer; border-bottom: 4px solid transparent; white-space: nowrap; font-size: 13px; }
         .nav-active { border-bottom: 4px solid var(--blue); color: var(--blue); background: #f8fafc; }
 
-        /* Content */
         .page { display: none; padding: 20px; max-width: 900px; margin: 0 auto; }
         .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         #notif-atas { display: none; padding: 15px; border-radius: 10px; text-align: center; font-weight: bold; margin-bottom: 15px; border: 2px solid #e2e8f0; }
         #reader { width: 100%; border-radius: 12px; overflow: hidden; border: 3px solid #e2e8f0; }
         
-        /* Form Manual */
         .form-group { margin-bottom: 15px; text-align: left; }
         .form-group label { display: block; font-size: 13px; font-weight: bold; color: #475569; margin-bottom: 5px; }
         .form-group input, .form-group select { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; }
         
-        /* Table */
         .table-container { overflow-x: auto; margin-top: 15px; }
         table { width: 100%; border-collapse: collapse; min-width: 600px; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; font-size: 13px; }
@@ -47,7 +43,7 @@
         .status-badge { padding: 5px 10px; border-radius: 6px; color: white; font-size: 11px; font-weight: bold; text-transform: uppercase; }
 
         .btn-blue { background: var(--blue); color: white; border: none; padding: 12px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; }
-        .btn-pdf { background: #e11d48; color: white; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 12px; }
+        .btn-pdf { background: #e11d48; color: white; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; }
         #live-indicator { font-size: 10px; color: var(--success); font-weight: normal; margin-left: 5px; }
     </style>
 </head>
@@ -94,15 +90,15 @@
             </div>
             <div class="form-group">
                 <label>Nama Lengkap Siswa</label>
-                <input type="text" id="m-nama" placeholder="Contoh: Budi Santoso">
+                <input type="text" id="m-nama" placeholder="Nama Siswa">
             </div>
             <div class="form-group">
                 <label>NIS / ID Siswa</label>
-                <input type="text" id="m-nis" placeholder="Contoh: 12345">
+                <input type="text" id="m-nis" placeholder="NIS">
             </div>
             <div class="form-group">
                 <label>Kelas</label>
-                <input type="text" id="m-kelas" placeholder="Contoh: 7A / 8B">
+                <input type="text" id="m-kelas" placeholder="Kelas">
             </div>
             <button id="btnSimpanManual" class="btn-blue" onclick="simpanManual()">SIMPAN DATA</button>
         </div>
@@ -112,7 +108,7 @@
         <div class="card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h3 style="margin:0;">LOG AKTIVITAS</h3>
-                <button class="btn-pdf" onclick="generatePDF()">📄 PDF</button>
+                <button class="btn-pdf" onclick="unduhLaporanPDF()">📄 UNDUH PDF</button>
             </div>
             <div class="table-container">
                 <table>
@@ -148,16 +144,21 @@
             if(refreshInterval) clearInterval(refreshInterval);
         }
 
+        function showRiwayat() {
+            clearActiveNav();
+            document.getElementById('nav-Riwayat').classList.add('nav-active');
+            document.getElementById('page-riwayat').style.display = 'block';
+            loadDataOtomatis();
+            refreshInterval = setInterval(loadDataOtomatis, 5000); 
+        }
+
         function startMode(mode) {
             clearActiveNav();
             currentMode = mode;
-            isProcessing = false;
             document.getElementById('nav-'+mode).classList.add('nav-active');
             document.getElementById('page-scan').style.display = 'block';
-            let notif = document.getElementById('notif-atas');
-            notif.style.display = "block";
-            notif.style.background = "#f8fafc";
-            notif.innerHTML = "MODE: " + mode.toUpperCase();
+            document.getElementById('notif-atas').style.display = "block";
+            document.getElementById('notif-atas').innerHTML = "MODE: " + mode.toUpperCase();
             scanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
             scanner.render(onScanSuccess);
         }
@@ -168,26 +169,14 @@
             document.getElementById('page-manual').style.display = 'block';
         }
 
-        function showRiwayat() {
-            clearActiveNav();
-            document.getElementById('nav-Riwayat').classList.add('nav-active');
-            document.getElementById('page-riwayat').style.display = 'block';
-            document.getElementById('live-indicator').style.display = 'inline';
-            loadDataOtomatis();
-            refreshInterval = setInterval(loadDataOtomatis, 5000); 
-        }
-
         function onScanSuccess(t) {
             if(isProcessing) return;
             isProcessing = true;
-            let notif = document.getElementById('notif-atas');
-            notif.innerHTML = "⌛ MENCATAT...";
-            notif.style.background = "#fef9c3";
+            document.getElementById('notif-atas').innerHTML = "⌛ MENCATAT...";
             fetch(URL_SCRIPT, { method: "POST", body: JSON.stringify({ id: t, status: currentMode }) })
             .then(() => { 
-                notif.innerHTML = "✅ BERHASIL!";
-                notif.style.background = "#d1fae5";
-                setTimeout(() => { isProcessing = false; notif.style.background = "#f8fafc"; notif.innerHTML = "MODE: " + currentMode.toUpperCase(); }, 2000);
+                document.getElementById('notif-atas').innerHTML = "✅ BERHASIL!";
+                setTimeout(() => { isProcessing = false; startMode(currentMode); }, 2000);
             });
         }
 
@@ -196,89 +185,69 @@
             const nis = document.getElementById('m-nis').value;
             const kelas = document.getElementById('m-kelas').value;
             const status = document.getElementById('m-status').value;
-
-            if(!nama || !nis) { alert("Nama dan NIS wajib diisi!"); return; }
-
-            const btn = document.getElementById('btnSimpanManual');
-            btn.disabled = true;
-            btn.innerText = "⌛ MENYIMPAN...";
-
-            fetch(URL_SCRIPT, { 
-                method: "POST", 
-                body: JSON.stringify({ 
-                    id: nis, 
-                    status: status,
-                    manualNama: nama,
-                    manualKelas: kelas 
-                }) 
-            })
-            .then(() => {
-                alert("Data Manual Berhasil Disimpan!");
-                document.getElementById('m-nama').value = "";
-                document.getElementById('m-nis').value = "";
-                document.getElementById('m-kelas').value = "";
-                btn.disabled = false;
-                btn.innerText = "SIMPAN DATA";
-                showRiwayat();
-            })
-            .catch(() => {
-                alert("Gagal menyimpan data.");
-                btn.disabled = false;
-                btn.innerText = "SIMPAN DATA";
-            });
+            if(!nama || !nis) { alert("Nama/NIS kosong!"); return; }
+            
+            document.getElementById('btnSimpanManual').innerText = "MENYIMPAN...";
+            fetch(URL_SCRIPT, { method: "POST", body: JSON.stringify({ id: nis, status: status, manualNama: nama, manualKelas: kelas }) })
+            .then(() => { alert("Tersimpan!"); showRiwayat(); document.getElementById('btnSimpanManual').innerText = "SIMPAN DATA"; });
         }
 
         function loadDataOtomatis() {
             fetch(URL_SCRIPT).then(res => res.json()).then(data => {
-                if (JSON.stringify(data) !== JSON.stringify(dataRiwayat)) {
-                    dataRiwayat = data;
-                    renderTable();
-                }
+                dataRiwayat = data;
+                let html = "";
+                let sortedData = [...data].reverse();
+                sortedData.forEach((item, index) => {
+                    let warna = item.status === 'Pinjam' ? 'var(--warning)' : (item.status === 'Kembali' ? 'var(--danger)' : 'var(--success)');
+                    html += `<tr ${index === 0 ? "class='unread'" : ""}>
+                        <td>${item.waktu}</td><td>${item.nama}</td><td>${item.nis}</td><td>${item.kelas}</td>
+                        <td><span class="status-badge" style="background:${warna}">${item.status}</span></td>
+                    </tr>`;
+                });
+                document.getElementById('bodyRiwayat').innerHTML = html;
             });
         }
 
-        function renderTable() {
-            let html = "";
-            let sortedData = [...dataRiwayat].reverse();
-            sortedData.forEach((item, index) => {
-                let warna = item.status === 'Pinjam' ? 'var(--warning)' : (item.status === 'Kembali' ? 'var(--danger)' : 'var(--success)');
-                let barisBaru = (index === 0) ? "class='unread'" : "";
-                html += `<tr ${barisBaru}>
-                    <td>${item.waktu}</td>
-                    <td>${item.nama}</td>
-                    <td>${item.nis}</td>
-                    <td>${item.kelas || '-'}</td>
-                    <td><span class="status-badge" style="background:${warna}">${item.status}</span></td>
-                </tr>`;
-            });
-            document.getElementById('bodyRiwayat').innerHTML = html;
-        }
-
-        function generatePDF() {
-            if (dataRiwayat.length === 0) { alert("Data kosong!"); return; }
-            const { jsPDF } = window.jspdf;
+        // FUNGSI PDF FINAL (TANPA ERROR)
+        function unduhLaporanPDF() {
+            if (dataRiwayat.length === 0) { alert("Data belum ada!"); return; }
+            
             try {
-                const doc = new jsPDF();
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('p', 'mm', 'a4');
+                
+                // Header
                 doc.setFontSize(16);
                 doc.text("LAPORAN RIWAYAT PERPUSTAKAAN", 105, 15, { align: "center" });
-                doc.setFontSize(12);
+                doc.setFontSize(11);
                 doc.text("SMPN 1 CIBINGBIN", 105, 22, { align: "center" });
-                const body = dataRiwayat.map(item => [item.waktu, item.nama, item.nis, item.kelas, item.status]);
-                window.jspdf.jsPDF.API.autoTable.apply(doc, [{
+
+                // Ambil data untuk tabel
+                const barisTabel = dataRiwayat.map(i => [i.waktu, i.nama, i.nis, i.kelas, i.status]);
+
+                // Gunakan cara pemanggilan library yang paling aman
+                doc.autoTable({
                     head: [['Waktu', 'Nama Siswa', 'NIS', 'Kelas', 'Status']],
-                    body: body,
+                    body: barisTabel,
                     startY: 30,
                     theme: 'grid',
                     headStyles: { fillColor: [30, 41, 59] }
-                }]);
-                const finalY = doc.lastAutoTable.finalY + 15;
-                const dateNow = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-                doc.text(`Cibingbin, ${dateNow}`, 140, finalY);
-                doc.text("Petugas Perpus,", 140, finalY + 7);
+                });
+
+                // Tanda Tangan
+                const ttdY = doc.lastAutoTable.finalY + 15;
+                const tgl = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+                
+                doc.text(`Cibingbin, ${tgl}`, 130, ttdY);
+                doc.text("Petugas Perpus,", 130, ttdY + 7);
                 doc.setFont(undefined, 'bold');
-                doc.text("Rizki Angriani, S.Pust", 140, finalY + 30);
-                doc.save(`Laporan_Perpus_${dateNow}.pdf`);
-            } catch (err) { alert("Gagal membuat PDF."); }
+                doc.text("Rizki Angriani, S.Pust", 130, ttdY + 25);
+
+                doc.save(`Laporan_Perpus_${tgl}.pdf`);
+            } catch (err) {
+                alert("Gagal membuat PDF. Coba gunakan Google Chrome di PC.");
+                console.error(err);
+            }
         }
     </script>
 </body>
