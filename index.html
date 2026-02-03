@@ -11,6 +11,7 @@
         :root { --primary: #1e293b; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --blue: #3b82f6; }
         body, html { height: 100%; margin: 0; font-family: 'Segoe UI', sans-serif; background: #f1f5f9; }
         
+        /* LOGIN BOX */
         #login-container { 
             background: linear-gradient(rgba(30, 41, 59, 0.8), rgba(30, 41, 59, 0.8)), 
                         url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1350&q=80'); 
@@ -18,6 +19,7 @@
         }
         #login-box { padding: 40px; background: rgba(255, 255, 255, 0.95); border-radius: 24px; width: 320px; text-align: center; box-shadow: 0 20px 25px rgba(0,0,0,0.2); }
         
+        /* NAVIGASI */
         .nav-menu { display: none; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
         .nav-container { display: flex; max-width: 1200px; margin: 0 auto; overflow-x: auto; scrollbar-width: none; }
         .nav-item { flex: none; padding: 16px 20px; font-weight: bold; color: #64748b; cursor: pointer; border-bottom: 4px solid transparent; white-space: nowrap; font-size: 13px; }
@@ -28,7 +30,7 @@
         
         /* NOTIFIKASI DI ATAS KAMERA */
         #notif-cetak { 
-            display: none; background: var(--success); color: white; padding: 10px; border-radius: 8px; 
+            display: none; background: var(--success); color: white; padding: 12px; border-radius: 8px; 
             text-align: center; font-weight: bold; margin-bottom: 15px; animation: fadeIn 0.5s;
         }
         @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
@@ -64,7 +66,7 @@
         <div class="nav-container">
             <div id="nav-scan" class="nav-item" onclick="showPage('scan')">SCAN KARTU</div>
             <div id="nav-manual" class="nav-item" onclick="showPage('manual')">INPUT MANUAL</div>
-            <div id="nav-riwayat" class="nav-item" onclick="showRiwayat()">LAPORAN</div>
+            <div id="nav-riwayat" class="nav-item" onclick="showRiwayat()">LAPORAN AKTIF</div>
             <div class="nav-item" style="color:var(--danger)" onclick="location.reload()">LOGOUT</div>
         </div>
     </div>
@@ -82,8 +84,8 @@
             <div id="reader"></div>
 
             <div id="box-pinjam-scan" style="display:none; margin-top:15px; background:#f8fafc; padding:15px; border-radius:10px; border: 1px solid #ddd;">
-                <div class="form-group"><label>ID TERDETEKSI</label><input type="text" id="ps-nis" readonly></div>
-                <div class="form-group"><label>JUDUL BUKU</label><input type="text" id="ps-buku" placeholder="Ketik Judul Buku..."></div>
+                <div class="form-group"><label>NIS / ID TERDETEKSI</label><input type="text" id="ps-nis" readonly></div>
+                <div class="form-group"><label>JUDUL BUKU (Optional)</label><input type="text" id="ps-buku" placeholder="Ketik Judul Buku..."></div>
                 <button class="btn-blue" onclick="kirimAksiScan()">💾 SIMPAN DATA</button>
             </div>
         </div>
@@ -91,15 +93,15 @@
 
     <div id="page-manual" class="page">
         <div class="card">
-            <h3>INPUT MANUAL</h3>
+            <h3>INPUT DATA MANUAL</h3>
             <div class="form-group">
                 <label>STATUS</label>
                 <select id="ms-status">
                     <option>Kunjungan</option><option>Pinjam</option><option>Kembali</option>
                 </select>
             </div>
-            <div class="form-group"><label>NAMA SISWA / JUDUL BUKU</label><input type="text" id="ms-nama"></div>
-            <div class="form-group"><label>NIS / KODE BUKU</label><input type="text" id="ms-nis"></div>
+            <div class="form-group"><label>NAMA SISWA / BUKU</label><input type="text" id="ms-nama"></div>
+            <div class="form-group"><label>NIS / KODE</label><input type="text" id="ms-nis"></div>
             <div class="form-group"><label>KELAS / KATEGORI</label><input type="text" id="ms-kelas"></div>
             <button class="btn-blue" onclick="kirimManual()">SIMPAN DATA</button>
         </div>
@@ -108,8 +110,8 @@
     <div id="page-riwayat" class="page">
         <div class="card">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
-                <h3 style="margin:0;">LOG AKTIVITAS</h3>
-                <button onclick="cetakLaporan()" class="btn-print">🖨️ CETAK / SIMPAN PDF</button>
+                <h3 style="margin:0;">PINJAMAN BELUM KEMBALI</h3>
+                <button onclick="cetakLaporan()" class="btn-print">🖨️ CETAK LAPORAN</button>
             </div>
             <div style="overflow-x:auto;">
                 <table>
@@ -134,10 +136,12 @@
             } else { alert("PIN SALAH!"); }
         }
 
-        function tampilNotif() {
+        function tampilNotif(pesan, warna) {
             const notif = document.getElementById('notif-cetak');
+            notif.innerText = pesan;
+            notif.style.background = warna;
             notif.style.display = 'block';
-            setTimeout(() => { notif.style.display = 'none'; }, 3000); // Hilang dalam 3 detik
+            setTimeout(() => { notif.style.display = 'none'; }, 3000);
         }
 
         function showPage(p) {
@@ -163,11 +167,9 @@
                     if(scanMode === 'Pinjam' || scanMode === 'Kembali') {
                         document.getElementById('ps-nis').value = s;
                         document.getElementById('box-pinjam-scan').style.display = 'block';
-                        document.getElementById('ps-buku').focus();
                     } else {
-                        // Jika kunjungan langsung simpan
                         fetch(URL_SCRIPT, { method: "POST", body: JSON.stringify({ id: s, status: "Kunjungan" }) })
-                        .then(() => { tampilNotif(); });
+                        .then(() => { tampilNotif("✅ KUNJUNGAN TERCATAT!", "var(--success)"); });
                     }
                 });
             }
@@ -178,14 +180,16 @@
         function kirimAksiScan() {
             const nis = document.getElementById('ps-nis').value;
             const buku = document.getElementById('ps-buku').value;
-            if(!buku) return alert("Isi Judul Buku!");
+            const warna = (scanMode === 'Kembali') ? 'var(--danger)' : 'var(--blue)';
+            const teks = (scanMode === 'Kembali') ? "✅ BUKU KEMBALI!" : "✅ PINJAMAN TERCATAT!";
             
-            document.getElementById('box-pinjam-scan').style.display = 'none'; // Sembunyikan form
+            document.getElementById('box-pinjam-scan').style.display = 'none';
 
             fetch(URL_SCRIPT, { method:"POST", body: JSON.stringify({ id:nis, status:scanMode, manualNama: "Buku: "+buku }) })
             .then(() => { 
                 document.getElementById('ps-buku').value = "";
-                tampilNotif(); // Muncul notif di atas kamera
+                tampilNotif(teks, warna);
+                showRiwayat(); 
             });
         }
 
@@ -199,9 +203,16 @@
             fetch(URL_SCRIPT).then(r => r.json()).then(d => {
                 dataGlobal = d;
                 let h = "";
+                // OTOMATIS: Kumpulkan NIS yang sudah mengembalikan
+                let sudahKembali = d.filter(item => item.status === 'Kembali').map(item => item.nis);
+
                 [...d].reverse().forEach((item, i) => {
-                    const color = item.status === 'Pinjam' ? 'var(--warning)' : (item.status === 'Kembali' ? 'var(--danger)' : 'var(--success)');
-                    h += `<tr ${i === 0 ? 'class="unread"' : ''}>
+                    // OTOMATIS: Sembunyikan data Pinjam jika sudah ada data Kembali untuk NIS tersebut
+                    if (item.status === 'Pinjam' && sudahKembali.includes(item.nis)) return;
+                    if (item.status === 'Kembali') return; // Sembunyikan baris status Kembali agar rapi
+
+                    const color = item.status === 'Pinjam' ? 'var(--warning)' : 'var(--success)';
+                    h += `<tr>
                         <td>${item.waktu}</td><td>${item.nama}</td><td>${item.nis}</td>
                         <td><span class="status-badge" style="background:${color}">${item.status}</span></td>
                     </tr>`;
@@ -214,9 +225,14 @@
             if (dataGlobal.length === 0) return alert("Data kosong!");
             let printWindow = window.open('', '_blank');
             let rows = "";
+            let sudahKembali = dataGlobal.filter(item => item.status === 'Kembali').map(item => item.nis);
+            
             dataGlobal.forEach(i => {
+                if (i.status === 'Pinjam' && sudahKembali.includes(i.nis)) return;
+                if (i.status === 'Kembali') return;
                 rows += `<tr><td>${i.waktu}</td><td>${i.nama}</td><td>${i.nis}</td><td>${i.kelas || '-'}</td><td>${i.status}</td></tr>`;
             });
+            
             printWindow.document.write(`
                 <html><head><title>Laporan Perpus</title><style>
                     body { font-family: Arial; padding: 20px; }
@@ -224,8 +240,8 @@
                     th, td { border: 1px solid black; padding: 8px; text-align: left; font-size: 11px; }
                     .header { text-align: center; }
                 </style></head><body>
-                <div class="header"><h3>LAPORAN AKTIVITAS PERPUSTAKAAN</h3><h2>SMPN 1 CIBINGBIN</h2><hr></div>
-                <table><thead><tr><th>WAKTU</th><th>NAMA SISWA / BUKU</th><th>NIS / KODE</th><th>KELAS</th><th>STATUS</th></tr></thead>
+                <div class="header"><h3>LAPORAN PERPUSTAKAAN (AKTIF)</h3><h2>SMPN 1 CIBINGBIN</h2><hr></div>
+                <table><thead><tr><th>WAKTU</th><th>NAMA / BUKU</th><th>NIS</th><th>KELAS</th><th>STATUS</th></tr></thead>
                 <tbody>${rows}</tbody></table>
                 <div style="margin-top:30px; float:right; text-align:center;">
                     <p>Cibingbin, ${new Date().toLocaleDateString('id-ID')}</p><br><br><br><p><b>Petugas Perpustakaan</b></p>
