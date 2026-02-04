@@ -78,7 +78,7 @@
             <h3 style="margin:0 0 15px 0">DAFTAR PINJAMAN AKTIF</h3>
             <div style="overflow-x:auto;">
                 <table>
-                    <thead><tr><th>WAKTU</th><th>NAMA & BUKU</th><th>NIS</th><th>STATUS</th></tr></thead>
+                    <thead><tr><th>WAKTU</th><th>NAMA (BUKU)</th><th>NIS</th><th>STATUS</th></tr></thead>
                     <tbody id="bodyRiwayat"></tbody>
                 </table>
             </div>
@@ -86,8 +86,8 @@
     </div>
 
     <script>
-        // LINK TERBARU YANG BAPAK DEPLOY TADI
-        const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbzLzXPrsOS_tIrUk6meiC0iszAcQqy7dVfuFMD9_y0rssAMpqdREfOSXDoYhJCgg-M4/exec";
+        // LINK WEB APP TERBARU BAPAK
+        const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbyBG_EWOEhFsRs2vpZgpTy-G-cBV9maIsLYh9By67y4hGwANfhH7nyWreW_jldE3hTl1g/exec";
         let scanMode = "Kunjungan", html5QrCode = null;
 
         function checkLogin() {
@@ -120,7 +120,7 @@
                     if(scanMode === 'Pinjam') {
                         document.getElementById('ps-nis').value = s;
                         document.getElementById('box-pinjam-scan').style.display = 'block';
-                    } else { prosesKirim(s, "Kunjungan", "Siswa"); }
+                    } else { prosesKirim(s, "Kunjungan", ""); }
                 });
             }
         }
@@ -130,7 +130,10 @@
         function kirimAksiScan() {
             const nis = document.getElementById('ps-nis').value;
             const buku = document.getElementById('ps-buku').value;
-            prosesKirim(nis, "Pinjam", "Siswa - " + buku);
+            // Kirim judul buku dengan format Model B (kurung)
+            prosesKirim(nis, "Pinjam", buku ? " (" + buku + ")" : "");
+            document.getElementById('box-pinjam-scan').style.display = 'none';
+            document.getElementById('ps-buku').value = "";
         }
 
         function kirimManual() {
@@ -138,11 +141,14 @@
             const b = document.getElementById('ms-buku').value;
             const i = document.getElementById('ms-nis').value;
             const s = document.getElementById('ms-status').value;
-            prosesKirim(i, s, n + " - " + b);
+            
+            // Gabungkan Nama dan Buku Model B
+            const namaGabung = b ? n + " (" + b + ")" : n;
+            prosesKirim(i, s, namaGabung);
         }
 
-        function prosesKirim(id, status, nama) {
-            fetch(URL_SCRIPT, { method: "POST", body: JSON.stringify({ id, status, nama }) })
+        function prosesKirim(id, status, namaAtauBuku) {
+            fetch(URL_SCRIPT, { method: "POST", body: JSON.stringify({ id, status, nama: namaAtauBuku }) })
             .then(() => { alert("BERHASIL DISIMPAN"); showRiwayat(); });
         }
 
@@ -151,7 +157,6 @@
             document.getElementById('bodyRiwayat').innerHTML = "<tr><td colspan='4' style='text-align:center;'>Memuat Data...</td></tr>";
             fetch(URL_SCRIPT).then(r => r.json()).then(d => {
                 let h = "";
-                // Filter logika laporan aktif tetap sama
                 let listKembali = d.filter(i => String(i.status).toLowerCase() === 'kembali').map(i => String(i.nis));
                 [...d].reverse().forEach(item => {
                     let st = String(item.status).toLowerCase();
@@ -159,7 +164,7 @@
                     if (st === 'kembali') return;
                     h += `<tr>
                         <td>${item.waktu || '-'}</td>
-                        <td>${item.nama || 'Siswa (NIS: '+item.nis+')'}</td>
+                        <td>${item.nama || 'Siswa ('+item.nis+')'}</td>
                         <td>${item.nis || '-'}</td>
                         <td><span class="status-badge" style="background:${st==='pinjam'?'orange':'green'}">${item.status}</span></td>
                     </tr>`;
