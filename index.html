@@ -200,53 +200,82 @@
             });
         }
 
-        function generatePDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            const tgl = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-            
-            // --- KOP SURAT RESMI ---
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(12);
-            doc.text("PEMERINTAH KABUPATEN KUNINGAN", 105, 12, { align: "center" });
-            doc.text("DINAS PENDIDIKAN DAN KEBUDAYAAN", 105, 17, { align: "center" });
-            doc.setFontSize(16);
-            doc.text("SMP NEGERI 1 CIBINGBIN", 105, 24, { align: "center" });
-            
-            doc.setFontSize(9);
-            doc.setFont("helvetica", "italic");
-            doc.text("Terakreditasi 'A'", 105, 29, { align: "center" });
-            doc.setFont("helvetica", "normal");
-            doc.text("Jln. Raya Pasar Cibingbin No. 250, Cibingbin - Kuningan 45587", 105, 34, { align: "center" });
-            
-            doc.setLineWidth(0.8);
-            doc.line(15, 37, 195, 37);
-            doc.setLineWidth(0.2);
-            doc.line(15, 38, 195, 38);
+       function generatePDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const tgl = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(11);
-            doc.text("LAPORAN PERPUSTAKAAN RULES", 105, 46, { align: "center" });
-
-            doc.autoTable({ 
-                head: [['Waktu', 'Nama (Buku)', 'Data Anggota', 'Status']], 
-                body: dataLaporan.map(i => [i.waktu, i.nama, i.anggota, i.status]), 
-                startY: 51,
-                theme: 'grid',
-                headStyles: { fillColor: [30, 41, 59] },
-                styles: { fontSize: 8 }
-            });
-            
-            const finalY = doc.lastAutoTable.finalY + 15;
-            doc.setFont("helvetica", "normal");
-            doc.setFontSize(10);
-            doc.text("Cibingbin, " + tgl, 140, finalY);
-            doc.text("Mengetahui, Petugas,", 140, finalY + 7);
-            doc.setFont("helvetica", "bold");
-            doc.text("Rizki Angriani, S.Pust.", 140, finalY + 30);
-            
-            doc.save("Laporan_Perpus_Rules.pdf");
+    // 1. Fungsi Internal untuk Menggambar Konten Laporan
+    const drawAll = (imgBase64 = null) => {
+        // JIKA LOGO ADA, TAMPILKAN DI KIRI
+        if (imgBase64) {
+            doc.addImage(imgBase64, 'PNG', 15, 10, 23, 23); // Posisi X=15, Y=10, Ukuran 23x23
         }
-    </script>
-</body>
-</html>
+
+        // --- KOP SURAT (Teks digeser ke tengah-kanan agar tidak tumpang tindih) ---
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(12);
+        doc.text("PEMERINTAH KABUPATEN KUNINGAN", 110, 12, { align: "center" });
+        doc.text("DINAS PENDIDIKAN DAN KEBUDAYAAN", 110, 17, { align: "center" });
+        
+        doc.setFontSize(16);
+        doc.text("SMP NEGERI 1 CIBINGBIN", 110, 24, { align: "center" });
+        
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "italic");
+        doc.text("Terakreditasi 'A'", 110, 29, { align: "center" });
+        doc.setFont("helvetica", "normal");
+        doc.text("Jln. Raya Pasar Cibingbin No. 250, Cibingbin - Kuningan 45587", 110, 34, { align: "center" });
+        
+        // Garis Pembatas Kop
+        doc.setLineWidth(0.8);
+        doc.line(15, 37, 195, 37);
+        doc.setLineWidth(0.2);
+        doc.line(15, 38, 195, 38);
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(11);
+        doc.text("LAPORAN PERPUSTAKAAN RULES", 105, 46, { align: "center" });
+
+        // TABEL DATA
+        doc.autoTable({ 
+            head: [['Waktu', 'Nama (Buku)', 'Data Anggota', 'Status']], 
+            body: dataLaporan.map(i => [i.waktu, i.nama, i.anggota, i.status]), 
+            startY: 51,
+            theme: 'grid',
+            headStyles: { fillColor: [30, 41, 59] },
+            styles: { fontSize: 8 }
+        });
+        
+        // TANDA TANGAN
+        const finalY = doc.lastAutoTable.finalY + 15;
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+        doc.text("Cibingbin, " + tgl, 140, finalY);
+        doc.text("Mengetahui, Petugas,", 140, finalY + 7);
+        doc.setFont("helvetica", "bold");
+        doc.text("Rizki Angriani, S.Pust.", 140, finalY + 30);
+        
+        doc.save("Laporan_Perpus_Rules.pdf");
+    };
+
+    // 2. PROSES AMBIL LOGO DARI REPO
+    const imgLogo = new Image();
+    imgLogo.src = 'logo-smp.png'; // Pastikan nama file di repo tepat seperti ini
+    
+    imgLogo.onload = function() {
+        // Konversi gambar ke format yang dimengerti PDF
+        const canvas = document.createElement('canvas');
+        canvas.width = imgLogo.width;
+        canvas.height = imgLogo.height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(imgLogo, 0, 0);
+        const dataURL = canvas.toDataURL('image/png');
+        drawAll(dataURL); 
+    };
+
+    imgLogo.onerror = function() {
+        // Jika logo tidak ditemukan/error, tetap cetak laporan tanpa logo
+        drawAll(); 
+    };
+}
