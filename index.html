@@ -10,19 +10,27 @@
     <style>
         :root { --primary: #1e293b; --success: #10b981; --warning: #f59e0b; --blue: #3b82f6; --danger: #ef4444; }
         body { font-family: 'Segoe UI', sans-serif; background: #f1f5f9; margin: 0; padding: 0; }
+        
+        /* LOGIN & LOGO REPO */
         #login-container { height: 100vh; display: flex; justify-content: center; align-items: center; background: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1350&q=80'); background-size: cover; background-position: center; position: fixed; width: 100%; z-index: 9999; }
         #login-box { background: rgba(255,255,255,0.95); padding: 30px; border-radius: 20px; text-align: center; width: 280px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
         .logo-perpus { width: 80px; height: auto; margin-bottom: 15px; }
+
+        /* NOTIFIKASI */
         #notif { display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--success); color: white; padding: 12px 25px; border-radius: 50px; z-index: 10000; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+
+        /* NAVIGASI */
         .nav-menu { display: none; background: white; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .nav-container { display: flex; }
         .nav-item { padding: 15px 5px; font-weight: bold; color: #64748b; cursor: pointer; flex: 1; text-align: center; font-size: 11px; border-bottom: 4px solid transparent; }
         .nav-active { border-bottom: 4px solid var(--blue); color: var(--blue); background: #f8fafc; }
+
         .page { display: none; padding: 15px; }
         .card { background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .btn-mode { flex: 1; padding: 10px; color: white; border: none; border-radius: 8px; font-size: 10px; font-weight: bold; cursor: pointer; background: #64748b; }
         .btn-blue { background: var(--blue); color: white; border: none; padding: 14px; border-radius: 10px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 10px; }
         input { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; }
+        
         table { width: 100%; border-collapse: collapse; font-size: 10px; }
         th { text-align: left; padding: 8px; border-bottom: 2px solid #f1f5f9; background: #f8fafc; }
         td { padding: 8px; border-bottom: 1px solid #f1f5f9; }
@@ -31,11 +39,11 @@
 </head>
 <body>
 
-    <div id="notif">BERHASIL DIPROSES! ✓</div>
+    <div id="notif">DATA DIPROSES! ✓</div>
 
     <div id="login-container">
         <div id="login-box">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Logo_Perpustakaan_Nasional_Republik_Indonesia.belakang_putih.png" class="logo-perpus">
+            <img src="logo-smp.png" class="logo-perpus">
             <p style="font-size:14px; font-weight:bold; color:var(--primary);">E-PERPUS SMPN 1 CIBINGBIN</p>
             <input type="password" id="passInput" placeholder="PIN: 1111" style="text-align:center;">
             <button class="btn-blue" onclick="checkLogin()">MASUK</button>
@@ -86,7 +94,7 @@
         <div class="card">
             <h3>LAPORAN AKTIF</h3>
             <div style="overflow-x:auto;">
-                <table id="tableData">
+                <table>
                     <thead><tr><th>WAKTU</th><th>NAMA (BUKU)</th><th>DATA ANGGOTA</th><th>ST</th></tr></thead>
                     <tbody id="bodyRiwayat"></tbody>
                 </table>
@@ -97,7 +105,6 @@
     <div id="page-pdf" class="page">
         <div class="card" style="text-align:center;">
             <h3>CETAK LAPORAN RESMI</h3>
-            <p style="font-size:12px; color:#64748b; margin-bottom:15px;">PDF akan menyertakan Kop Surat SMPN 1 Cibingbin.</p>
             <button class="btn-blue" style="background:var(--danger)" onclick="generatePDF()">DOWNLOAD PDF</button>
         </div>
     </div>
@@ -189,7 +196,7 @@
                     let color = st === 'pinjam' ? 'orange' : (st === 'kembali' ? 'red' : 'green');
                     h += `<tr><td>${item.waktu}</td><td>${item.nama}</td><td>${item.anggota}</td><td><span class="status-badge" style="background:${color}">${item.status.substring(0,1)}</span></td></tr>`;
                 });
-                tbody.innerHTML = h || "<tr><td colspan='4'>Belum ada data</td></tr>";
+                tbody.innerHTML = h;
             });
         }
 
@@ -198,40 +205,41 @@
             const doc = new jsPDF();
             const tgl = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
             
-            // --- BAGIAN KOP SURAT (SESUAI FOTO) ---
+            // --- KOP SURAT RESMI ---
             doc.setFont("helvetica", "bold");
-            doc.setFontSize(16);
-            doc.text("SMP NEGERI 1 CIBINGBIN", 105, 15, { align: "center" });
-            
             doc.setFontSize(12);
-            doc.text("TERAKREDITASI 'A'", 105, 21, { align: "center" });
+            doc.text("PEMERINTAH KABUPATEN KUNINGAN", 105, 12, { align: "center" });
+            doc.text("DINAS PENDIDIKAN DAN KEBUDAYAAN", 105, 17, { align: "center" });
+            doc.setFontSize(16);
+            doc.text("SMP NEGERI 1 CIBINGBIN", 105, 24, { align: "center" });
             
+            doc.setFontSize(9);
+            doc.setFont("helvetica", "italic");
+            doc.text("Terakreditasi 'A'", 105, 29, { align: "center" });
             doc.setFont("helvetica", "normal");
-            doc.setFontSize(10);
-            doc.text("Jln. Raya Pasar Cibingbin No. 250", 105, 27, { align: "center" });
-            doc.text("Cibingbin - Kuningan Jawa Barat", 105, 32, { align: "center" });
+            doc.text("Jln. Raya Pasar Cibingbin No. 250, Cibingbin - Kuningan 45587", 105, 34, { align: "center" });
             
-            // Garis pembatas kop
-            doc.setLineWidth(0.5);
-            doc.line(15, 35, 195, 35);
-            doc.setLineWidth(0.1);
-            doc.line(15, 36, 195, 36);
+            doc.setLineWidth(0.8);
+            doc.line(15, 37, 195, 37);
+            doc.setLineWidth(0.2);
+            doc.line(15, 38, 195, 38);
 
             doc.setFont("helvetica", "bold");
-            doc.text("LAPORAN PERPUSTAKAAN", 105, 45, { align: "center" });
+            doc.setFontSize(11);
+            doc.text("LAPORAN PERPUSTAKAAN RULES", 105, 46, { align: "center" });
 
-            // TABEL LAPORAN
             doc.autoTable({ 
                 head: [['Waktu', 'Nama (Buku)', 'Data Anggota', 'Status']], 
                 body: dataLaporan.map(i => [i.waktu, i.nama, i.anggota, i.status]), 
-                startY: 50,
+                startY: 51,
                 theme: 'grid',
-                headStyles: { fillColor: [30, 41, 59] }
+                headStyles: { fillColor: [30, 41, 59] },
+                styles: { fontSize: 8 }
             });
             
-            // TANDA TANGAN
             const finalY = doc.lastAutoTable.finalY + 15;
             doc.setFont("helvetica", "normal");
+            doc.setFontSize(10);
             doc.text("Cibingbin, " + tgl, 140, finalY);
             doc.text("Mengetahui, Petugas,", 140, finalY + 7);
             doc.setFont("helvetica", "bold");
