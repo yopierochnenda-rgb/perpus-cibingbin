@@ -11,19 +11,19 @@
         #login-container { height: 100vh; display: flex; justify-content: center; align-items: center; background: #1e293b; position: fixed; width: 100%; z-index: 9999; }
         #login-box { background: white; padding: 30px; border-radius: 20px; text-align: center; width: 280px; }
         .nav-menu { display: none; background: white; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .nav-container { display: flex; overflow-x: auto; white-space: nowrap; }
-        .nav-item { padding: 15px 20px; font-weight: bold; color: #64748b; cursor: pointer; flex: 1; text-align: center; border-bottom: 4px solid transparent; }
+        .nav-container { display: flex; }
+        .nav-item { padding: 15px 10px; font-weight: bold; color: #64748b; cursor: pointer; flex: 1; text-align: center; font-size: 12px; border-bottom: 4px solid transparent; }
         .nav-active { border-bottom: 4px solid var(--blue); color: var(--blue); background: #f8fafc; }
         .page { display: none; padding: 20px; }
         .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .form-group { margin-bottom: 15px; }
+        .form-group { margin-bottom: 15px; text-align: left; }
         .form-group label { display: block; font-size: 11px; font-weight: bold; margin-bottom: 5px; color: #475569; }
         .form-group input, .form-group select { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 10px; box-sizing: border-box; }
         .btn-blue { background: var(--blue); color: white; border: none; padding: 14px; border-radius: 10px; width: 100%; font-weight: bold; cursor: pointer; }
-        table { width: 100%; border-collapse: collapse; font-size: 12px; }
-        th { text-align: left; padding: 10px; border-bottom: 2px solid #f1f5f9; color: #64748b; }
-        td { padding: 10px; border-bottom: 1px solid #f1f5f9; }
-        .status-badge { padding: 3px 7px; border-radius: 5px; color: white; font-size: 10px; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; font-size: 11px; }
+        th { text-align: left; padding: 8px; border-bottom: 2px solid #f1f5f9; color: #64748b; }
+        td { padding: 8px; border-bottom: 1px solid #f1f5f9; }
+        .status-badge { padding: 3px 6px; border-radius: 4px; color: white; font-weight: bold; font-size: 9px; }
     </style>
 </head>
 <body>
@@ -42,21 +42,21 @@
             <div id="nav-scan" class="nav-item" onclick="showPage('scan')">SCAN</div>
             <div id="nav-manual" class="nav-item" onclick="showPage('manual')">MANUAL</div>
             <div id="nav-riwayat" class="nav-item" onclick="showPage('riwayat')">LAPORAN</div>
-            <div class="nav-item" style="color:var(--danger)" onclick="location.reload()">KELUAR</div>
+            <div class="nav-item" style="color:var(--danger)" onclick="location.reload()">OUT</div>
         </div>
     </div>
 
     <div id="page-scan" class="page">
         <div class="card">
             <div style="display:flex; gap:10px; margin-bottom:15px;">
-                <button onclick="setScanMode('Kunjungan')" id="btn-Kunjungan" style="flex:1; padding:10px; background:var(--success); color:white; border:none; border-radius:8px;">KUNJUNGAN</button>
-                <button onclick="setScanMode('Pinjam')" id="btn-Pinjam" style="flex:1; padding:10px; background:#64748b; color:white; border:none; border-radius:8px;">PINJAM</button>
+                <button onclick="setScanMode('Kunjungan')" id="btn-Kunjungan" style="flex:1; padding:10px; background:var(--success); color:white; border:none; border-radius:8px; font-weight:bold;">KUNJUNGAN</button>
+                <button onclick="setScanMode('Pinjam')" id="btn-Pinjam" style="flex:1; padding:10px; background:#64748b; color:white; border:none; border-radius:8px; font-weight:bold;">PINJAM</button>
             </div>
-            <div id="reader" style="width:100%;"></div>
-            <div id="box-pinjam-scan" style="display:none; margin-top:15px; padding:15px; background:#f8fafc; border-radius:10px;">
+            <div id="reader"></div>
+            <div id="box-pinjam-scan" style="display:none; margin-top:15px; padding:15px; background:#f8fafc; border-radius:10px; border:1px solid #e2e8f0;">
                 <div class="form-group"><label>HASIL SCAN</label><input type="text" id="ps-nis" readonly></div>
-                <div class="form-group"><label>JUDUL BUKU</label><input type="text" id="ps-buku" placeholder="Ketik Judul Buku..."></div>
-                <button class="btn-blue" onclick="kirimAksiScan()">SIMPAN PINJAMAN</button>
+                <div class="form-group"><label>JUDUL BUKU</label><input type="text" id="ps-buku" placeholder="Ketik judul buku..."></div>
+                <button class="btn-blue" onclick="kirimAksiScan()">SIMPAN DATA</button>
             </div>
         </div>
     </div>
@@ -64,10 +64,10 @@
     <div id="page-manual" class="page">
         <div class="card">
             <h3>INPUT MANUAL</h3>
-            <div class="form-group"><label>STATUS</label><select id="ms-status"><option>Pinjam</option><option>Kunjungan</option><option>Kembali</option></select></div>
-            <div class="form-group"><label>NAMA SISWA</label><input type="text" id="ms-nama" placeholder="Nama Lengkap"></div>
-            <div class="form-group"><label>JUDUL BUKU</label><input type="text" id="ms-buku" placeholder="Kosongkan jika kunjungan"></div>
-            <div class="form-group"><label>NIS</label><input type="text" id="ms-nis" placeholder="NIS"></div>
+            <div class="form-group"><label>STATUS</label><select id="ms-status"><option>Pinjam</option><option>Kunjungan</option></select></div>
+            <div class="form-group"><label>NAMA SISWA</label><input type="text" id="ms-nama"></div>
+            <div class="form-group"><label>JUDUL BUKU</label><input type="text" id="ms-buku"></div>
+            <div class="form-group"><label>NIS</label><input type="text" id="ms-nis"></div>
             <button class="btn-blue" onclick="kirimManual()">SIMPAN</button>
         </div>
     </div>
@@ -76,8 +76,8 @@
         <div class="card">
             <h3 style="margin-top:0">LAPORAN AKTIF</h3>
             <div style="overflow-x:auto;">
-                <table>
-                    <thead><tr><th>WAKTU</th><th>NAMA (BUKU)</th><th>KELAS</th><th>ST</th></tr></thead>
+                <table id="tabelLaporan">
+                    <thead><tr><th>WAKTU</th><th>DATA</th><th>ST</th></tr></thead>
                     <tbody id="bodyRiwayat"></tbody>
                 </table>
             </div>
@@ -85,7 +85,7 @@
     </div>
 
     <script>
-        const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbzglZ_IAkmPCYAWuefo7ycCWvahsEKkRIcbMRaoLGGZVpxyILdLcZpSRB1F41GkIF246g/exec";
+        const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbxo-FgkEwArF_sDCjEDCTsZrMd3y7Gh_I5Ryny2t9zfABE78X5HbJopT7iROHK2abxB5g/exec";
         let scanMode = "Kunjungan", html5QrCode = null;
 
         function checkLogin() {
@@ -96,48 +96,20 @@
             } else { alert("PIN SALAH!"); }
         }
 
-        async function showPage(p) {
-            // Sembunyikan semua halaman
+        function showPage(p) {
             document.querySelectorAll('.page').forEach(pg => pg.style.display = 'none');
             document.querySelectorAll('.nav-item').forEach(nv => nv.classList.remove('nav-active'));
-            
-            // Tampilkan halaman yang dipilih
             document.getElementById('page-' + p).style.display = 'block';
             document.getElementById('nav-' + p).classList.add('nav-active');
-
-            if (p === 'scan') {
-                startScanner();
-            } else {
-                stopScanner();
-                if (p === 'riwayat') loadData();
-            }
+            if (p === 'scan') startScanner(); else stopScanner();
+            if (p === 'riwayat') loadData();
         }
 
-        function loadData() {
-            const tbody = document.getElementById('bodyRiwayat');
-            tbody.innerHTML = "<tr><td colspan='4' style='text-align:center;'>Memuat data...</td></tr>";
-            
-            fetch(URL_SCRIPT)
-            .then(r => r.json())
-            .then(d => {
-                let h = "";
-                if(d.length === 0) {
-                    h = "<tr><td colspan='4' style='text-align:center;'>Belum ada data</td></tr>";
-                } else {
-                    [...d].reverse().forEach(item => {
-                        let st = String(item.status).toLowerCase();
-                        let color = st === 'pinjam' ? 'orange' : 'green';
-                        h += `<tr>
-                            <td>${item.waktu.split(' ')[1]}</td>
-                            <td>${item.nama}</td>
-                            <td>${item.kelas}</td>
-                            <td><span class="status-badge" style="background:${color}">${item.status.substring(0,1)}</span></td>
-                        </tr>`;
-                    });
-                }
-                tbody.innerHTML = h;
-            })
-            .catch(() => { tbody.innerHTML = "<tr><td colspan='4' style='text-align:center;'>Gagal memuat</td></tr>"; });
+        function setScanMode(m) {
+            scanMode = m;
+            document.getElementById('btn-Kunjungan').style.background = (m === 'Kunjungan') ? 'var(--success)' : '#64748b';
+            document.getElementById('btn-Pinjam').style.background = (m === 'Pinjam') ? 'var(--warning)' : '#64748b';
+            document.getElementById('box-pinjam-scan').style.display = 'none';
         }
 
         function startScanner() {
@@ -158,12 +130,6 @@
             }
         }
 
-        function setScanMode(m) {
-            scanMode = m;
-            document.getElementById('btn-Kunjungan').style.background = (m === 'Kunjungan') ? 'var(--success)' : '#64748b';
-            document.getElementById('btn-Pinjam').style.background = (m === 'Pinjam') ? 'var(--warning)' : '#64748b';
-        }
-
         function kirimAksiScan() {
             const bc = document.getElementById('ps-nis').value;
             const bk = document.getElementById('ps-buku').value;
@@ -176,13 +142,52 @@
             const b = document.getElementById('ms-buku').value;
             const i = document.getElementById('ms-nis').value;
             const s = document.getElementById('ms-status').value;
-            const fakeBC = "Nama: " + n + " | NIS: " + i + " | Kelas: Manual";
-            prosesKirim(fakeBC, s, b ? " (" + b + ")" : "");
+            const textManual = "Nama: " + n + " | NIS: " + i + " | Kelas: Manual";
+            prosesKirim(textManual, s, b ? " (" + b + ")" : "");
         }
 
         function prosesKirim(id, st, ex) {
-            fetch(URL_SCRIPT, { method: "POST", body: JSON.stringify({ id: id, status: st, nama: ex }) })
-            .then(() => { alert("Tersimpan!"); showPage('riwayat'); });
+            // Gunakan x-www-form-urlencoded agar Google Script lebih mudah membaca
+            const formData = new URLSearchParams();
+            formData.append('id', id);
+            formData.append('status', st);
+            formData.append('nama', ex);
+
+            fetch(URL_SCRIPT, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: formData.toString()
+            }).then(() => {
+                alert("Data Terkirim!");
+                showPage('riwayat');
+            }).catch(e => alert("Gagal Kirim: " + e));
+        }
+
+        function loadData() {
+            const tbody = document.getElementById('bodyRiwayat');
+            tbody.innerHTML = "<tr><td colspan='3' style='text-align:center;'>Memuat Laporan...</td></tr>";
+            
+            fetch(URL_SCRIPT)
+            .then(r => r.json())
+            .then(d => {
+                let h = "";
+                if(!d || d.length === 0) {
+                    h = "<tr><td colspan='3' style='text-align:center;'>Belum ada data hari ini</td></tr>";
+                } else {
+                    d.forEach(item => {
+                        let st = String(item.status).toLowerCase();
+                        let color = st === 'pinjam' ? 'orange' : 'green';
+                        h += `<tr>
+                            <td>${item.waktu ? item.waktu.split(' ')[1] : '-'}</td>
+                            <td>${item.nama || '-'}</td>
+                            <td><span class="status-badge" style="background:${color}">${item.status ? item.status.substring(0,1) : '-'}</span></td>
+                        </tr>`;
+                    });
+                }
+                tbody.innerHTML = h;
+            })
+            .catch(() => { tbody.innerHTML = "<tr><td colspan='3' style='text-align:center;'>Data Belum Muncul</td></tr>"; });
         }
     </script>
 </body>
