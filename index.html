@@ -25,7 +25,6 @@
         td { padding: 12px; font-size: 12px; border-bottom: 1px solid #f1f5f9; color: #1e293b; }
         .status-badge { padding: 4px 8px; border-radius: 6px; color: white; font-size: 10px; font-weight: bold; }
         #reader { width: 100%; border-radius: 15px; overflow: hidden; border: 2px solid #e2e8f0; }
-        .unread { background-color: #fef9c3 !important; }
     </style>
 </head>
 <body>
@@ -87,7 +86,8 @@
     </div>
 
     <script>
-        const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbx8AexKE6U9Xw6-NctSut_ABYa41gTeUIXMfYqn684cz1RoXs_5yoZDEmvitfwst7wN/exec";
+        // LINK BARU YANG BAPAK KIRIM TADI
+        const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbzNwUD01c3DrVRWqHuGWWGyMWjVgPig5ZFLBu4l3uAalDsdc88sgki2JCj8orGm8zkt/exec";
         let scanMode = "Kunjungan", html5QrCode = null;
 
         function checkLogin() {
@@ -116,24 +116,21 @@
         function startScanner() {
             if(!html5QrCode) {
                 html5QrCode = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
-                html5QrCode.render(onScanSuccess);
+                html5QrCode.render(s => {
+                    if(scanMode === 'Pinjam') {
+                        document.getElementById('ps-nis').value = s;
+                        document.getElementById('box-pinjam-scan').style.display = 'block';
+                    } else { prosesKirim(s, "Kunjungan", "Siswa"); }
+                });
             }
         }
 
         function stopScanner() { if(html5QrCode) { html5QrCode.clear(); html5QrCode = null; } }
 
-        function onScanSuccess(decodedText) {
-            if(scanMode === 'Pinjam') {
-                document.getElementById('ps-nis').value = decodedText;
-                document.getElementById('box-pinjam-scan').style.display = 'block';
-            } else {
-                prosesKirim(decodedText, "Kunjungan", "Siswa");
-            }
-        }
-
         function kirimAksiScan() {
             const nis = document.getElementById('ps-nis').value;
             const buku = document.getElementById('ps-buku').value;
+            // GABUNGKAN NAMA DAN BUKU
             prosesKirim(nis, "Pinjam", "Siswa - " + buku);
         }
 
@@ -142,41 +139,30 @@
             const b = document.getElementById('ms-buku').value;
             const i = document.getElementById('ms-nis').value;
             const s = document.getElementById('ms-status').value;
+            // GABUNGKAN NAMA DAN BUKU
             prosesKirim(i, s, n + " - " + b);
         }
 
         function prosesKirim(id, status, nama) {
             fetch(URL_SCRIPT, { method: "POST", body: JSON.stringify({ id, status, nama }) })
-            .then(() => { 
-                alert("BERHASIL DISIMPAN"); 
-                showRiwayat(); 
-            });
+            .then(() => { alert("BERHASIL DISIMPAN"); showRiwayat(); });
         }
 
         function showRiwayat() {
             showPage('riwayat');
             document.getElementById('bodyRiwayat').innerHTML = "<tr><td colspan='4' style='text-align:center;'>Memuat Data...</td></tr>";
-            
             fetch(URL_SCRIPT).then(r => r.json()).then(d => {
                 let h = "";
                 let listKembali = d.filter(i => String(i.status).toLowerCase() === 'kembali').map(i => String(i.nis));
-                
-                [...d].reverse().forEach((item, index) => {
+                [...d].reverse().forEach(item => {
                     let st = String(item.status).toLowerCase();
                     if (st === 'pinjam' && listKembali.includes(String(item.nis))) return;
                     if (st === 'kembali') return;
-
-                    // --- LOGIKA ALTERNATIF JIKA NAMA TIDAK DITEMUKAN ---
-                    let namaTampil = item.nama;
-                    if(!namaTampil || namaTampil.includes("tidak ditemukan") || namaTampil === "") {
-                        namaTampil = "Siswa (NIS: " + item.nis + ")";
-                    }
-
-                    h += `<tr class="${index === 0 ? 'unread' : ''}">
+                    h += `<tr>
                         <td>${item.waktu || '-'}</td>
-                        <td>${namaTampil}</td>
+                        <td>${item.nama || 'Siswa (NIS: '+item.nis+')'}</td>
                         <td>${item.nis || '-'}</td>
-                        <td><span class="status-badge" style="background:${st==='pinjam'?'var(--warning)':'var(--success)'}">${item.status}</span></td>
+                        <td><span class="status-badge" style="background:${st==='pinjam'?'orange':'green'}">${item.status}</span></td>
                     </tr>`;
                 });
                 document.getElementById('bodyRiwayat').innerHTML = h || "<tr><td colspan='4' style='text-align:center;'>Kosong</td></tr>";
