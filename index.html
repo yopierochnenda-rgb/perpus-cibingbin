@@ -7,182 +7,150 @@
     <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
         :root { --primary: #1e293b; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --blue: #3b82f6; }
-        body, html { height: 100%; margin: 0; font-family: 'Segoe UI', sans-serif; background: #f1f5f9; }
-        #login-container { background: linear-gradient(rgba(30,41,59,0.8), rgba(30,41,59,0.8)), url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1350&q=80'); background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        #login-box { padding: 40px; background: rgba(255,255,255,0.95); border-radius: 24px; width: 320px; text-align: center; box-shadow: 0 20px 25px rgba(0,0,0,0.2); }
-        .nav-menu { display: none; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
-        .nav-container { display: flex; max-width: 1200px; margin: 0 auto; overflow-x: auto; scrollbar-width: none; }
-        .nav-item { flex: none; padding: 16px 20px; font-weight: bold; color: #64748b; cursor: pointer; border-bottom: 4px solid transparent; white-space: nowrap; font-size: 13px; }
-        .nav-active { border-bottom: 4px solid var(--blue); color: var(--blue); background: #f8fafc; }
-        .page { display: none; padding: 20px; max-width: 1000px; margin: 0 auto; }
-        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        .form-group { margin-bottom: 12px; text-align: left; }
-        .form-group label { display: block; font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px; }
-        .form-group input, .form-group select { width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; }
-        .btn-blue { background: var(--blue); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f1f5f9; margin: 0; padding-bottom: 50px; }
+        #login-container { height: 100vh; display: flex; justify-content: center; align-items: center; background: #1e293b; }
+        #login-box { background: white; padding: 30px; border-radius: 20px; text-align: center; width: 280px; }
+        .nav-menu { display: none; background: white; sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .nav-container { display: flex; overflow-x: auto; }
+        .nav-item { padding: 15px; font-weight: bold; color: #64748b; cursor: pointer; white-space: nowrap; border-bottom: 3px solid transparent; }
+        .nav-active { border-bottom: 3px solid var(--blue); color: var(--blue); }
+        .page { display: none; padding: 20px; }
+        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 11px; font-weight: bold; margin-bottom: 5px; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .btn-blue { background: var(--blue); color: white; border: none; padding: 12px; border-radius: 10px; width: 100%; font-weight: bold; }
         table { width: 100%; border-collapse: collapse; }
-        th { background: #f8fafc; text-align: left; padding: 10px; font-size: 11px; color: #64748b; border-bottom: 2px solid #e2e8f0; }
-        td { padding: 10px; font-size: 12px; border-bottom: 1px solid #e2e8f0; }
-        .status-badge { padding: 3px 6px; border-radius: 4px; color: white; font-size: 10px; font-weight: bold; }
-        .unread { background-color: #fef9c3 !important; }
+        th { text-align: left; font-size: 11px; padding: 10px; border-bottom: 2px solid #eee; }
+        td { padding: 10px; font-size: 12px; border-bottom: 1px solid #eee; }
+        .status-badge { padding: 3px 6px; border-radius: 4px; color: white; font-size: 10px; }
     </style>
 </head>
 <body>
 
     <div id="login-container">
         <div id="login-box">
-            <h2>E-PERPUS</h2>
-            <input type="password" id="passInput" placeholder="PIN" style="width: 80%; padding: 10px; margin-bottom: 10px; text-align: center;">
+            <h3>E-PERPUS</h3>
+            <input type="password" id="passInput" placeholder="PIN" style="width:100%; padding:10px; margin-bottom:10px; text-align:center;">
             <button class="btn-blue" onclick="checkLogin()">MASUK</button>
         </div>
     </div>
 
     <div id="main-nav" class="nav-menu">
         <div class="nav-container">
-            <div id="nav-scan" class="nav-item" onclick="showPage('scan')">SCAN KARTU</div>
+            <div id="nav-scan" class="nav-item" onclick="showPage('scan')">SCAN</div>
             <div id="nav-manual" class="nav-item" onclick="showPage('manual')">INPUT MANUAL</div>
             <div id="nav-riwayat" class="nav-item" onclick="showRiwayat()">LAPORAN AKTIF</div>
-            <div class="nav-item" style="color:var(--danger)" onclick="location.reload()">LOGOUT</div>
+            <div class="nav-item" style="color:red" onclick="location.reload()">LOGOUT</div>
         </div>
     </div>
 
     <div id="page-scan" class="page">
         <div class="card">
-            <div style="display: flex; gap: 8px; margin-bottom: 15px;">
-                <button onclick="setScanMode('Kunjungan')" id="btn-Kunjungan" style="flex:1; padding:10px; background:var(--success); color:white; border:none; border-radius:8px; font-size:11px; font-weight:bold;">KUNJUNGAN</button>
-                <button onclick="setScanMode('Pinjam')" id="btn-Pinjam" style="flex:1; padding:10px; background:#64748b; color:white; border:none; border-radius:8px; font-size:11px; font-weight:bold;">PINJAM</button>
-                <button onclick="setScanMode('Kembali')" id="btn-Kembali" style="flex:1; padding:10px; background:#64748b; color:white; border:none; border-radius:8px; font-size:11px; font-weight:bold;">KEMBALI</button>
+            <div style="display:flex; gap:5px; margin-bottom:15px;">
+                <button onclick="setScanMode('Kunjungan')" id="btn-Kunjungan" style="flex:1; padding:10px; background:var(--success); color:white; border:none; border-radius:5px;">KUNJUNGAN</button>
+                <button onclick="setScanMode('Pinjam')" id="btn-Pinjam" style="flex:1; padding:10px; background:#64748b; color:white; border:none; border-radius:5px;">PINJAM</button>
             </div>
             <div id="reader"></div>
-            <div id="box-pinjam-scan" style="display:none; margin-top:15px;">
-                <div class="form-group"><label>NIS</label><input type="text" id="ps-nis" readonly></div>
-                <div class="form-group"><label>JUDUL BUKU</label><input type="text" id="ps-buku" placeholder="Judul Buku..."></div>
-                <button class="btn-blue" onclick="kirimAksiScan()">SIMPAN PINJAMAN</button>
+            <div id="box-pinjam-scan" style="display:none; margin-top:10px;">
+                <input type="text" id="ps-nis" readonly style="width:100%; margin-bottom:10px; padding:8px;">
+                <input type="text" id="ps-buku" placeholder="Judul Buku..." style="width:100%; margin-bottom:10px; padding:8px;">
+                <button class="btn-blue" onclick="kirimAksiScan()">SIMPAN</button>
             </div>
         </div>
     </div>
 
     <div id="page-manual" class="page">
         <div class="card">
-            <h3>INPUT DATA MANUAL</h3>
-            <div class="form-group"><label>STATUS</label><select id="ms-status"><option>Kunjungan</option><option>Pinjam</option><option>Kembali</option></select></div>
-            <div class="form-group"><label>NAMA SISWA</label><input type="text" id="ms-nama" placeholder="Ketik Nama Siswa"></div>
-            <div class="form-group"><label>JUDUL BUKU</label><input type="text" id="ms-buku-manual" placeholder="Ketik Judul Buku"></div>
-            <div class="form-group"><label>NIS</label><input type="text" id="ms-nis" placeholder="Ketik NIS"></div>
-            <button class="btn-blue" onclick="kirimManual()">SIMPAN KE SHEETS</button>
+            <div class="form-group"><label>NAMA SISWA</label><input type="text" id="ms-nama"></div>
+            <div class="form-group"><label>JUDUL BUKU</label><input type="text" id="ms-buku"></div>
+            <div class="form-group"><label>NIS</label><input type="text" id="ms-nis"></div>
+            <button class="btn-blue" onclick="kirimManual()">SIMPAN MANUAL</button>
         </div>
     </div>
 
     <div id="page-riwayat" class="page">
         <div class="card">
-            <h3 style="margin-top:0;">PINJAMAN AKTIF</h3>
-            <div style="overflow-x:auto;">
-                <table>
-                    <thead><tr><th>WAKTU</th><th>NAMA - BUKU</th><th>NIS</th><th>STATUS</th></tr></thead>
-                    <tbody id="bodyRiwayat"></tbody>
-                </table>
-            </div>
+            <table>
+                <thead><tr><th>WAKTU</th><th>NAMA/BUKU</th><th>NIS</th><th>STATUS</th></tr></thead>
+                <tbody id="bodyRiwayat"></tbody>
+            </table>
         </div>
     </div>
 
     <script>
         const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbx8AexKE6U9Xw6-NctSut_ABYa41gTeUIXMfYqn684cz1RoXs_5yoZDEmvitfwst7wN/exec";
-        let scanMode = "Kunjungan", scanner = null;
+        let scanMode = "Kunjungan";
 
         function checkLogin() {
             if(document.getElementById('passInput').value === "1234") {
                 document.getElementById('login-container').style.display="none";
                 document.getElementById('main-nav').style.display="block";
-                showRiwayat(); 
-            } else { alert("PIN SALAH!"); }
+                showRiwayat();
+            } else { alert("PIN Salah"); }
         }
 
         function showPage(p) {
             document.querySelectorAll('.page').forEach(pg => pg.style.display = 'none');
-            document.querySelectorAll('.nav-item').forEach(nv => nv.classList.remove('nav-active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('nav-active'));
             document.getElementById('page-'+p).style.display = 'block';
             document.getElementById('nav-'+p).classList.add('nav-active');
-            if(p === 'scan') startScanner(); else stopScanner();
+            if(p === 'scan') startScan();
         }
 
-        function setScanMode(m) {
-            scanMode = m;
-            document.getElementById('btn-Kunjungan').style.background = (m === 'Kunjungan') ? 'var(--success)' : '#64748b';
-            document.getElementById('btn-Pinjam').style.background = (m === 'Pinjam') ? 'var(--warning)' : '#64748b';
-            document.getElementById('btn-Kembali').style.background = (m === 'Kembali') ? 'var(--danger)' : '#64748b';
-            document.getElementById('box-pinjam-scan').style.display = 'none';
+        function startScan() {
+            let scanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
+            scanner.render(s => {
+                if(scanMode === 'Pinjam') {
+                    document.getElementById('ps-nis').value = s;
+                    document.getElementById('box-pinjam-scan').style.display = 'block';
+                    scanner.clear();
+                } else {
+                    kirimData(s, "Kunjungan", "Siswa");
+                    scanner.clear();
+                }
+            });
         }
-
-        function startScanner() {
-            if(!scanner) {
-                scanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
-                scanner.render(s => {
-                    if(scanMode === 'Pinjam' || scanMode === 'Kembali') {
-                        document.getElementById('ps-nis').value = s;
-                        document.getElementById('box-pinjam-scan').style.display = 'block';
-                    } else {
-                        fetch(URL_SCRIPT, { method: "POST", body: JSON.stringify({ id: s, status: "Kunjungan" }) })
-                        .then(() => { alert("Kunjungan Berhasil!"); showRiwayat(); });
-                    }
-                });
-            }
-        }
-
-        function stopScanner() { if(scanner) { scanner.clear(); scanner = null; } }
 
         function kirimAksiScan() {
             const nis = document.getElementById('ps-nis').value;
-            const jBuku = document.getElementById('ps-buku').value;
-            // GABUNGKAN Nama (Siswa) + Judul Buku agar masuk ke kolom Nama di Sheets
-            const gabung = jBuku ? "Siswa - " + jBuku : "Siswa";
-            
-            fetch(URL_SCRIPT, { 
-                method:"POST", 
-                body: JSON.stringify({ id: nis, status: scanMode, nama: gabung }) 
-            }).then(() => { 
-                alert("Tersimpan!");
-                document.getElementById('ps-buku').value = "";
-                showRiwayat(); 
-            });
-            document.getElementById('box-pinjam-scan').style.display = 'none';
+            const buku = document.getElementById('ps-buku').value;
+            kirimData(nis, "Pinjam", "Siswa - " + buku);
         }
 
         function kirimManual() {
             const nama = document.getElementById('ms-nama').value;
-            const buku = document.getElementById('ms-buku-manual').value;
-            // GABUNGKAN Nama + Buku
-            const gabung = buku ? nama + " - " + buku : nama;
-            
-            fetch(URL_SCRIPT, { 
-                method:"POST", 
-                body: JSON.stringify({ id: document.getElementById('ms-nis').value, status: document.getElementById('ms-status').value, nama: gabung }) 
-            }).then(() => { 
-                alert("Data Manual Tersimpan!"); 
-                document.getElementById('ms-nama').value = "";
-                document.getElementById('ms-buku-manual').value = "";
-                showRiwayat(); 
-            });
+            const buku = document.getElementById('ms-buku').value;
+            const nis = document.getElementById('ms-nis').value;
+            kirimData(nis, "Pinjam", nama + " - " + buku);
+        }
+
+        function kirimData(id, status, nama) {
+            fetch(URL_SCRIPT, { method: "POST", body: JSON.stringify({ id, status, nama }) })
+            .then(() => { alert("Berhasil!"); location.reload(); });
         }
 
         function showRiwayat() {
             showPage('riwayat');
-            document.getElementById('bodyRiwayat').innerHTML = "<tr><td colspan='4' style='text-align:center;'>Memuat...</td></tr>";
             fetch(URL_SCRIPT).then(r => r.json()).then(d => {
                 let h = "";
                 let listKembali = d.filter(i => String(i.status).toLowerCase() === 'kembali').map(i => String(i.nis));
-                [...d].reverse().forEach((item, index) => {
-                    let statusNow = String(item.status).toLowerCase();
-                    if (statusNow === 'pinjam' && listKembali.includes(String(item.nis))) return;
-                    if (statusNow === 'kembali') return;
+                [...d].reverse().forEach(item => {
+                    let st = String(item.status).toLowerCase();
+                    if (st === 'pinjam' && listKembali.includes(String(item.nis))) return;
+                    if (st === 'kembali') return;
 
-                    h += `<tr class="${index === 0 ? 'unread' : ''}">
+                    // ALTERNATIF: Jika nama kosong di Sheets, ambil NIS-nya saja
+                    let tampilan = item.nama || "NIS: " + item.nis;
+
+                    h += `<tr>
                         <td>${item.waktu || '-'}</td>
-                        <td>${item.nama || '-'}</td>
-                        <td>${item.nis || '-'}</td>
-                        <td><span class="status-badge" style="background:${statusNow === 'pinjam' ? 'var(--warning)' : 'var(--success)'}">${item.status}</span></td>
+                        <td>${tampilan}</td>
+                        <td>${item.nis}</td>
+                        <td><span class="status-badge" style="background:${st==='pinjam'?'orange':'green'}">${item.status}</span></td>
                     </tr>`;
                 });
-                document.getElementById('bodyRiwayat').innerHTML = h || "<tr><td colspan='4' style='text-align:center;'>Kosong</td></tr>";
+                document.getElementById('bodyRiwayat').innerHTML = h;
             });
         }
     </script>
