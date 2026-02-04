@@ -15,16 +15,16 @@
         .nav-item { flex: none; padding: 16px 20px; font-weight: bold; color: #64748b; cursor: pointer; border-bottom: 4px solid transparent; white-space: nowrap; font-size: 13px; }
         .nav-active { border-bottom: 4px solid var(--blue); color: var(--blue); background: #f8fafc; }
         .page { display: none; padding: 20px; max-width: 1000px; margin: 0 auto; }
-        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; position: relative; }
-        #notif-cetak { display: none; background: var(--success); color: white; padding: 12px; border-radius: 8px; text-align: center; font-weight: bold; margin-bottom: 15px; }
+        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
         .form-group { margin-bottom: 12px; text-align: left; }
         .form-group label { display: block; font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px; }
         .form-group input, .form-group select { width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; }
         .btn-blue { background: var(--blue); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; }
-        table { width: 100%; border-collapse: collapse; min-width: 500px; }
+        table { width: 100%; border-collapse: collapse; }
         th { background: #f8fafc; text-align: left; padding: 10px; font-size: 11px; color: #64748b; border-bottom: 2px solid #e2e8f0; }
         td { padding: 10px; font-size: 12px; border-bottom: 1px solid #e2e8f0; }
         .status-badge { padding: 3px 6px; border-radius: 4px; color: white; font-size: 10px; font-weight: bold; }
+        .unread { background-color: #fef9c3 !important; }
     </style>
 </head>
 <body>
@@ -32,7 +32,7 @@
     <div id="login-container">
         <div id="login-box">
             <h2>E-PERPUS</h2>
-            <input type="password" id="passInput" placeholder="PIN" style="width: 80%; padding: 10px; margin-bottom: 10px;">
+            <input type="password" id="passInput" placeholder="PIN" style="width: 80%; padding: 10px; margin-bottom: 10px; text-align: center;">
             <button class="btn-blue" onclick="checkLogin()">MASUK</button>
         </div>
     </div>
@@ -48,38 +48,37 @@
 
     <div id="page-scan" class="page">
         <div class="card">
-            <div id="notif-cetak"></div>
             <div style="display: flex; gap: 8px; margin-bottom: 15px;">
-                <button onclick="setScanMode('Kunjungan')" id="btn-Kunjungan" style="flex:1; padding:10px; background:var(--success); color:white; border:none; border-radius:8px;">KUNJUNGAN</button>
-                <button onclick="setScanMode('Pinjam')" id="btn-Pinjam" style="flex:1; padding:10px; background:#64748b; color:white; border:none; border-radius:8px;">PINJAM</button>
-                <button onclick="setScanMode('Kembali')" id="btn-Kembali" style="flex:1; padding:10px; background:#64748b; color:white; border:none; border-radius:8px;">KEMBALI</button>
+                <button onclick="setScanMode('Kunjungan')" id="btn-Kunjungan" style="flex:1; padding:10px; background:var(--success); color:white; border:none; border-radius:8px; font-size:11px; font-weight:bold;">KUNJUNGAN</button>
+                <button onclick="setScanMode('Pinjam')" id="btn-Pinjam" style="flex:1; padding:10px; background:#64748b; color:white; border:none; border-radius:8px; font-size:11px; font-weight:bold;">PINJAM</button>
+                <button onclick="setScanMode('Kembali')" id="btn-Kembali" style="flex:1; padding:10px; background:#64748b; color:white; border:none; border-radius:8px; font-size:11px; font-weight:bold;">KEMBALI</button>
             </div>
             <div id="reader"></div>
             <div id="box-pinjam-scan" style="display:none; margin-top:15px;">
                 <div class="form-group"><label>NIS</label><input type="text" id="ps-nis" readonly></div>
-                <div class="form-group"><label>JUDUL BUKU</label><input type="text" id="ps-buku" placeholder="Ketik Judul Buku..."></div>
-                <button class="btn-blue" onclick="kirimAksiScan()">SIMPAN</button>
+                <div class="form-group"><label>JUDUL BUKU</label><input type="text" id="ps-buku" placeholder="Judul Buku..."></div>
+                <button class="btn-blue" onclick="kirimAksiScan()">SIMPAN PINJAMAN</button>
             </div>
         </div>
     </div>
 
     <div id="page-manual" class="page">
         <div class="card">
-            <h3>INPUT MANUAL</h3>
+            <h3>INPUT DATA MANUAL</h3>
             <div class="form-group"><label>STATUS</label><select id="ms-status"><option>Kunjungan</option><option>Pinjam</option><option>Kembali</option></select></div>
-            <div class="form-group"><label>NAMA SISWA</label><input type="text" id="ms-nama"></div>
-            <div class="form-group"><label>JUDUL BUKU</label><input type="text" id="ms-buku-manual"></div>
-            <div class="form-group"><label>NIS</label><input type="text" id="ms-nis"></div>
-            <button class="btn-blue" onclick="kirimManual()">SIMPAN DATA</button>
+            <div class="form-group"><label>NAMA SISWA</label><input type="text" id="ms-nama" placeholder="Ketik Nama Siswa"></div>
+            <div class="form-group"><label>JUDUL BUKU</label><input type="text" id="ms-buku-manual" placeholder="Ketik Judul Buku"></div>
+            <div class="form-group"><label>NIS</label><input type="text" id="ms-nis" placeholder="Ketik NIS"></div>
+            <button class="btn-blue" onclick="kirimManual()">SIMPAN KE SHEETS</button>
         </div>
     </div>
 
     <div id="page-riwayat" class="page">
         <div class="card">
-            <h3>PINJAMAN AKTIF</h3>
+            <h3 style="margin-top:0;">PINJAMAN AKTIF</h3>
             <div style="overflow-x:auto;">
                 <table>
-                    <thead><tr><th>WAKTU</th><th>NAMA SISWA / BUKU</th><th>NIS</th><th>STATUS</th></tr></thead>
+                    <thead><tr><th>WAKTU</th><th>NAMA - BUKU</th><th>NIS</th><th>STATUS</th></tr></thead>
                     <tbody id="bodyRiwayat"></tbody>
                 </table>
             </div>
@@ -123,7 +122,7 @@
                         document.getElementById('box-pinjam-scan').style.display = 'block';
                     } else {
                         fetch(URL_SCRIPT, { method: "POST", body: JSON.stringify({ id: s, status: "Kunjungan" }) })
-                        .then(() => { alert("Kunjungan Berhasil"); showRiwayat(); });
+                        .then(() => { alert("Kunjungan Berhasil!"); showRiwayat(); });
                     }
                 });
             }
@@ -134,14 +133,15 @@
         function kirimAksiScan() {
             const nis = document.getElementById('ps-nis').value;
             const jBuku = document.getElementById('ps-buku').value;
-            // KUNCI: Gabungkan Buku ke label NAMA agar Apps Script mau menerima datanya
-            const dataGabung = jBuku ? "Buku: " + jBuku : "Siswa";
+            // GABUNGKAN Nama (Siswa) + Judul Buku agar masuk ke kolom Nama di Sheets
+            const gabung = jBuku ? "Siswa - " + jBuku : "Siswa";
             
             fetch(URL_SCRIPT, { 
                 method:"POST", 
-                body: JSON.stringify({ id: nis, status: scanMode, nama: dataGabung }) 
+                body: JSON.stringify({ id: nis, status: scanMode, nama: gabung }) 
             }).then(() => { 
-                alert("Data Berhasil Masuk!");
+                alert("Tersimpan!");
+                document.getElementById('ps-buku').value = "";
                 showRiwayat(); 
             });
             document.getElementById('box-pinjam-scan').style.display = 'none';
@@ -150,32 +150,39 @@
         function kirimManual() {
             const nama = document.getElementById('ms-nama').value;
             const buku = document.getElementById('ms-buku-manual').value;
-            const gabung = nama + " (" + buku + ")";
+            // GABUNGKAN Nama + Buku
+            const gabung = buku ? nama + " - " + buku : nama;
             
             fetch(URL_SCRIPT, { 
                 method:"POST", 
                 body: JSON.stringify({ id: document.getElementById('ms-nis').value, status: document.getElementById('ms-status').value, nama: gabung }) 
-            }).then(() => { alert("Tersimpan!"); showRiwayat(); });
+            }).then(() => { 
+                alert("Data Manual Tersimpan!"); 
+                document.getElementById('ms-nama').value = "";
+                document.getElementById('ms-buku-manual').value = "";
+                showRiwayat(); 
+            });
         }
 
         function showRiwayat() {
             showPage('riwayat');
+            document.getElementById('bodyRiwayat').innerHTML = "<tr><td colspan='4' style='text-align:center;'>Memuat...</td></tr>";
             fetch(URL_SCRIPT).then(r => r.json()).then(d => {
                 let h = "";
                 let listKembali = d.filter(i => String(i.status).toLowerCase() === 'kembali').map(i => String(i.nis));
-                [...d].reverse().forEach((item) => {
+                [...d].reverse().forEach((item, index) => {
                     let statusNow = String(item.status).toLowerCase();
                     if (statusNow === 'pinjam' && listKembali.includes(String(item.nis))) return;
                     if (statusNow === 'kembali') return;
 
-                    h += `<tr>
+                    h += `<tr class="${index === 0 ? 'unread' : ''}">
                         <td>${item.waktu || '-'}</td>
                         <td>${item.nama || '-'}</td>
                         <td>${item.nis || '-'}</td>
                         <td><span class="status-badge" style="background:${statusNow === 'pinjam' ? 'var(--warning)' : 'var(--success)'}">${item.status}</span></td>
                     </tr>`;
                 });
-                document.getElementById('bodyRiwayat').innerHTML = h;
+                document.getElementById('bodyRiwayat').innerHTML = h || "<tr><td colspan='4' style='text-align:center;'>Kosong</td></tr>";
             });
         }
     </script>
