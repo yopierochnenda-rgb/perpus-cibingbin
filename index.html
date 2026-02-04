@@ -28,6 +28,7 @@
         th { background: #f8fafc; text-align: left; padding: 12px; font-size: 12px; color: #64748b; border-bottom: 2px solid #e2e8f0; }
         td { padding: 12px; font-size: 13px; border-bottom: 1px solid #e2e8f0; }
         .status-badge { padding: 4px 8px; border-radius: 5px; color: white; font-size: 11px; font-weight: bold; }
+        .unread { background-color: #fef9c3 !important; font-weight: bold; border-left: 5px solid var(--warning); }
     </style>
 </head>
 <body>
@@ -52,7 +53,7 @@
 
     <div id="page-scan" class="page">
         <div class="card">
-            <div id="notif-cetak">✅ BERHASIL!</div>
+            <div id="notif-cetak">✅ BERHASIL DISIMPAN!</div>
             <div style="display: flex; gap: 10px; margin-bottom: 15px;">
                 <button onclick="setScanMode('Kunjungan')" id="btn-Kunjungan" style="flex:1; padding:10px; border-radius:8px; border:none; background:var(--success); color:white; font-weight:bold;">KUNJUNGAN</button>
                 <button onclick="setScanMode('Pinjam')" id="btn-Pinjam" style="flex:1; padding:10px; border-radius:8px; border:none; background:#64748b; color:white; font-weight:bold;">PINJAM</button>
@@ -61,7 +62,7 @@
             <div id="reader"></div>
             <div id="box-pinjam-scan" style="display:none; margin-top:15px; background:#f8fafc; padding:15px; border-radius:10px; border: 1px solid #ddd;">
                 <div class="form-group"><label>NIS ANAK</label><input type="text" id="ps-nis" readonly></div>
-                <div class="form-group"><label>JUDUL BUKU</label><input type="text" id="ps-buku" placeholder="Masukkan Judul Buku..."></div>
+                <div class="form-group"><label>JUDUL BUKU (Optional)</label><input type="text" id="ps-buku" placeholder="Ketik Judul Buku..."></div>
                 <button class="btn-blue" onclick="kirimAksiScan()">💾 SIMPAN DATA</button>
             </div>
         </div>
@@ -69,7 +70,7 @@
 
     <div id="page-manual" class="page">
         <div class="card">
-            <h3>INPUT MANUAL</h3>
+            <h3>INPUT DATA MANUAL</h3>
             <div class="form-group"><label>STATUS</label><select id="ms-status"><option>Kunjungan</option><option>Pinjam</option><option>Kembali</option></select></div>
             <div class="form-group"><label>NAMA SISWA</label><input type="text" id="ms-nama"></div>
             <div class="form-group"><label>NIS</label><input type="text" id="ms-nis"></div>
@@ -82,12 +83,12 @@
     <div id="page-riwayat" class="page">
         <div class="card">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
-                <h3 style="margin:0;">PINJAMAN BELUM KEMBALI</h3>
+                <h3 style="margin:0;">DAFTAR PINJAMAN AKTIF</h3>
                 <button onclick="cetakLaporan()" class="btn-print">🖨️ CETAK LAPORAN RESMI</button>
             </div>
             <div style="overflow-x:auto;">
                 <table>
-                    <thead><tr><th>WAKTU</th><th>NAMA / JUDUL BUKU</th><th>NIS</th><th>STATUS</th></tr></thead>
+                    <thead><tr><th>WAKTU</th><th>NAMA ANAK / JUDUL BUKU</th><th>NIS</th><th>STATUS</th></tr></thead>
                     <tbody id="bodyRiwayat"></tbody>
                 </table>
             </div>
@@ -150,31 +151,13 @@
             const judulBuku = document.getElementById('ps-buku').value;
             const warna = (scanMode === 'Kembali') ? 'var(--danger)' : 'var(--blue)';
             const teks = (scanMode === 'Kembali') ? "✅ DATA KEMBALI DICATAT!" : "✅ PINJAMAN TERCATAT!";
-            
             document.getElementById('box-pinjam-scan').style.display = 'none';
-
-            fetch(URL_SCRIPT, { 
-                method:"POST", 
-                body: JSON.stringify({ 
-                    id: nis, 
-                    status: scanMode, 
-                    buku: judulBuku // Ini akan masuk ke kolom 'Buku' di Sheet
-                }) 
-            }).then(() => { 
-                document.getElementById('ps-buku').value = ""; 
-                tampilNotif(teks, warna); 
-                showRiwayat(); 
-            });
+            fetch(URL_SCRIPT, { method:"POST", body: JSON.stringify({ id: nis, status: scanMode, buku: judulBuku }) })
+            .then(() => { document.getElementById('ps-buku').value = ""; tampilNotif(teks, warna); showRiwayat(); });
         }
 
         function kirimManual() {
-            const p = { 
-                id: document.getElementById('ms-nis').value, 
-                status: document.getElementById('ms-status').value, 
-                nama: document.getElementById('ms-nama').value, 
-                kelas: document.getElementById('ms-kelas').value,
-                buku: document.getElementById('ms-buku-manual').value 
-            };
+            const p = { id: document.getElementById('ms-nis').value, status: document.getElementById('ms-status').value, nama: document.getElementById('ms-nama').value, kelas: document.getElementById('ms-kelas').value, buku: document.getElementById('ms-buku-manual').value };
             fetch(URL_SCRIPT, { method:"POST", body: JSON.stringify(p) }).then(() => { alert("Tersimpan!"); showRiwayat(); });
         }
 
@@ -184,17 +167,16 @@
                 dataGlobal = d;
                 let h = "";
                 let sudahKembali = d.filter(item => item.status === 'Kembali').map(item => String(item.nis));
-
-                [...d].reverse().forEach((item) => {
+                [...d].reverse().forEach((item, i) => {
                     if (item.status === 'Pinjam' && sudahKembali.includes(String(item.nis))) return;
                     if (item.status === 'Kembali') return;
-
                     const color = item.status === 'Pinjam' ? 'var(--warning)' : 'var(--success)';
-                    
-                    // Prioritaskan Judul Buku, jika kosong pakai Nama Anak
-                    let infoUtama = item.buku ? item.buku : (item.nama || "-");
-
-                    h += `<tr><td>${item.waktu}</td><td>${infoUtama}</td><td>${item.nis}</td><td><span class="status-badge" style="background:${color}">${item.status}</span></td></tr>`;
+                    // Membaca Kolom Buku (F) atau Nama (B)
+                    let infoTampilan = item.buku || item.nama || "Anak (NIS: " + item.nis + ")";
+                    h += `<tr ${i === 0 ? 'class="unread"' : ''}>
+                        <td>${item.waktu}</td><td>${infoTampilan}</td><td>${item.nis}</td>
+                        <td><span class="status-badge" style="background:${color}">${item.status}</span></td>
+                    </tr>`;
                 });
                 document.getElementById('bodyRiwayat').innerHTML = h;
             });
@@ -205,14 +187,12 @@
             let printWindow = window.open('', '_blank');
             let rows = "";
             let sudahKembali = dataGlobal.filter(item => item.status === 'Kembali').map(item => String(item.nis));
-            
             dataGlobal.forEach(i => {
                 if (i.status === 'Pinjam' && sudahKembali.includes(String(i.nis))) return;
                 if (i.status === 'Kembali') return;
-                let infoUtama = i.buku ? i.buku : (i.nama || "-");
-                rows += `<tr><td>${i.waktu}</td><td>${infoUtama}</td><td>${i.nis}</td><td>${i.kelas || '-'}</td><td>${i.status}</td></tr>`;
+                let infoTampilan = i.buku || i.nama || "-";
+                rows += `<tr><td>${i.waktu}</td><td>${infoTampilan}</td><td>${i.nis}</td><td>${i.kelas || '-'}</td><td>${i.status}</td></tr>`;
             });
-            
             printWindow.document.write(`
                 <html><head><title>Laporan Perpus</title><style>
                     body { font-family: Arial, sans-serif; padding: 30px; }
