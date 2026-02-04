@@ -6,7 +6,7 @@
     <title>Rules - E-PERPUS</title>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
-        :root { --primary: #1e293b; --success: #10b981; --warning: #f59e0b; --blue: #3b82f6; }
+        :root { --primary: #1e293b; --success: #10b981; --warning: #f59e0b; --blue: #3b82f6; --danger: #ef4444; }
         body { font-family: 'Segoe UI', sans-serif; background: #f1f5f9; margin: 0; padding: 0; }
         #login-container { height: 100vh; display: flex; justify-content: center; align-items: center; background: #1e293b; position: fixed; width: 100%; z-index: 9999; }
         #login-box { background: white; padding: 30px; border-radius: 20px; text-align: center; width: 280px; }
@@ -20,8 +20,9 @@
         .form-group label { display: block; font-size: 11px; font-weight: bold; margin-bottom: 5px; color: #475569; }
         .form-group input { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 10px; box-sizing: border-box; }
         .btn-blue { background: var(--blue); color: white; border: none; padding: 14px; border-radius: 10px; width: 100%; font-weight: bold; cursor: pointer; }
-        table { width: 100%; border-collapse: collapse; font-size: 11px; }
-        td { padding: 10px; border-bottom: 1px solid #f1f5f9; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        th { text-align: left; padding: 10px; border-bottom: 2px solid #f1f5f9; color: #64748b; font-size: 11px; }
+        td { padding: 10px; border-bottom: 1px solid #f1f5f9; color: #1e293b; }
         .status-badge { padding: 3px 6px; border-radius: 4px; color: white; font-weight: bold; font-size: 9px; }
     </style>
 </head>
@@ -30,7 +31,7 @@
     <div id="login-container">
         <div id="login-box">
             <h2 style="margin:0; color:var(--primary)">Rules</h2>
-            <p style="font-size:12px; color:#64748b; margin-bottom:20px;">E-PERPUS</p>
+            <p style="font-size:12px; color:#64748b; margin-bottom:20px;">E-PERPUS SMPN 1 CIBINGBIN</p>
             <input type="password" id="passInput" placeholder="PIN" style="width:100%; padding:12px; margin-bottom:15px; border-radius:10px; border:1px solid #ddd; text-align:center;">
             <button class="btn-blue" onclick="checkLogin()">MASUK</button>
         </div>
@@ -41,6 +42,7 @@
             <div id="nav-scan" class="nav-item" onclick="showPage('scan')">SCAN</div>
             <div id="nav-manual" class="nav-item" onclick="showPage('manual')">MANUAL</div>
             <div id="nav-riwayat" class="nav-item" onclick="showPage('riwayat')">LAPORAN</div>
+            <div class="nav-item" style="color:var(--danger)" onclick="location.reload()">OUT</div>
         </div>
     </div>
 
@@ -54,15 +56,15 @@
             <div id="box-pinjam-scan" style="display:none; margin-top:15px; padding:15px; background:#f8fafc; border-radius:10px; border:1px solid #e2e8f0;">
                 <div class="form-group"><label>DATA KARTU</label><input type="text" id="ps-nis" readonly></div>
                 <div class="form-group"><label>JUDUL BUKU</label><input type="text" id="ps-buku" placeholder="Ketik judul buku..."></div>
-                <button class="btn-blue" onclick="kirimAksiScan()">SIMPAN PINJAMAN</button>
+                <button class="btn-blue" onclick="kirimAksiScan()">SIMPAN DATA</button>
             </div>
         </div>
     </div>
 
     <div id="page-manual" class="page">
         <div class="card">
-            <h3>INPUT MANUAL</h3>
-            <div class="form-group"><label>NAMA</label><input type="text" id="ms-nama"></div>
+            <h3 style="margin-top:0">INPUT MANUAL</h3>
+            <div class="form-group"><label>NAMA SISWA</label><input type="text" id="ms-nama"></div>
             <div class="form-group"><label>NIS</label><input type="text" id="ms-nis"></div>
             <div class="form-group"><label>BUKU</label><input type="text" id="ms-buku"></div>
             <button class="btn-blue" onclick="kirimManual()">SIMPAN MANUAL</button>
@@ -71,10 +73,10 @@
 
     <div id="page-riwayat" class="page">
         <div class="card">
-            <h3>LAPORAN AKTIF</h3>
+            <h3 style="margin:0 0 15px 0">LAPORAN AKTIF (Rules)</h3>
             <div style="overflow-x:auto;">
                 <table>
-                    <thead><tr style="text-align:left; color:#64748b;"><th>WAKTU</th><th>NAMA (BUKU)</th><th>ST</th></tr></thead>
+                    <thead><tr><th>JAM</th><th>NAMA (BUKU)</th><th>ST</th></tr></thead>
                     <tbody id="bodyRiwayat"></tbody>
                 </table>
             </div>
@@ -82,14 +84,14 @@
     </div>
 
     <script>
-        const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbwBVMA0ND6IJe1xW1OnOn3Bd0wkxPeBjajxaWJdc_dWCz9ItY2PfGerBqgc6O3_bzyitA/exec";
+        const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbzekVLqEYiujcd5i8Je7OSpKYtixLNO2w41eF8ANCYbdxgHYpaI--H-F0wz1JPghlinnw/exec";
         let scanMode = "Kunjungan", html5QrCode = null;
 
         function checkLogin() {
             if(document.getElementById('passInput').value === "1234") {
                 document.getElementById('login-container').style.display="none";
                 document.getElementById('main-nav').style.display="block";
-                showPage('scan');
+                showPage('riwayat');
             } else { alert("PIN SALAH!"); }
         }
 
@@ -142,26 +144,32 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id: id, status: st, nama: bk ? " (" + bk + ")" : "" })
             }).then(() => {
-                alert("TERSIMPAN!");
+                alert("BERHASIL DISIMPAN!");
                 showPage('riwayat');
             });
         }
 
         function loadData() {
             const tbody = document.getElementById('bodyRiwayat');
-            tbody.innerHTML = "<tr><td colspan='3' style='text-align:center;'>Memuat...</td></tr>";
+            tbody.innerHTML = "<tr><td colspan='3' style='text-align:center;'>Memuat Laporan...</td></tr>";
+            
             fetch(URL_SCRIPT).then(r => r.json()).then(d => {
                 let h = "";
-                d.reverse().forEach(item => {
-                    let st = String(item.status).toLowerCase();
-                    h += `<tr>
-                        <td>${item.waktu ? item.waktu.split(' ')[1] : '-'}</td>
-                        <td>${item.nama || '-'}</td>
-                        <td><span class="status-badge" style="background:${st==='pinjam'?'orange':'green'}">${item.status.substring(0,1)}</span></td>
-                    </tr>`;
-                });
-                tbody.innerHTML = h || "<tr><td colspan='3'>Kosong</td></tr>";
-            }).catch(() => { tbody.innerHTML = "<tr><td colspan='3'>Gagal muat data</td></tr>"; });
+                if(!d || d.length === 0) {
+                    h = "<tr><td colspan='3' style='text-align:center;'>Belum ada data hari ini</td></tr>";
+                } else {
+                    d.reverse().forEach(item => {
+                        let st = String(item.status).toLowerCase();
+                        let color = st === 'pinjam' ? 'orange' : 'green';
+                        h += `<tr>
+                            <td style="font-weight:bold; color:#64748b;">${item.waktu || '-'}</td>
+                            <td>${item.nama || '-'}</td>
+                            <td><span class="status-badge" style="background:${color}">${item.status ? item.status.substring(0,1) : '-'}</span></td>
+                        </tr>`;
+                    });
+                }
+                tbody.innerHTML = h;
+            }).catch(() => { tbody.innerHTML = "<tr><td colspan='3' style='text-align:center; color:red;'>Gagal memuat data</td></tr>"; });
         }
     </script>
 </body>
