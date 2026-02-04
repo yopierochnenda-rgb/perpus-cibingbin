@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-PERPUS SMPN 1 CIBINGBIN</title>
+    <title>Rules - E-PERPUS</title>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
         :root { --primary: #1e293b; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --blue: #3b82f6; }
@@ -31,8 +31,8 @@
 
     <div id="login-container">
         <div id="login-box">
-            <h2 style="margin:0; color:var(--primary)">E-PERPUS</h2>
-            <p style="font-size:12px; color:#64748b; margin-bottom:20px;">SMPN 1 CIBINGBIN</p>
+            <h2 style="margin:0; color:var(--primary)">Rules</h2>
+            <p style="font-size:12px; color:#64748b; margin-bottom:20px;">E-PERPUS SMPN 1 CIBINGBIN</p>
             <input type="password" id="passInput" placeholder="MASUKKAN PIN" style="width:100%; padding:12px; margin-bottom:15px; border-radius:10px; border:1px solid #ddd; text-align:center;">
             <button class="btn-blue" onclick="checkLogin()">MASUK</button>
         </div>
@@ -86,8 +86,8 @@
     </div>
 
     <script>
-        // LINK BARU YANG BAPAK KIRIM TADI
-        const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbzNwUD01c3DrVRWqHuGWWGyMWjVgPig5ZFLBu4l3uAalDsdc88sgki2JCj8orGm8zkt/exec";
+        // LINK TERBARU YANG BAPAK DEPLOY TADI
+        const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbzLzXPrsOS_tIrUk6meiC0iszAcQqy7dVfuFMD9_y0rssAMpqdREfOSXDoYhJCgg-M4/exec";
         let scanMode = "Kunjungan", html5QrCode = null;
 
         function checkLogin() {
@@ -130,7 +130,6 @@
         function kirimAksiScan() {
             const nis = document.getElementById('ps-nis').value;
             const buku = document.getElementById('ps-buku').value;
-            // GABUNGKAN NAMA DAN BUKU
             prosesKirim(nis, "Pinjam", "Siswa - " + buku);
         }
 
@@ -139,7 +138,6 @@
             const b = document.getElementById('ms-buku').value;
             const i = document.getElementById('ms-nis').value;
             const s = document.getElementById('ms-status').value;
-            // GABUNGKAN NAMA DAN BUKU
             prosesKirim(i, s, n + " - " + b);
         }
 
@@ -153,6 +151,7 @@
             document.getElementById('bodyRiwayat').innerHTML = "<tr><td colspan='4' style='text-align:center;'>Memuat Data...</td></tr>";
             fetch(URL_SCRIPT).then(r => r.json()).then(d => {
                 let h = "";
+                // Filter logika laporan aktif tetap sama
                 let listKembali = d.filter(i => String(i.status).toLowerCase() === 'kembali').map(i => String(i.nis));
                 [...d].reverse().forEach(item => {
                     let st = String(item.status).toLowerCase();
