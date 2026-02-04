@@ -10,45 +10,34 @@
     <style>
         :root { --primary: #1e293b; --success: #10b981; --warning: #f59e0b; --blue: #3b82f6; --danger: #ef4444; }
         body { font-family: 'Segoe UI', sans-serif; background: #f1f5f9; margin: 0; padding: 0; }
-        
-        /* LOGIN & LOGO */
         #login-container { height: 100vh; display: flex; justify-content: center; align-items: center; background: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1350&q=80'); background-size: cover; background-position: center; position: fixed; width: 100%; z-index: 9999; }
-        #login-box { background: rgba(255,255,255,0.95); padding: 30px; border-radius: 20px; text-align: center; width: 280px; backdrop-filter: blur(5px); box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-        .logo-perpus { width: 70px; margin-bottom: 10px; }
-
-        /* NOTIFIKASI HIJAU */
-        #notif { display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--success); color: white; padding: 12px 25px; border-radius: 50px; z-index: 10000; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.2); animation: slideDown 0.4s ease; }
-        @keyframes slideDown { from { top: -50px; opacity: 0; } to { top: 20px; opacity: 1; } }
-
-        /* MENU NAVIGASI */
+        #login-box { background: rgba(255,255,255,0.95); padding: 30px; border-radius: 20px; text-align: center; width: 280px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        .logo-perpus { width: 80px; height: auto; margin-bottom: 15px; }
+        #notif { display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--success); color: white; padding: 12px 25px; border-radius: 50px; z-index: 10000; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         .nav-menu { display: none; background: white; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .nav-container { display: flex; }
         .nav-item { padding: 15px 5px; font-weight: bold; color: #64748b; cursor: pointer; flex: 1; text-align: center; font-size: 11px; border-bottom: 4px solid transparent; }
         .nav-active { border-bottom: 4px solid var(--blue); color: var(--blue); background: #f8fafc; }
-
-        /* KONTEN */
         .page { display: none; padding: 15px; }
-        .card { background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 15px; }
-        .btn-mode { flex: 1; padding: 10px; color: white; border: none; border-radius: 8px; font-size: 10px; font-weight: bold; cursor: pointer; background: #64748b; transition: 0.3s; }
+        .card { background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .btn-mode { flex: 1; padding: 10px; color: white; border: none; border-radius: 8px; font-size: 10px; font-weight: bold; cursor: pointer; background: #64748b; }
         .btn-blue { background: var(--blue); color: white; border: none; padding: 14px; border-radius: 10px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        input { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; font-size: 14px; }
-        
-        /* TABEL LAPORAN */
+        input { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; }
         table { width: 100%; border-collapse: collapse; font-size: 10px; }
-        th { text-align: left; padding: 8px; border-bottom: 2px solid #f1f5f9; color: #64748b; background: #f8fafc; }
+        th { text-align: left; padding: 8px; border-bottom: 2px solid #f1f5f9; background: #f8fafc; }
         td { padding: 8px; border-bottom: 1px solid #f1f5f9; }
-        .status-badge { padding: 2px 5px; border-radius: 4px; color: white; font-weight: bold; font-size: 8px; text-transform: uppercase; }
+        .status-badge { padding: 2px 5px; border-radius: 4px; color: white; font-weight: bold; font-size: 8px; }
     </style>
 </head>
 <body>
 
-    <div id="notif">BERHASIL DISIMPAN! ✓</div>
+    <div id="notif">BERHASIL DIPROSES! ✓</div>
 
     <div id="login-container">
         <div id="login-box">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Logo_Perpustakaan_Nasional_Republik_Indonesia.belakang_putih.png" class="logo-perpus" alt="Logo">
-            <p style="font-size:14px; font-weight:bold; color:var(--primary); margin-bottom:20px;">E-PERPUS SMPN 1 CIBINGBIN</p>
-            <input type="password" id="passInput" placeholder="MASUKKAN PIN (1111)" style="text-align:center;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Logo_Perpustakaan_Nasional_Republik_Indonesia.belakang_putih.png" class="logo-perpus">
+            <p style="font-size:14px; font-weight:bold; color:var(--primary);">E-PERPUS SMPN 1 CIBINGBIN</p>
+            <input type="password" id="passInput" placeholder="PIN: 1111" style="text-align:center;">
             <button class="btn-blue" onclick="checkLogin()">MASUK</button>
         </div>
     </div>
@@ -73,7 +62,7 @@
             <div id="box-pinjam-scan" style="display:none; margin-top:15px;">
                 <input type="hidden" id="ps-id">
                 <input type="text" id="ps-buku" placeholder="Judul Buku...">
-                <button class="btn-blue" onclick="kirimAksiScan()">SIMPAN DATA SCAN</button>
+                <button class="btn-blue" onclick="kirimAksiScan()">SIMPAN DATA</button>
             </div>
         </div>
     </div>
@@ -86,7 +75,7 @@
                 <button onclick="setManualMode('Pinjam')" id="mbtn-Pinjam" class="btn-mode">PINJAM</button>
                 <button onclick="setManualMode('Kembali')" id="mbtn-Kembali" class="btn-mode">KEMBALI</button>
             </div>
-            <input type="text" id="ms-nama" placeholder="Nama Lengkap Siswa">
+            <input type="text" id="ms-nama" placeholder="Nama Siswa">
             <input type="text" id="ms-anggota" placeholder="Data Anggota (NIS/Kelas)">
             <input type="text" id="ms-buku" placeholder="Judul Buku (Opsional)">
             <button class="btn-blue" onclick="kirimManual()">SIMPAN MANUAL</button>
@@ -95,9 +84,9 @@
 
     <div id="page-riwayat" class="page">
         <div class="card">
-            <h3>LAPORAN AKTIF (Rules)</h3>
+            <h3>LAPORAN AKTIF</h3>
             <div style="overflow-x:auto;">
-                <table>
+                <table id="tableData">
                     <thead><tr><th>WAKTU</th><th>NAMA (BUKU)</th><th>DATA ANGGOTA</th><th>ST</th></tr></thead>
                     <tbody id="bodyRiwayat"></tbody>
                 </table>
@@ -107,16 +96,14 @@
 
     <div id="page-pdf" class="page">
         <div class="card" style="text-align:center;">
-            <h3>CETAK LAPORAN PDF</h3>
-            <p style="font-size:12px; color:#64748b;">Laporan lengkap dengan tanda tangan petugas.</p>
+            <h3>CETAK LAPORAN RESMI</h3>
+            <p style="font-size:12px; color:#64748b; margin-bottom:15px;">PDF akan menyertakan Kop Surat SMPN 1 Cibingbin.</p>
             <button class="btn-blue" style="background:var(--danger)" onclick="generatePDF()">DOWNLOAD PDF</button>
         </div>
     </div>
 
     <script>
-        // LINK WEB APP TERBARU BAPAK
-        const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbx0gmsJnnGA8orNJlk4H-YF0JCndSXAcK1IKxZ30hTLHlmCqlZkBD6piCBQwahWJmImyQ/exec"; 
-        
+        const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbw8EckMsDoKQhedAYwLhUKaDs7emEYK4tqbKjdmnpI_nU-jbhN1c0t4mqJdUFY9tQGnyA/exec"; 
         let scanMode = "Kunjungan", manualMode = "Kunjungan", html5QrCode = null, dataLaporan = [];
 
         function checkLogin() {
@@ -124,6 +111,7 @@
                 document.getElementById('login-container').style.display="none";
                 document.getElementById('main-nav').style.display="block";
                 showPage('riwayat');
+                setInterval(loadData, 5000);
             } else { alert("PIN SALAH!"); }
         }
 
@@ -133,7 +121,7 @@
             document.getElementById('page-' + p).style.display = 'block';
             if(document.getElementById('nav-' + p)) document.getElementById('nav-' + p).classList.add('nav-active');
             if (p === 'scan') startScanner(); else stopScanner();
-            if (p === 'riwayat' || p === 'pdf') loadData();
+            loadData();
         }
 
         function setScanMode(m) {
@@ -170,7 +158,6 @@
         function kirimAksiScan() {
             prosesKirim({ id: document.getElementById('ps-id').value, status: scanMode, nama: " (" + document.getElementById('ps-buku').value + ")" });
             document.getElementById('box-pinjam-scan').style.display = 'none';
-            document.getElementById('ps-buku').value = "";
         }
 
         function kirimManual() {
@@ -180,10 +167,7 @@
                 status: manualMode,
                 nama: document.getElementById('ms-buku').value ? " (" + document.getElementById('ms-buku').value + ")" : ""
             });
-            // Reset form
-            document.getElementById('ms-nama').value = "";
-            document.getElementById('ms-anggota').value = "";
-            document.getElementById('ms-buku').value = "";
+            document.getElementById('ms-nama').value=""; document.getElementById('ms-anggota').value=""; document.getElementById('ms-buku').value="";
         }
 
         function prosesKirim(dataObj) {
@@ -191,25 +175,19 @@
             .then(() => {
                 document.getElementById('notif').style.display = 'block';
                 setTimeout(() => { document.getElementById('notif').style.display = 'none'; }, 2000);
-                showPage('riwayat');
+                loadData();
             });
         }
 
         function loadData() {
-            const tbody = document.getElementById('bodyRiwayat');
-            tbody.innerHTML = "<tr><td colspan='4' style='text-align:center;'>Memuat data...</td></tr>";
             fetch(URL_SCRIPT).then(r => r.json()).then(d => {
                 dataLaporan = d;
+                const tbody = document.getElementById('bodyRiwayat');
                 let h = "";
                 d.reverse().forEach(item => {
                     let st = String(item.status).toLowerCase();
                     let color = st === 'pinjam' ? 'orange' : (st === 'kembali' ? 'red' : 'green');
-                    h += `<tr>
-                        <td>${item.waktu}</td>
-                        <td style="font-weight:bold;">${item.nama}</td>
-                        <td style="color:#64748b;">${item.anggota}</td>
-                        <td><span class="status-badge" style="background:${color}">${item.status.substring(0,1)}</span></td>
-                    </tr>`;
+                    h += `<tr><td>${item.waktu}</td><td>${item.nama}</td><td>${item.anggota}</td><td><span class="status-badge" style="background:${color}">${item.status.substring(0,1)}</span></td></tr>`;
                 });
                 tbody.innerHTML = h || "<tr><td colspan='4'>Belum ada data</td></tr>";
             });
@@ -218,27 +196,46 @@
         function generatePDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            const tglFull = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            const tgl = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
             
-            doc.setFontSize(14);
-            doc.text("LAPORAN PERPUSTAKAAN SMPN 1 CIBINGBIN", 105, 15, { align: "center" });
+            // --- BAGIAN KOP SURAT (SESUAI FOTO) ---
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(16);
+            doc.text("SMP NEGERI 1 CIBINGBIN", 105, 15, { align: "center" });
             
-            doc.autoTable({
-                head: [['Waktu', 'Nama (Buku)', 'Data Anggota', 'Status']],
-                body: dataLaporan.map(i => [i.waktu, i.nama, i.anggota, i.status]),
-                startY: 25,
+            doc.setFontSize(12);
+            doc.text("TERAKREDITASI 'A'", 105, 21, { align: "center" });
+            
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(10);
+            doc.text("Jln. Raya Pasar Cibingbin No. 250", 105, 27, { align: "center" });
+            doc.text("Cibingbin - Kuningan Jawa Barat", 105, 32, { align: "center" });
+            
+            // Garis pembatas kop
+            doc.setLineWidth(0.5);
+            doc.line(15, 35, 195, 35);
+            doc.setLineWidth(0.1);
+            doc.line(15, 36, 195, 36);
+
+            doc.setFont("helvetica", "bold");
+            doc.text("LAPORAN PERPUSTAKAAN", 105, 45, { align: "center" });
+
+            // TABEL LAPORAN
+            doc.autoTable({ 
+                head: [['Waktu', 'Nama (Buku)', 'Data Anggota', 'Status']], 
+                body: dataLaporan.map(i => [i.waktu, i.nama, i.anggota, i.status]), 
+                startY: 50,
                 theme: 'grid',
-                styles: { fontSize: 8 }
+                headStyles: { fillColor: [30, 41, 59] }
             });
             
-            const finalY = doc.lastAutoTable.finalY + 20;
-            doc.setFontSize(10);
-            doc.text("Cibingbin, " + tglFull, 140, finalY);
-            doc.text("Mengetahui,", 140, finalY + 7);
-            doc.text("Petugas Perpustakaan,", 140, finalY + 14);
-            
+            // TANDA TANGAN
+            const finalY = doc.lastAutoTable.finalY + 15;
+            doc.setFont("helvetica", "normal");
+            doc.text("Cibingbin, " + tgl, 140, finalY);
+            doc.text("Mengetahui, Petugas,", 140, finalY + 7);
             doc.setFont("helvetica", "bold");
-            doc.text("Rizki Angriani, S.Pust.", 140, finalY + 40);
+            doc.text("Rizki Angriani, S.Pust.", 140, finalY + 30);
             
             doc.save("Laporan_Perpus_Rules.pdf");
         }
