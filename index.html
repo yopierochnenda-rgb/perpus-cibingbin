@@ -3,36 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rules - E-PERPUS</title>
+    <title>E-PERPUS - Rules</title>
     <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     <style>
         :root { --primary: #1e293b; --success: #10b981; --warning: #f59e0b; --blue: #3b82f6; --danger: #ef4444; }
         body { font-family: 'Segoe UI', sans-serif; background: #f1f5f9; margin: 0; padding: 0; }
-        #login-container { height: 100vh; display: flex; justify-content: center; align-items: center; background: #1e293b; position: fixed; width: 100%; z-index: 9999; }
-        #login-box { background: white; padding: 30px; border-radius: 20px; text-align: center; width: 280px; }
+        
+        /* Poin 4: Latar Belakang Buku & PIN 1111 */
+        #login-container { 
+            height: 100vh; display: flex; justify-content: center; align-items: center; 
+            background: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1350&q=80');
+            background-size: cover; background-position: center; position: fixed; width: 100%; z-index: 9999; 
+        }
+        #login-box { background: rgba(255,255,255,0.95); padding: 30px; border-radius: 20px; text-align: center; width: 280px; backdrop-filter: blur(5px); box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        
         .nav-menu { display: none; background: white; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .nav-container { display: flex; }
-        .nav-item { padding: 15px 10px; font-weight: bold; color: #64748b; cursor: pointer; flex: 1; text-align: center; font-size: 12px; border-bottom: 4px solid transparent; }
+        .nav-item { padding: 15px 5px; font-weight: bold; color: #64748b; cursor: pointer; flex: 1; text-align: center; font-size: 11px; border-bottom: 4px solid transparent; }
         .nav-active { border-bottom: 4px solid var(--blue); color: var(--blue); background: #f8fafc; }
-        .page { display: none; padding: 20px; }
-        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .form-group { margin-bottom: 15px; text-align: left; }
-        .form-group label { display: block; font-size: 11px; font-weight: bold; margin-bottom: 5px; color: #475569; }
-        .form-group input { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 10px; box-sizing: border-box; }
+        .page { display: none; padding: 15px; }
+        .card { background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .form-group { margin-bottom: 12px; }
+        .form-group input { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; }
         .btn-blue { background: var(--blue); color: white; border: none; padding: 14px; border-radius: 10px; width: 100%; font-weight: bold; cursor: pointer; }
-        table { width: 100%; border-collapse: collapse; font-size: 12px; }
-        th { text-align: left; padding: 10px; border-bottom: 2px solid #f1f5f9; color: #64748b; font-size: 11px; }
-        td { padding: 10px; border-bottom: 1px solid #f1f5f9; color: #1e293b; }
-        .status-badge { padding: 3px 6px; border-radius: 4px; color: white; font-weight: bold; font-size: 9px; }
+        table { width: 100%; border-collapse: collapse; font-size: 10px; }
+        th { text-align: left; padding: 8px; border-bottom: 2px solid #f1f5f9; color: #64748b; background: #f8fafc; }
+        td { padding: 8px; border-bottom: 1px solid #f1f5f9; }
+        .status-badge { padding: 2px 5px; border-radius: 4px; color: white; font-weight: bold; font-size: 8px; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
     <div id="login-container">
         <div id="login-box">
-            <h2 style="margin:0; color:var(--primary)">Rules</h2>
-            <p style="font-size:12px; color:#64748b; margin-bottom:20px;">E-PERPUS SMPN 1 CIBINGBIN</p>
-            <input type="password" id="passInput" placeholder="PIN" style="width:100%; padding:12px; margin-bottom:15px; border-radius:10px; border:1px solid #ddd; text-align:center;">
+            <p style="font-size:14px; font-weight:bold; color:var(--primary); margin-bottom:20px;">E-PERPUS SMPN 1 CIBINGBIN</p>
+            <input type="password" id="passInput" placeholder="MASUKKAN PIN" style="width:100%; padding:12px; margin-bottom:15px; border-radius:10px; border:1px solid #ddd; text-align:center;">
             <button class="btn-blue" onclick="checkLogin()">MASUK</button>
         </div>
     </div>
@@ -42,20 +49,22 @@
             <div id="nav-scan" class="nav-item" onclick="showPage('scan')">SCAN</div>
             <div id="nav-manual" class="nav-item" onclick="showPage('manual')">MANUAL</div>
             <div id="nav-riwayat" class="nav-item" onclick="showPage('riwayat')">LAPORAN</div>
+            <div id="nav-pdf" class="nav-item" onclick="showPage('pdf')">UNDUH PDF</div>
             <div class="nav-item" style="color:var(--danger)" onclick="location.reload()">OUT</div>
         </div>
     </div>
 
     <div id="page-scan" class="page">
         <div class="card">
-            <div style="display:flex; gap:10px; margin-bottom:15px;">
-                <button onclick="setScanMode('Kunjungan')" id="btn-Kunjungan" style="flex:1; padding:10px; background:var(--success); color:white; border:none; border-radius:8px; font-weight:bold;">KUNJUNGAN</button>
-                <button onclick="setScanMode('Pinjam')" id="btn-Pinjam" style="flex:1; padding:10px; background:#64748b; color:white; border:none; border-radius:8px; font-weight:bold;">PINJAM</button>
+            <div style="display:flex; gap:5px; margin-bottom:15px;">
+                <button onclick="setScanMode('Kunjungan')" id="btn-Kunjungan" style="flex:1; padding:10px; background:var(--success); color:white; border:none; border-radius:8px; font-size:10px; font-weight:bold;">KUNJUNGAN</button>
+                <button onclick="setScanMode('Pinjam')" id="btn-Pinjam" style="flex:1; padding:10px; background:#64748b; color:white; border:none; border-radius:8px; font-size:10px; font-weight:bold;">PINJAM</button>
+                <button onclick="setScanMode('Kembali')" id="btn-Kembali" style="flex:1; padding:10px; background:#64748b; color:white; border:none; border-radius:8px; font-size:10px; font-weight:bold;">KEMBALI</button>
             </div>
             <div id="reader"></div>
             <div id="box-pinjam-scan" style="display:none; margin-top:15px; padding:15px; background:#f8fafc; border-radius:10px; border:1px solid #e2e8f0;">
-                <div class="form-group"><label>DATA KARTU</label><input type="text" id="ps-nis" readonly></div>
-                <div class="form-group"><label>JUDUL BUKU</label><input type="text" id="ps-buku" placeholder="Ketik judul buku..."></div>
+                <input type="hidden" id="ps-id">
+                <div class="form-group"><label style="font-size:10px; font-weight:bold;">JUDUL BUKU</label><input type="text" id="ps-buku" placeholder="Ketik judul buku..."></div>
                 <button class="btn-blue" onclick="kirimAksiScan()">SIMPAN DATA</button>
             </div>
         </div>
@@ -64,31 +73,39 @@
     <div id="page-manual" class="page">
         <div class="card">
             <h3 style="margin-top:0">INPUT MANUAL</h3>
-            <div class="form-group"><label>NAMA SISWA</label><input type="text" id="ms-nama"></div>
-            <div class="form-group"><label>NIS</label><input type="text" id="ms-nis"></div>
-            <div class="form-group"><label>BUKU</label><input type="text" id="ms-buku"></div>
+            <div class="form-group"><input type="text" id="ms-nama" placeholder="Nama Siswa"></div>
+            <div class="form-group"><input type="text" id="ms-anggota" placeholder="Data Anggota (NIS/Kelas)"></div>
+            <div class="form-group"><input type="text" id="ms-buku" placeholder="Judul Buku"></div>
             <button class="btn-blue" onclick="kirimManual()">SIMPAN MANUAL</button>
         </div>
     </div>
 
     <div id="page-riwayat" class="page">
         <div class="card">
-            <h3 style="margin:0 0 15px 0">LAPORAN AKTIF (Rules)</h3>
+            <h3 style="margin:0 0 10px 0">LAPORAN AKTIF</h3>
             <div style="overflow-x:auto;">
-                <table>
-                    <thead><tr><th>JAM</th><th>NAMA (BUKU)</th><th>ST</th></tr></thead>
+                <table id="tableData">
+                    <thead><tr><th>WAKTU</th><th>NAMA (BUKU)</th><th>DATA ANGGOTA</th><th>ST</th></tr></thead>
                     <tbody id="bodyRiwayat"></tbody>
                 </table>
             </div>
         </div>
     </div>
 
+    <div id="page-pdf" class="page">
+        <div class="card" style="text-align:center;">
+            <h3>CETAK LAPORAN</h3>
+            <p style="font-size:12px; color:#64748b;">Unduh semua riwayat anggota ke format PDF.</p>
+            <button class="btn-blue" style="background:var(--danger)" onclick="generatePDF()">DOWNLOAD PDF</button>
+        </div>
+    </div>
+
     <script>
-        const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbzekVLqEYiujcd5i8Je7OSpKYtixLNO2w41eF8ANCYbdxgHYpaI--H-F0wz1JPghlinnw/exec";
-        let scanMode = "Kunjungan", html5QrCode = null;
+        const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbzn1BFkToTEZSTrCxN6XNQMroKLhSauxTuhH_mikHzLPuh_lMqqedKyyF6rXU07xHD_BQ/exec"; 
+        let scanMode = "Kunjungan", html5QrCode = null, dataLaporan = [];
 
         function checkLogin() {
-            if(document.getElementById('passInput').value === "1234") {
+            if(document.getElementById('passInput').value === "1111") {
                 document.getElementById('login-container').style.display="none";
                 document.getElementById('main-nav').style.display="block";
                 showPage('riwayat');
@@ -99,15 +116,17 @@
             document.querySelectorAll('.page').forEach(pg => pg.style.display = 'none');
             document.querySelectorAll('.nav-item').forEach(nv => nv.classList.remove('nav-active'));
             document.getElementById('page-' + p).style.display = 'block';
-            document.getElementById('nav-' + p).classList.add('nav-active');
+            if(document.getElementById('nav-' + p)) document.getElementById('nav-' + p).classList.add('nav-active');
             if (p === 'scan') startScanner(); else stopScanner();
-            if (p === 'riwayat') loadData();
+            if (p === 'riwayat' || p === 'pdf') loadData();
         }
 
         function setScanMode(m) {
             scanMode = m;
-            document.getElementById('btn-Kunjungan').style.background = (m === 'Kunjungan') ? 'var(--success)' : '#64748b';
-            document.getElementById('btn-Pinjam').style.background = (m === 'Pinjam') ? 'var(--warning)' : '#64748b';
+            ['Kunjungan', 'Pinjam', 'Kembali'].forEach(mode => {
+                let color = mode === 'Kunjungan' ? 'var(--success)' : (mode === 'Pinjam' ? 'var(--warning)' : 'var(--danger)');
+                document.getElementById('btn-'+mode).style.background = (m === mode) ? color : '#64748b';
+            });
             document.getElementById('box-pinjam-scan').style.display = 'none';
         }
 
@@ -115,61 +134,66 @@
             if(!html5QrCode) {
                 html5QrCode = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
                 html5QrCode.render(s => {
-                    if(scanMode === 'Pinjam') {
-                        document.getElementById('ps-nis').value = s;
+                    if(scanMode === 'Pinjam' || scanMode === 'Kembali') {
+                        document.getElementById('ps-id').value = s;
                         document.getElementById('box-pinjam-scan').style.display = 'block';
                     } else { prosesKirim(s, "Kunjungan", ""); }
                 });
             }
         }
 
-        function stopScanner() {
-            if(html5QrCode) { html5QrCode.clear().then(() => { html5QrCode = null; }).catch(() => { html5QrCode = null; }); }
-        }
+        function stopScanner() { if(html5QrCode) { html5QrCode.clear().then(() => { html5QrCode = null; }).catch(() => { html5QrCode = null; }); } }
 
         function kirimAksiScan() {
-            prosesKirim(document.getElementById('ps-nis').value, "Pinjam", document.getElementById('ps-buku').value);
+            prosesKirim(document.getElementById('ps-id').value, scanMode, document.getElementById('ps-buku').value);
             document.getElementById('box-pinjam-scan').style.display = 'none';
         }
 
         function kirimManual() {
-            const data = "Nama: " + document.getElementById('ms-nama').value + " | NIS: " + document.getElementById('ms-nis').value + " | Kelas: Manual";
-            prosesKirim(data, "Pinjam", document.getElementById('ms-buku').value);
+            const dataAnggota = "Nama: " + document.getElementById('ms-nama').value + " | " + document.getElementById('ms-anggota').value;
+            prosesKirim(dataAnggota, "Pinjam", document.getElementById('ms-buku').value);
         }
 
         function prosesKirim(id, st, bk) {
             fetch(URL_SCRIPT, {
                 method: "POST",
                 mode: "no-cors",
-                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id: id, status: st, nama: bk ? " (" + bk + ")" : "" })
-            }).then(() => {
-                alert("BERHASIL DISIMPAN!");
-                showPage('riwayat');
-            });
+            }).then(() => { alert("TERSIMPAN!"); showPage('riwayat'); });
         }
 
         function loadData() {
             const tbody = document.getElementById('bodyRiwayat');
-            tbody.innerHTML = "<tr><td colspan='3' style='text-align:center;'>Memuat Laporan...</td></tr>";
-            
+            tbody.innerHTML = "<tr><td colspan='4' style='text-align:center;'>Memuat...</td></tr>";
             fetch(URL_SCRIPT).then(r => r.json()).then(d => {
+                dataLaporan = d;
                 let h = "";
-                if(!d || d.length === 0) {
-                    h = "<tr><td colspan='3' style='text-align:center;'>Belum ada data hari ini</td></tr>";
-                } else {
-                    d.reverse().forEach(item => {
-                        let st = String(item.status).toLowerCase();
-                        let color = st === 'pinjam' ? 'orange' : 'green';
-                        h += `<tr>
-                            <td style="font-weight:bold; color:#64748b;">${item.waktu || '-'}</td>
-                            <td>${item.nama || '-'}</td>
-                            <td><span class="status-badge" style="background:${color}">${item.status ? item.status.substring(0,1) : '-'}</span></td>
-                        </tr>`;
-                    });
-                }
-                tbody.innerHTML = h;
-            }).catch(() => { tbody.innerHTML = "<tr><td colspan='3' style='text-align:center; color:red;'>Gagal memuat data</td></tr>"; });
+                d.reverse().forEach(item => {
+                    let st = String(item.status).toLowerCase();
+                    let color = st === 'pinjam' ? 'orange' : (st === 'kembali' ? 'red' : 'green');
+                    h += `<tr>
+                        <td style="white-space:nowrap">${item.waktu}</td>
+                        <td style="font-weight:bold;">${item.nama}</td>
+                        <td style="color:#64748b; font-size:9px;">${item.anggota}</td>
+                        <td><span class="status-badge" style="background:${color}">${item.status.substring(0,1)}</span></td>
+                    </tr>`;
+                });
+                tbody.innerHTML = h || "<tr><td colspan='4' style='text-align:center;'>Belum ada data</td></tr>";
+            });
+        }
+
+        function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.text("LAPORAN PERPUSTAKAAN SMPN 1 CIBINGBIN", 14, 15);
+            const rows = dataLaporan.map(i => [i.waktu, i.nama, i.anggota, i.status]);
+            doc.autoTable({
+                head: [['Waktu', 'Nama (Buku)', 'Data Anggota', 'Status']],
+                body: rows,
+                startY: 25,
+                theme: 'grid'
+            });
+            doc.save("Laporan_Rules.pdf");
         }
     </script>
 </body>
