@@ -15,18 +15,18 @@
         .nav-item { flex: none; padding: 16px 20px; font-weight: bold; color: #64748b; cursor: pointer; border-bottom: 4px solid transparent; white-space: nowrap; font-size: 13px; }
         .nav-active { border-bottom: 4px solid var(--blue); color: var(--blue); background: #f8fafc; }
         .page { display: none; padding: 20px; max-width: 1000px; margin: 0 auto; }
-        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; position: relative; }
+        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; position: relative; }
         #notif-cetak { display: none; background: var(--success); color: white; padding: 12px; border-radius: 8px; text-align: center; font-weight: bold; margin-bottom: 15px; }
-        .form-group { margin-bottom: 15px; text-align: left; }
-        .form-group label { display: block; font-size: 12px; font-weight: bold; color: #475569; margin-bottom: 5px; }
-        .form-group input, .form-group select { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; }
+        .form-group { margin-bottom: 12px; text-align: left; }
+        .form-group label { display: block; font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; }
         .btn-blue { background: var(--blue); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; }
-        .btn-print { background: #0f172a; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .btn-print { background: #0f172a; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; }
         #reader { width: 100%; border-radius: 12px; overflow: hidden; border: 2px solid #ddd; }
-        table { width: 100%; border-collapse: collapse; }
-        th { background: #f8fafc; text-align: left; padding: 12px; font-size: 12px; color: #64748b; border-bottom: 2px solid #e2e8f0; }
-        td { padding: 12px; font-size: 13px; border-bottom: 1px solid #e2e8f0; }
-        .status-badge { padding: 4px 8px; border-radius: 5px; color: white; font-size: 11px; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; min-width: 500px; }
+        th { background: #f8fafc; text-align: left; padding: 10px; font-size: 11px; color: #64748b; border-bottom: 2px solid #e2e8f0; }
+        td { padding: 10px; font-size: 12px; border-bottom: 1px solid #e2e8f0; }
+        .status-badge { padding: 3px 6px; border-radius: 4px; color: white; font-size: 10px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -51,28 +51,29 @@
 
     <div id="page-scan" class="page">
         <div class="card">
-            <div id="notif-cetak">✅ DATA BERHASIL DISIMPAN!</div>
-            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                <button onclick="setScanMode('Kunjungan')" id="btn-Kunjungan" style="flex:1; padding:10px; border-radius:8px; border:none; background:var(--success); color:white; font-weight:bold;">KUNJUNGAN</button>
-                <button onclick="setScanMode('Pinjam')" id="btn-Pinjam" style="flex:1; padding:10px; border-radius:8px; border:none; background:#64748b; color:white; font-weight:bold;">PINJAM</button>
-                <button onclick="setScanMode('Kembali')" id="btn-Kembali" style="flex:1; padding:10px; border-radius:8px; border:none; background:#64748b; color:white; font-weight:bold;">KEMBALI</button>
+            <div id="notif-cetak">✅ BERHASIL DISIMPAN!</div>
+            <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+                <button onclick="setScanMode('Kunjungan')" id="btn-Kunjungan" style="flex:1; padding:10px; border-radius:8px; border:none; background:var(--success); color:white; font-weight:bold; font-size:12px;">KUNJUNGAN</button>
+                <button onclick="setScanMode('Pinjam')" id="btn-Pinjam" style="flex:1; padding:10px; border-radius:8px; border:none; background:#64748b; color:white; font-weight:bold; font-size:12px;">PINJAM</button>
+                <button onclick="setScanMode('Kembali')" id="btn-Kembali" style="flex:1; padding:10px; border-radius:8px; border:none; background:#64748b; color:white; font-weight:bold; font-size:12px;">KEMBALI</button>
             </div>
             <div id="reader"></div>
             <div id="box-pinjam-scan" style="display:none; margin-top:15px; background:#f8fafc; padding:15px; border-radius:10px; border: 1px solid #ddd;">
-                <div class="form-group"><label>NIS ANAK</label><input type="text" id="ps-nis" readonly></div>
-                <div class="form-group"><label>JUDUL BUKU (Optional)</label><input type="text" id="ps-buku" placeholder="Ketik Judul Buku..."></div>
-                <button class="btn-blue" onclick="kirimAksiScan()">💾 SIMPAN DATA</button>
+                <div class="form-group"><label>NIS</label><input type="text" id="ps-nis" readonly></div>
+                <div class="form-group"><label>JUDUL BUKU</label><input type="text" id="ps-buku" placeholder="Input Judul Buku..."></div>
+                <button class="btn-blue" onclick="kirimAksiScan()">💾 SIMPAN</button>
             </div>
         </div>
     </div>
 
     <div id="page-manual" class="page">
         <div class="card">
-            <h3>INPUT DATA MANUAL</h3>
+            <h3>INPUT MANUAL</h3>
             <div class="form-group"><label>STATUS</label><select id="ms-status"><option>Kunjungan</option><option>Pinjam</option><option>Kembali</option></select></div>
-            <div class="form-group"><label>NAMA / JUDUL BUKU</label><input type="text" id="ms-nama"></div>
-            <div class="form-group"><label>NIS</label><input type="text" id="ms-nis"></div>
-            <div class="form-group"><label>KELAS</label><input type="text" id="ms-kelas"></div>
+            <div class="form-group"><label>NAMA SISWA</label><input type="text" id="ms-nama" placeholder="Nama"></div>
+            <div class="form-group"><label>JUDUL BUKU</label><input type="text" id="ms-buku-manual" placeholder="Buku"></div>
+            <div class="form-group"><label>NIS</label><input type="text" id="ms-nis" placeholder="NIS"></div>
+            <div class="form-group"><label>KELAS</label><input type="text" id="ms-kelas" placeholder="Kelas"></div>
             <button class="btn-blue" onclick="kirimManual()">SIMPAN DATA</button>
         </div>
     </div>
@@ -80,12 +81,20 @@
     <div id="page-riwayat" class="page">
         <div class="card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3 style="margin:0;">PINJAMAN AKTIF</h3>
+                <h3 style="margin:0; font-size:16px;">PINJAMAN AKTIF</h3>
                 <button onclick="cetakLaporan()" class="btn-print">🖨️ CETAK</button>
             </div>
             <div style="overflow-x:auto;">
                 <table>
-                    <thead><tr><th>WAKTU</th><th>NAMA / BUKU</th><th>NIS</th><th>STATUS</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>WAKTU</th>
+                            <th>NAMA SISWA</th>
+                            <th>JUDUL BUKU</th>
+                            <th>NIS</th>
+                            <th>STATUS</th>
+                        </tr>
+                    </thead>
                     <tbody id="bodyRiwayat"></tbody>
                 </table>
             </div>
@@ -113,10 +122,8 @@
         function showPage(p) {
             document.querySelectorAll('.page').forEach(pg => pg.style.display = 'none');
             document.querySelectorAll('.nav-item').forEach(nv => nv.classList.remove('nav-active'));
-            const targetPage = document.getElementById('page-'+p);
-            if(targetPage) targetPage.style.display = 'block';
-            const targetNav = document.getElementById('nav-'+p);
-            if(targetNav) targetNav.classList.add('nav-active');
+            document.getElementById('page-'+p).style.display = 'block';
+            document.getElementById('nav-'+p).classList.add('nav-active');
             if(p === 'scan') startScanner(); else stopScanner();
         }
 
@@ -137,7 +144,7 @@
                         document.getElementById('box-pinjam-scan').style.display = 'block';
                     } else {
                         fetch(URL_SCRIPT, { method: "POST", body: JSON.stringify({ id: s, status: "Kunjungan" }) })
-                        .then(() => { tampilNotif("✅ KUNJUNGAN TERCATAT!", "var(--success)"); showRiwayat(); });
+                        .then(() => { tampilNotif("✅ KUNJUNGAN DICATAT", "var(--success)"); showRiwayat(); });
                     }
                 });
             }
@@ -148,79 +155,63 @@
         function kirimAksiScan() {
             const nis = document.getElementById('ps-nis').value;
             const jBuku = document.getElementById('ps-buku').value;
-            const warna = (scanMode === 'Kembali') ? 'var(--danger)' : 'var(--blue)';
-            document.getElementById('box-pinjam-scan').style.display = 'none';
-            
             fetch(URL_SCRIPT, { 
                 method:"POST", 
-                body: JSON.stringify({ id: nis, status: scanMode, nama: jBuku ? "Buku: " + jBuku : "Siswa" }) 
+                body: JSON.stringify({ id: nis, status: scanMode, buku: jBuku }) 
             }).then(() => { 
                 document.getElementById('ps-buku').value = ""; 
-                tampilNotif("✅ DATA DISIMPAN!", warna); 
+                tampilNotif("✅ BERHASIL!", scanMode === 'Kembali' ? 'var(--danger)' : 'var(--blue)'); 
                 showRiwayat(); 
             });
+            document.getElementById('box-pinjam-scan').style.display = 'none';
         }
 
         function kirimManual() {
-            const p = { id: document.getElementById('ms-nis').value, status: document.getElementById('ms-status').value, nama: document.getElementById('ms-nama').value, kelas: document.getElementById('ms-kelas').value };
+            const p = { 
+                id: document.getElementById('ms-nis').value, 
+                status: document.getElementById('ms-status').value, 
+                nama: document.getElementById('ms-nama').value, 
+                buku: document.getElementById('ms-buku-manual').value,
+                kelas: document.getElementById('ms-kelas').value 
+            };
             fetch(URL_SCRIPT, { method:"POST", body: JSON.stringify(p) }).then(() => { alert("Tersimpan!"); showRiwayat(); });
         }
 
         function showRiwayat() {
-            showPage('riwayat'); // Pindah halaman dulu biar tombol terasa responsif
-            document.getElementById('bodyRiwayat').innerHTML = "<tr><td colspan='4' style='text-align:center;'>Memuat data...</td></tr>";
-
+            showPage('riwayat');
+            document.getElementById('bodyRiwayat').innerHTML = "<tr><td colspan='5' style='text-align:center;'>Memuat data...</td></tr>";
             fetch(URL_SCRIPT).then(r => r.json()).then(d => {
                 dataGlobal = d;
                 let h = "";
                 let listKembali = d.filter(i => String(i.status).toLowerCase() === 'kembali').map(i => String(i.nis));
-
                 [...d].reverse().forEach((item) => {
                     let statusNow = String(item.status).toLowerCase();
-                    let nisNow = String(item.nis);
-
-                    if (statusNow === 'pinjam' && listKembali.includes(nisNow)) return;
+                    if (statusNow === 'pinjam' && listKembali.includes(String(item.nis))) return;
                     if (statusNow === 'kembali') return;
-
-                    const color = statusNow === 'pinjam' ? 'var(--warning)' : 'var(--success)';
-                    let namaTampil = item.nama || "Anak (NIS: " + item.nis + ")";
 
                     h += `<tr>
                         <td>${item.waktu || '-'}</td>
-                        <td>${namaTampil}</td>
+                        <td>${item.nama || '-'}</td>
+                        <td>${item.buku || '-'}</td>
                         <td>${item.nis || '-'}</td>
-                        <td><span class="status-badge" style="background:${color}">${item.status}</span></td>
+                        <td><span class="status-badge" style="background:${statusNow === 'pinjam' ? 'var(--warning)' : 'var(--success)'}">${item.status}</span></td>
                     </tr>`;
                 });
-                document.getElementById('bodyRiwayat').innerHTML = h || "<tr><td colspan='4' style='text-align:center;'>Tidak ada data aktif.</td></tr>";
-            }).catch(() => {
-                document.getElementById('bodyRiwayat').innerHTML = "<tr><td colspan='4' style='text-align:center;'>Gagal koneksi.</td></tr>";
+                document.getElementById('bodyRiwayat').innerHTML = h || "<tr><td colspan='5' style='text-align:center;'>Tidak ada data aktif</td></tr>";
             });
         }
 
         function cetakLaporan() {
-            if (dataGlobal.length === 0) return alert("Data kosong!");
+            if (dataGlobal.length === 0) return alert("Kosong!");
             let printWindow = window.open('', '_blank');
             let rows = "";
             let listKembali = dataGlobal.filter(i => String(i.status).toLowerCase() === 'kembali').map(i => String(i.nis));
             dataGlobal.forEach(i => {
                 if (String(i.status).toLowerCase() === 'pinjam' && listKembali.includes(String(i.nis))) return;
                 if (String(i.status).toLowerCase() === 'kembali') return;
-                rows += `<tr><td>${i.waktu}</td><td>${i.nama}</td><td>${i.nis}</td><td>${i.kelas || '-'}</td><td>${i.status}</td></tr>`;
+                rows += `<tr><td>${i.waktu}</td><td>${i.nama}</td><td>${i.buku}</td><td>${i.nis}</td><td>${i.status}</td></tr>`;
             });
-            printWindow.document.write(`
-                <html><head><style>
-                    body { font-family: Arial; padding: 20px; }
-                    .kop { text-align: center; border-bottom: 3px double black; padding-bottom: 10px; margin-bottom: 20px; }
-                    table { width: 100%; border-collapse: collapse; }
-                    th, td { border: 1px solid black; padding: 8px; text-align: left; font-size: 11px; }
-                </style></head><body>
-                <div class="kop"><h1>SMP NEGERI 1 CIBINGBIN</h1><p>Jln. Raya Pasar Cibingbin No. 250 Kuningan</p></div>
-                <h3 style="text-align:center;">LAPORAN PINJAMAN AKTIF</h3>
-                <table><thead><tr><th>WAKTU</th><th>NAMA / BUKU</th><th>NIS</th><th>KELAS</th><th>STATUS</th></tr></thead>
-                <tbody>${rows}</tbody></table>
-                </body></html>
-            `);
+            printWindow.document.write(`<html><head><style>table { width: 100%; border-collapse: collapse; } th, td { border: 1px solid black; padding: 5px; font-size: 10px; }</style></head><body><h2 style="text-align:center">LAPORAN AKTIF</h2><table><thead><tr><th>WAKTU</th><th>NAMA</th><th>BUKU</th><th>NIS</th><th>STATUS</th></tr></thead><tbody>${rows}</tbody></table></body></html>`);
             printWindow.document.close();
             setTimeout(() => { printWindow.print(); }, 500);
         }
